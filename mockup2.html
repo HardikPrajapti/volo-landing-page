@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Volo Health — mockup 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Geist:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@1.0.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+      /* "Volo Pink" style D tokens. Light theme only for this mockup. */
+      :root {
+        --bg: #ffffff;
+        --surf: #fcf4f8; --surf2: #f7e6ef; --surf3: #efd3e1;
+        --line: #f1dde7;
+        --ink: #140a10; --ink2: #6b5560; --ink3: #9a8590;
+        --pri: #ba1c68; --pri-strong: #a41c60; --pri-soft: #fce8f1; --on-pri: #ffffff;
+        --hero: linear-gradient(160deg, #fbe6f1, #f4c4dd, #e99bc4);
+        --hero-ink: #1a0a12; --hero-num: #ba1c68;
+        --hero-btn-bg: #111111; --hero-btn-ink: #ffffff;
+        --nav-on: #111111; --nav-on-ink: #ffffff;
+        --warn: #f05a3a; --warn-soft: #ffece7; --warn-ink: #c2411f;
+        --ok: #17a06a; --ok-soft: #e3f6ee; --ok-ink: #0f7a50;
+        --t1: #2563eb;
+        --t2: #7c3aed;
+        --t3: #d97706;
+        --t4: #db2777;
+        --t5: #ba1c68;
+        --glow: 0 8px 18px -6px rgba(186, 28, 104, 0.5);
+        --logo-filter: brightness(0);
+      }
+      @theme inline {
+        --font-sans: 'Geist', 'Noto Sans Devanagari', ui-sans-serif, system-ui, sans-serif;
+        --font-display: 'Bricolage Grotesque', 'Noto Sans Devanagari', ui-sans-serif, system-ui, sans-serif;
+        --color-page: var(--bg);
+        --color-surf: var(--surf); --color-surf2: var(--surf2); --color-surf3: var(--surf3);
+        --color-line: var(--line);
+        --color-ink: var(--ink); --color-ink2: var(--ink2); --color-ink3: var(--ink3);
+        --color-pri: var(--pri); --color-pri-strong: var(--pri-strong); --color-pri-soft: var(--pri-soft); --color-on-pri: var(--on-pri);
+        --color-hero-ink: var(--hero-ink); --color-hero-num: var(--hero-num);
+        --color-warn: var(--warn); --color-warn-soft: var(--warn-soft); --color-warn-ink: var(--warn-ink);
+        --color-ok: var(--ok); --color-ok-soft: var(--ok-soft); --color-ok-ink: var(--ok-ink);
+        --color-t1: var(--t1);
+        --color-t2: var(--t2);
+        --color-t3: var(--t3);
+        --color-t4: var(--t4);
+        --color-t5: var(--t5);
+        --radius-hero: 26px; --radius-card: 20px; --radius-inner: 16px; --radius-field: 12px;
+      }
+      body { @apply bg-page font-sans text-ink antialiased; }
+      h1, h2, h3, .num { font-family: var(--font-display); letter-spacing: -0.02em; }
+      h1 { font-weight: 700; }
+      .hero-card { background: var(--hero); background-size: 180% 180%; color: var(--hero-ink); animation: hero-drift 18s ease-in-out infinite alternate; }
+      @keyframes hero-drift { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
+      /* Entrance motion: elements fade up when they enter the viewport; --d staggers siblings. */
+      .reveal { opacity: 0; transform: translateY(14px); }
+      .reveal.in { animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms) both; }
+      @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+      .logo { filter: var(--logo-filter); }
+      .input { @apply w-full rounded-field border border-line bg-page px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink3 focus:border-pri focus:ring-2 focus:ring-pri-soft disabled:opacity-60; }
+      .label { @apply mb-1 block text-sm font-medium; }
+      .btn-primary { @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-pri px-5 py-2.5 text-sm font-semibold text-on-pri transition hover:bg-pri-strong disabled:opacity-60; box-shadow: var(--glow); }
+      .btn-hero { @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold transition; background: var(--hero-btn-bg); color: var(--hero-btn-ink); }
+      .btn-secondary { @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border border-line bg-page px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-pri hover:text-pri-strong; }
+      .tab-on { background: var(--nav-on); color: var(--nav-on-ink); }
+      .link { @apply cursor-pointer font-medium text-pri-strong hover:underline; }
+      /* Tinted tile: soft tint background, solid icon chip in the same hue. */
+      .tile { @apply flex flex-col gap-3 rounded-inner p-4 ring-1 ring-transparent transition hover:-translate-y-0.5; }
+      .chip { @apply flex size-10 shrink-0 items-center justify-center rounded-field text-white; }
+      .card { @apply rounded-card border border-line bg-page p-5; }
+      .err { @apply mt-1 text-xs text-warn-ink; }
+      :focus-visible { outline: 3px solid var(--pri); outline-offset: 2px; }
+      @media (prefers-reduced-motion: reduce) {
+        .hero-card { animation: none; }
+        .reveal, .reveal.in { opacity: 1; transform: none; animation: none; }
+      }
+    </style>
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#app" data-skip class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded-field focus:bg-page focus:px-3 focus:py-2">Skip to content</a>
+
+    <!-- Notice (option B): dark magenta bar, black NOTICE pill, white number pill -->
+    <div role="region" aria-label="Important notice" class="bg-pri-strong text-white">
+      <p class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 px-4 py-2 text-center text-xs font-medium sm:px-6 sm:text-sm lg:px-8">
+        <span class="tab-on inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"><i data-lucide="megaphone" class="size-3.5"></i> Notice</span>
+        <span>Our toll-free number <s class="rounded-field border border-surf3 px-2 text-surf3">1800-202-030</s> has been discontinued. For assistance, please call our new number</span>
+        <a href="tel:04065126801" class="inline-flex items-center gap-1.5 rounded-full bg-page px-3 py-1 font-bold text-pri-strong hover:underline"><i data-lucide="phone" class="size-3.5"></i> 040-65126801</a>
+      </p>
+    </div>
+
+    <!-- Header: Member login is the one primary action; sign-ins are outline buttons; Contact us is a text link -->
+    <div class="sticky top-0 z-40">
+      <header class="border-b border-line bg-surf">
+        <div class="relative mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
+          <a href="#/" aria-label="Volo Health — home" class="mr-auto flex h-11 shrink-0 items-center">
+            <img src="assets/volo_logo_white.png" alt="Volo — By your side" width="173" height="75" class="logo h-8 w-auto" />
+          </a>
+          <a href="#/contact" class="hidden h-11 items-center gap-1.5 whitespace-nowrap px-2 text-sm font-semibold text-ink transition hover:text-pri-strong lg:inline-flex"><i data-lucide="headset" class="size-4 text-pri"></i> Contact us</a>
+          <span class="hidden h-6 w-px bg-line lg:block" aria-hidden="true"></span>
+          <details id="partner-menu" class="group md:relative">
+            <summary class="inline-flex h-11 cursor-pointer items-center gap-1 whitespace-nowrap rounded-full border border-surf3 bg-page px-4 text-sm font-semibold text-ink transition hover:border-pri hover:text-pri-strong list-none [&::-webkit-details-marker]:hidden">
+              <span class="hidden md:inline">Partner sign-in</span><span class="md:hidden">Sign in</span>
+              <i data-lucide="chevron-down" class="size-4 transition group-open:rotate-180"></i>
+            </summary>
+            <div class="absolute inset-x-4 top-full z-50 mt-1 overflow-hidden rounded-inner border border-line bg-page pb-1 text-sm text-ink md:inset-x-auto md:right-0 md:mt-2 md:w-56 md:py-1">
+              <p class="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wide text-ink2 md:hidden">Members</p>
+              <div class="px-4 pt-1 pb-2 md:hidden"><a href="https://wallet.volohealthtpa.com/" target="_blank" rel="noopener noreferrer" class="btn-primary h-11 w-full">Member login</a></div>
+              <div class="px-4 pt-1 pb-2 md:hidden"><a href="https://www.eastwestassist.com/home/volohealth" target="_blank" rel="noopener noreferrer" class="inline-flex h-11 w-full items-center justify-center rounded-full border border-surf3 bg-page text-sm font-semibold text-pri-strong transition hover:border-pri">Retail member login</a></div>
+              <p class="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wide text-ink2 md:hidden">Partners</p>
+              <div class="grid grid-cols-2 md:block">
+                <a href="https://provider.volohealthtpa.com" target="_blank" rel="noopener noreferrer" class="block px-4 py-3 hover:bg-surf hover:text-pri-strong">Hospital</a>
+                <a href="https://pulsepoint.volohealthtpa.com" target="_blank" rel="noopener noreferrer" class="block px-4 py-3 hover:bg-surf hover:text-pri-strong">Insurer</a>
+                <a href="https://pulsepoint.volohealthtpa.com" target="_blank" rel="noopener noreferrer" class="block px-4 py-3 hover:bg-surf hover:text-pri-strong">Broker</a>
+                <a href="https://pulsepoint.volohealthtpa.com" target="_blank" rel="noopener noreferrer" class="block px-4 py-3 hover:bg-surf hover:text-pri-strong">Corporate HR</a>
+                <a href="https://www.eastwestassist.com/home/volohealth" target="_blank" rel="noopener noreferrer" class="block px-4 py-3 hover:bg-surf hover:text-pri-strong">Agent</a>
+              </div>
+              <a href="#/contact" class="mt-1 flex items-center gap-2 border-t border-line px-4 py-3 font-medium hover:bg-surf hover:text-pri-strong lg:hidden"><i data-lucide="headset" class="size-4 text-pri"></i> Contact us</a>
+            </div>
+          </details>
+          <a href="https://www.eastwestassist.com/home/volohealth" target="_blank" rel="noopener noreferrer" class="hidden h-11 cursor-pointer items-center gap-1 whitespace-nowrap rounded-full border border-surf3 bg-page px-4 text-sm font-semibold text-ink transition hover:border-pri hover:text-pri-strong md:inline-flex">Retail member login</a>
+          <a href="https://wallet.volohealthtpa.com/" target="_blank" rel="noopener noreferrer" class="hidden h-11 cursor-pointer items-center justify-center whitespace-nowrap rounded-full bg-pri px-5 text-sm font-semibold text-on-pri shadow-[var(--glow)] transition hover:bg-pri-strong md:inline-flex">Member login</a>
+        </div>
+      </header>
+    </div>
+
+    <main id="app" class="flex-1" tabindex="-1"></main>
+
+    <!-- Footer: quiet surface -->
+    <footer class="border-t border-line bg-surf text-ink">
+      <div class="border-b border-line">
+        <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+          <p class="font-display text-lg font-semibold tracking-tight">Always by your side, making every experience easy and smooth.</p>
+          <div class="flex flex-wrap gap-3">
+            <a href="tel:04065126801" class="btn-primary h-12 px-5 text-[15px]"><i data-lucide="phone" class="size-5"></i> Call 040-65126801</a>
+            <a href="https://wa.me/919560684484?text=Hi" target="_blank" rel="noopener noreferrer" class="inline-flex h-12 items-center gap-2 rounded-full bg-ok px-5 text-[15px] font-semibold text-white transition hover:underline">
+              <svg viewBox="0 0 24 24" class="size-5" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg> WhatsApp 95606 84484
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.3fr_repeat(4,1fr)] lg:px-8">
+        <div class="space-y-4">
+          <a href="#/" aria-label="Volo Health — home"><img src="assets/volo_logo_white.png" alt="Volo — By your side" width="173" height="75" class="logo h-10 w-auto" /></a>
+          <p class="text-sm leading-relaxed text-ink2">IRDA Licence No. 018<br />Valid from <span class="text-ink">16-05-2023</span> to <span class="text-ink">15-05-2026</span></p>
+          <a href="https://www.linkedin.com/company/volo-health-insurance-tpa-pvt-ltd" target="_blank" rel="noopener noreferrer" aria-label="Volo Health on LinkedIn" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full border border-line bg-page text-ink2 hover:text-pri">
+            <svg viewBox="0 0 24 24" class="size-4" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" /></svg>
+          </a>
+        </div>
+        <div>
+          <h2 class="mb-3 text-sm font-semibold">Hospitalization</h2>
+          <ul class="space-y-2 text-sm text-ink2">
+            <li><a href="https://wallet.volohealthtpa.com/public/hospital-network" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Locate Hospital</a></li>
+            <li><a href="https://wallet.volohealthtpa.com/" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Download eCard</a></li>
+            <li><a href="#/checklist" class="hover:text-pri-strong hover:underline">Download Claim Forms</a></li>
+            <li><a href="https://wallet.volohealthtpa.com/" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Intimate Claim</a></li>
+            <li><a href="#/claim-status" class="hover:text-pri-strong hover:underline">Track Claim</a></li>
+            <li><a href="#/faq" class="hover:text-pri-strong hover:underline">FAQs</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="mb-3 text-sm font-semibold">Sign In</h2>
+          <ul class="space-y-2 text-sm text-ink2">
+            <li><a href="https://www.eastwestassist.com/home/volohealth" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Retail Policyholder</a></li>
+            <li><a href="https://wallet.volohealthtpa.com/" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Corporate Employee</a></li>
+            <li><a href="https://provider.volohealthtpa.com" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Provider</a></li>
+            <li><a href="https://pulsepoint.volohealthtpa.com" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Insurer</a></li>
+            <li><a href="https://pulsepoint.volohealthtpa.com" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Corporate HR</a></li>
+            <li><a href="https://www.eastwestassist.com/home/volohealth" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Agent</a></li>
+            <li><a href="https://pulsepoint.volohealthtpa.com" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Broker</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="mb-3 text-sm font-semibold">About</h2>
+          <ul class="space-y-2 text-sm text-ink2">
+            <li><span>Leadership</span></li>
+            <li><a href="#/contact" class="hover:text-pri-strong hover:underline">Contact</a></li>
+            <li><span>News &amp; Awards</span></li>
+            <li><span>Career</span></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="mb-3 text-sm font-semibold">Legal &amp; Compliance</h2>
+          <ul class="space-y-2 text-sm text-ink2">
+            <li><a href="assets/East_west_RenewalCeritificate_Signed.pdf" target="_blank" rel="noopener noreferrer" class="hover:text-pri-strong hover:underline">Certificates</a></li>
+            <li><span>Policy</span></li>
+            <li><a href="#/compliance" class="hover:text-pri-strong hover:underline">Compliance &amp; Public Disclosure</a></li>
+            <li><span>SLA &amp; Grievance Redressal Mechanism</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-line py-4 text-center text-xs text-ink2">
+        Copyright © <span id="year">2026</span> Volo Health Insurance TPA Private Limited. All Rights Reserved. · Demo mockup — all data is fictional.
+      </div>
+    </footer>
+
+    <!-- Modal + toast hosts -->
+    <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-surf2 p-4" role="dialog" aria-modal="true" aria-label="Dialog">
+      <div class="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-card border border-line bg-page p-5">
+        <button type="button" data-action="close-modal" aria-label="Close" class="absolute top-3 right-3 cursor-pointer rounded-full p-1.5 hover:bg-surf"><i data-lucide="x" class="size-5"></i></button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+    <div id="toast" role="status" aria-live="polite" class="tab-on pointer-events-none fixed bottom-4 left-1/2 z-50 hidden -translate-x-1/2 rounded-full px-4 py-2 text-center text-sm"></div>
+
+    <script>
+      /* ------------------------------------------------------------------ *
+       * Demo data (fictional). Nothing here calls a real API.              *
+       * ------------------------------------------------------------------ */
+      const SEED_CLAIMS = {
+        CLM260001: { member: 'VH100245', patient: 'Rahul Sharma', hospital: 'Manipal Hospital, Bengaluru', type: 'Cashless', amount: 84500, filed: '02-09-2026', history: ['CLAIM_INTIMATED', 'PRE_AUTH_APPROVED', 'DISCHARGE_APPROVED', 'CLAIM_SETTLED'] },
+        CLM260002: { member: 'VH100245', patient: 'Priya Sharma', hospital: 'Ruby Hall Clinic, Pune', type: 'Reimbursement', amount: 23100, filed: '28-10-2026', history: ['CLAIM_REGISTERED', 'DOCUMENTS_RECEIVED', 'UNDER_PROCESS'] },
+        CLM260003: { member: 'VH100388', patient: 'Sneha Iyer', hospital: 'Lilavati Hospital, Mumbai', type: 'Reimbursement', amount: 41250, filed: '05-11-2026', history: ['CLAIM_REGISTERED', 'QUERY_RAISED'] },
+      };
+      const QUERY_TYPES = {
+        'Cashless Claims': ['Claim Deduction Details', 'Claim Rejection Details'],
+        'Enrollment Of Members': ['Addition of a member', 'Deletion of a member', 'Member details not visible', 'Unable to add Member'],
+        'General Enquiries/CSL': ['Cashless Procedure', 'Claim Forms', 'Policy Benefit Query', 'Reimbursement Procedure'],
+        'ID Card and Portal Log In': ['Error in ID Card', 'Non Receipt of ID Card', 'Reset Log In credentials and Password'],
+        'Reimbursement Claims': ['Claim Deduction Details', 'Claim DR Status', 'Claim Payment Status', 'Claim Rejection Details', 'Claim Status'],
+      };
+      const INSURERS = [
+        ['Aditya Birla Health Insurance Co. Ltd.', 'https://www.adityabirlahealthinsurance.com'], ['Bajaj General Insurance Limited', 'https://www.bajajallianz.com/general-insurance.html'],
+        ['Care Health Insurance Co. Ltd.', 'https://www.careinsurance.com/'], ['Cholamandalam MS General Insurance Co. Ltd.', 'https://www.cholainsurance.com/'],
+        ['HDFC Ergo General Insurance Co. Ltd.', 'https://www.hdfcergo.com/'], ['ICICI Lombard General Insurance Co. Ltd.', 'https://www.icicilombard.com/'],
+        ['IFFCO-TOKIO General Insurance Co. Ltd.', 'https://www.iffcotokio.co.in/'], ['Liberty General Insurance Ltd.', 'https://www.libertyinsurance.in/'],
+        ['Magma HDI General Insurance Co. Ltd.', 'https://www.magmahdi.com/'], ['ManipalCigna Health Insurance Co. Ltd.', 'https://www.manipalcigna.com/'],
+        ['National Insurance Co. Ltd.', 'https://nationalinsurance.nic.co.in/'], ['The New India Assurance Co. Ltd.', 'https://www.newindia.co.in/portal'],
+        ['Niva Bupa Health Insurance Co. Ltd.', 'https://www.nivabupa.com/'], ['The Oriental Insurance Co. Ltd.', 'https://orientalinsurance.org.in/'],
+        ['Reliance General Insurance Co. Ltd.', 'https://www.reliancenipponlife.com/'], ['Royal Sundaram General Insurance Co. Ltd.', 'https://www.royalsundaram.in/'],
+        ['SBI General Insurance Co. Ltd.', 'https://www.sbigeneral.in/'], ['Tata AIG General Insurance Co. Ltd.', 'https://www.tataaig.com/'],
+        ['United India Insurance Co. Ltd.', 'https://uiic.co.in/'], ['Universal Sompo General Insurance Co. Ltd.', 'https://www.universalsompo.com/'],
+        ['Raheja QBE General Insurance Company Limited', 'https://www.rahejaqbe.com/'], ['Zuno General Insurance Limited', 'https://www.hizuno.com/'],
+        ['Generali Central Insurance Company Limited', 'https://www.generalicentralinsurance.com/'],
+      ];
+
+      /* ------------------------------------------------------------------ *
+       * Persistent demo state (falls back to memory if storage is blocked)  *
+       * ------------------------------------------------------------------ */
+      const claims = () => SEED_CLAIMS;
+
+      /* ------------------------------------------------------------------ *
+       * Helpers                                                            *
+       * ------------------------------------------------------------------ */
+      const $ = (sel, root = document) => root.querySelector(sel);
+      const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+      const inr = (n) => '₹' + Number(n).toLocaleString('en-IN');
+      const fmtStatus = (s) => s.split('_').map((w) => w[0] + w.slice(1).toLowerCase()).join(' ');
+      const ref = (prefix) => prefix + Math.floor(100000 + Math.random() * 900000);
+      const today = () => new Date().toLocaleDateString('en-GB').replaceAll('/', '-');
+      const icon = (name, cls = 'size-4') => `<i data-lucide="${name}" class="${cls}"></i>`;
+      const icons = () => window.lucide?.createIcons();
+
+      function toast(msg) {
+        const t = $('#toast');
+        t.textContent = msg;
+        t.classList.remove('hidden');
+        clearTimeout(toast.timer);
+        toast.timer = setTimeout(() => t.classList.add('hidden'), 3500);
+      }
+      function openModal(html) {
+        $('#modal-body').innerHTML = html;
+        $('#modal').classList.replace('hidden', 'flex');
+        icons();
+        $('#modal-body input, #modal-body button')?.focus();
+      }
+      function closeModal() { $('#modal').classList.replace('flex', 'hidden'); }
+      function download(filename, text) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        toast(`Downloaded ${filename} (demo file)`);
+      }
+      function fieldError(form, name, msg) {
+        const slot = form.querySelector(`[data-err="${name}"]`);
+        if (slot) slot.textContent = msg || '';
+        form.elements[name]?.setAttribute('aria-invalid', msg ? 'true' : 'false');
+        return !msg;
+      }
+      function formStatus(root, kind, msg) {
+        const el = root.querySelector('[data-status]');
+        el.className = `flex items-start gap-2 rounded-field px-3 py-2 text-sm ${kind === 'ok' ? 'bg-ok-soft text-ok-ink' : 'bg-warn-soft text-warn-ink'}`;
+        el.innerHTML = `${icon(kind === 'ok' ? 'circle-check' : 'circle-alert', 'mt-0.5 size-4 shrink-0')}<span>${msg}</span>`;
+        icons();
+      }
+      const clearStatus = (root) => { const el = root.querySelector('[data-status]'); if (el) { el.className = 'hidden'; el.innerHTML = ''; } };
+
+      /* Captcha: random text drawn on a canvas, checked locally. */
+      const captchas = {};
+      function captchaField(id) {
+        return `<div>
+          <label class="label" for="${id}-input">Captcha <span class="text-pri">*</span></label>
+          <div class="flex items-center gap-2">
+            <canvas id="${id}" width="128" height="40" class="h-10 w-32 shrink-0 rounded-field border border-line" role="img" aria-label="Captcha image"></canvas>
+            <button type="button" data-action="refresh-captcha" data-id="${id}" aria-label="Get a new captcha" class="cursor-pointer rounded-full p-2 text-pri hover:bg-pri-soft">${icon('refresh-cw')}</button>
+            <input id="${id}-input" name="captcha" autocomplete="off" placeholder="Type the characters" class="input" />
+          </div>
+          <p class="err" data-err="captcha"></p>
+        </div>`;
+      }
+      function drawCaptcha(id) {
+        const c = document.getElementById(id);
+        if (!c) return;
+        const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+        const text = Array.from({ length: 5 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+        captchas[id] = text;
+        c.dataset.answer = text; // readable by automated tests of this demo
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fcf4f8';
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.font = 'bold 22px monospace';
+        ctx.fillStyle = '#140a10';
+        [...text].forEach((ch, i) => {
+          ctx.save();
+          ctx.translate(12 + i * 22, 28);
+          ctx.rotate((Math.random() - 0.5) * 0.5);
+          ctx.fillText(ch, 0, 0);
+          ctx.restore();
+        });
+        ctx.strokeStyle = '#ba1c68';
+        ctx.beginPath();
+        ctx.moveTo(4, 10 + Math.random() * 20);
+        ctx.lineTo(124, 10 + Math.random() * 20);
+        ctx.stroke();
+      }
+      const checkCaptcha = (id, value) => (value || '').trim().toUpperCase() === captchas[id];
+
+      /* ------------------------------------------------------------------ *
+       * Shared page pieces                                                 *
+       * ------------------------------------------------------------------ */
+      // The one colourful hero card on each inner page. Pass hero = false when the page has its own hero (e.g. the e-card).
+      const pageHeader = (title, accent, intro, eyebrow = '', hero = true) => `
+        <div class="mx-auto max-w-7xl px-4 pt-6 pb-6 sm:px-6 lg:px-8">
+          <section class="${hero ? 'hero-card rounded-hero px-6 py-7 sm:px-8' : 'py-2'}">
+            ${eyebrow ? `<p class="mb-1 text-xs font-semibold uppercase tracking-wider ${hero ? 'text-hero-num' : 'text-pri'}">${eyebrow}</p>` : ''}
+            <h1 class="text-3xl sm:text-4xl">${title} ${accent ? `<span class="${hero ? 'text-hero-num' : 'text-pri'}">${accent}</span>` : ''}</h1>
+            ${intro ? `<p class="mt-2 max-w-2xl ${hero ? 'text-hero-ink' : 'text-ink2'}">${intro}</p>` : ''}
+          </section>
+        </div>`;
+      const wrap = (inner) => `<div class="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">${inner}</div>`;
+      const helpAside = (title = 'Need help?') => `
+        <aside class="h-fit space-y-3 rounded-card border border-line bg-surf p-5 text-sm">
+          <h2 class="font-semibold">${title}</h2>
+          <a href="tel:04065126801" class="flex items-center gap-2 hover:text-pri-strong">${icon('phone', 'size-4 text-pri')} 040-65126801</a>
+          <a href="https://wa.me/919560684484?text=Hi" target="_blank" rel="noopener noreferrer" class="flex cursor-pointer items-center gap-2 hover:text-pri-strong">${icon('message-circle', 'size-4 text-ok')} WhatsApp +91 95606 84484</a>
+          <a href="#/contact" class="btn-primary w-full">Contact us</a>
+        </aside>`;
+      const statusSlot = '<div data-status class="hidden"></div>';
+      const req = '<span class="text-pri">*</span>';
+
+      /* ------------------------------------------------------------------ *
+       * Pages                                                              *
+       * ------------------------------------------------------------------ */
+      const pages = {};
+
+      pages.home = () => `
+        <section class="mx-auto grid max-w-7xl items-stretch gap-4 px-4 pt-6 pb-10 sm:px-6 lg:grid-cols-[1.15fr_1fr] lg:gap-6 lg:px-8 lg:pb-14">
+            <!-- The one colourful hero card -->
+            <div class="hero-card flex flex-col justify-center rounded-hero px-6 py-8 sm:px-10 sm:py-10">
+              <h1 class="text-4xl sm:text-5xl">We're here <span class="text-hero-num">for you</span></h1>
+              <p class="mt-4 max-w-xl text-lg text-hero-ink">Trusted by millions of Indians for seamless, transparent and reliable health insurance support — from hospitalization to claim settlement.</p>
+              <div class="mt-6">
+                <a href="#/claim-status" class="btn-hero">Check claim status ${icon('arrow-right')}</a>
+              </div>
+              <dl class="mt-8 grid max-w-lg grid-cols-3 gap-4 border-t border-line pt-6">
+                ${[['8,000+', 'network hospitals'], ['20+ yrs', 'industry experience'], ['24/7', 'support line']]
+                  .map(([v, l]) => `<div><dt class="sr-only">${l}</dt><dd><span class="num block text-2xl font-bold text-hero-num sm:text-3xl">${v}</span><span class="text-xs text-hero-ink">${l}</span></dd></div>`)
+                  .join('')}
+              </dl>
+            </div>
+            <div class="flex flex-col rounded-hero border border-line bg-page p-4 sm:p-6">
+              <h2 class="mb-3 text-xl font-semibold">What do you need today?</h2>
+              <ul class="grid grid-cols-2 gap-3">
+                ${[['map-pin', 'Find a network hospital', '8,000+ cashless hospitals across India', 'https://wallet.volohealthtpa.com/public/hospital-network', 't1'],
+                   ['hospital', 'Cashless anywhere', 'Cashless care even outside our network', 'cashless', 't2'],
+                   ['upload', 'Submit a claim', 'Upload your bills and documents', 'https://wallet.volohealthtpa.com/', 't4'],
+                   ['message-square-text', 'Raise a request', 'Queries, grievances and support', '#/contact', 't3']]
+                  .map(([ic, t, d, h, tint]) => `<li class="flex"><a href="${h === 'cashless' ? '#' : h}"${h === 'cashless' ? ' data-action="cashless"' : ''}${h.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : ''} class="group tile w-full bg-surf hover:ring-surf3">
+                    <span class="flex items-start justify-between"><span class="chip bg-${tint}">${icon(ic, 'size-5')}</span>${icon('arrow-up-right', `size-4 text-${tint}`)}</span>
+                    <span><span class="block font-semibold leading-snug">${t}</span><span class="mt-0.5 block text-sm text-ink2">${d}</span></span></a></li>`)
+                  .join('')}
+              </ul>
+              <a href="tel:04065126801" class="mt-4 flex items-center gap-3 rounded-inner bg-warn-soft px-4 py-3 text-sm text-warn-ink">
+                ${icon('phone', 'size-4 shrink-0')}<span><strong>Hospitalised right now?</strong> Call 040-65126801, 24/7.</span>
+              </a>
+            </div>
+        </section>
+
+        <section class="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8 lg:pb-14">
+          <div class="mb-6 max-w-2xl">
+            <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Getting help <span class="text-pri">has never been this easy</span></h2>
+            <p class="mt-2 text-ink2">Chat with us on WhatsApp, or manage everything from the Volo Health app.</p>
+          </div>
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div class="flex items-center gap-5 rounded-card border border-line p-5">
+              <img src="assets/QR_code.png" alt="QR code to start a WhatsApp chat with Volo Health" width="310" height="301" class="size-28 shrink-0 rounded-field border border-line lg:size-36" />
+              <div class="flex flex-col">
+                <h3 class="flex items-center gap-2 font-semibold">${icon('message-circle', 'size-4 text-ok')} WhatsApp ChatBot</h3>
+                <p class="mt-1 text-sm text-ink2">Claim updates to hospital searches, in real time. Say <strong>"Hi"</strong> or scan the code.</p>
+                <a href="https://wa.me/919560684484?text=Hi" target="_blank" rel="noopener noreferrer" class="mt-2 w-fit cursor-pointer text-sm font-semibold text-pri hover:underline">+91 95606 84484 →</a>
+              </div>
+            </div>
+            <div class="flex flex-col rounded-card border border-line bg-surf p-5">
+              <h3 class="font-semibold">Make your healthcare journey simpler &amp; faster</h3>
+              <p class="mt-1 text-sm text-ink2">Download the Volo Health app for access to all features.</p>
+              <div class="mt-4 grid flex-1 grid-cols-2 gap-3">
+                ${[['assets/android.png', 'assets/play.png', 'Android'], ['assets/Apple.png', 'assets/appstore.svg', 'iOS']]
+                  .map(([qr, badge, label]) => `<div class="flex flex-col items-center justify-center gap-2 rounded-inner bg-page p-3 transition hover:ring-2 hover:ring-surf3">
+                    <img src="${qr}" alt="QR code to download the Volo Health app for ${label}" width="500" height="500" class="size-24 sm:size-28" />
+                    <img src="${badge}" alt="Get it for ${label}" class="h-7 w-auto" /></div>`)
+                  .join('')}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
+            <div class="mb-6 max-w-2xl">
+              <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Service <span class="text-pri">benefits</span></h2>
+              <p class="mt-2 text-ink2">Comprehensive services designed to make your health insurance experience effortless.</p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-3">
+              ${[['Plan Hospitalization', 'Store, upload and manage all your prescriptions, test reports, discharge summaries online and access your medical history anytime and from anywhere.', 'assets/My_Health_Files.png', 'https://wallet.volohealthtpa.com/', 'Open portal'],
+                 ['Grievance Redressal', 'Our teams work round-the-clock to ensure impeccable customer service. Our commitment to our Service Level Agreement stands strong and consistent all through the year.', 'assets/grievance_Redressal.png', '#/contact', 'Raise a grievance'],
+                 ['Our Insurance Partners', 'With over 20 years in the industry, we have built strong connections with our insurer partners to help customers leverage seamless claims settlement and end-to-end health services.', 'assets/Our_Insurance_Partners.png', '#/compliance', 'See partners']]
+                .map(([t, d, img, h, cta], i) => `<a href="${h}"${h.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : ''} class="group flex gap-4 rounded-card p-5 ring-1 ring-transparent transition hover:-translate-y-0.5 md:flex-col ${'bg-surf hover:ring-surf3'}">
+                  <span class="flex size-24 shrink-0 items-center justify-center rounded-inner bg-page md:size-28"><img src="${img}" alt="" width="510" height="458" class="size-20 object-contain md:size-24" /></span>
+                  <div class="flex flex-col"><h3 class="font-semibold">${t}</h3><p class="mt-1 text-sm leading-relaxed text-ink2">${d}</p>
+                  <span class="mt-3 text-sm font-semibold text-pri group-hover:underline">${cta} →</span></div></a>`)
+                .join('')}
+            </div>
+          </div>
+        </section>`;
+
+      /* ---- Claim status ---- */
+      pages['claim-status'] = (q) => pageHeader('Track your', 'claim status', 'Enter your claim number to see where your claim stands.', 'Claim assistance portal') + wrap(`
+        <div class="grid items-start gap-6 lg:grid-cols-[1fr_20rem]">
+          <section id="claim-card" class="card space-y-5">
+            <form data-form="claim-status" novalidate class="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div><label class="label" for="claim-id">Claim number ${req}</label>
+                  <input id="claim-id" name="claimId" value="${esc(q.get('id') || '')}" class="input" autocomplete="off" placeholder="e.g. CLM260001" /><p class="err" data-err="claimId"></p></div>
+                ${captchaField('cap-claim')}
+              </div>
+              <button type="submit" class="btn-primary h-10">${icon('search')} Check status</button>
+            </form>
+            ${statusSlot}
+            <div id="claim-result"></div>
+            <p class="text-xs text-ink2">Demo claim numbers: CLM260001 (settled), CLM260002 (under process), CLM260003 (query raised),.</p>
+          </section>
+          ${helpAside('Other ways to check')}
+        </div>`);
+
+      function renderClaim(id, c) {
+        const steps = c.history;
+        return `<div class="rounded-inner border border-line bg-surf p-4" aria-live="polite">
+          <p class="text-sm text-ink2">Claim <span class="font-semibold text-ink">${id}</span> · ${esc(c.patient)} · ${esc(c.hospital)}</p>
+          <p id="claim-current" class="text-lg font-semibold text-pri-strong">${fmtStatus(steps.at(-1))}</p>
+          <p class="text-sm text-ink2">${c.type} · ${inr(c.amount)} · filed ${c.filed}</p>
+          <ol class="mt-3 flex flex-wrap items-center gap-2 text-xs">${steps.map((s, i) => `<li class="flex items-center gap-2"><span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 ${i === steps.length - 1 ? 'bg-pri text-on-pri' : 'bg-page text-ink2'}">${icon('check', 'size-3')} ${fmtStatus(s)}</span>${i < steps.length - 1 ? '<span class="text-ink3" aria-hidden="true">→</span>' : ''}</li>`).join('')}</ol>
+          ${steps.at(-1) === 'QUERY_RAISED' ? '<p class="mt-3 text-sm">The claims team needs one more document (final bill breakup). <a class="link" href="#/contact">Respond to the query</a>.</p>' : ''}
+        </div>`;
+      }
+
+      /* ---- Contact ---- */
+      pages.contact = () => pageHeader('Contact', 'us', 'Send us your query and our team will get back to you.') + wrap(`
+        <div class="grid gap-6 lg:grid-cols-[1fr_22rem]">
+          <form data-form="contact" novalidate class="card grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2"><label class="label" for="c-name">Full name ${req}</label><input id="c-name" name="name" class="input" autocomplete="name" /><p class="err" data-err="name"></p></div>
+            <div><label class="label" for="c-mobile">Contact number ${req}</label><input id="c-mobile" name="mobile" type="tel" class="input" autocomplete="tel" /><p class="err" data-err="mobile"></p></div>
+            <div><label class="label" for="c-email">Email address ${req}</label><input id="c-email" name="email" type="email" class="input" autocomplete="email" /><p class="err" data-err="email"></p></div>
+            <div><label class="label" for="c-corp">Corporate ${req}</label><input id="c-corp" name="corporate" class="input" /><p class="err" data-err="corporate"></p></div>
+            <div><label class="label" for="c-emp">Employee ID ${req}</label><input id="c-emp" name="employeeId" class="input" /><p class="err" data-err="employeeId"></p></div>
+            <div><label class="label" for="c-type">Query type ${req}</label><select id="c-type" name="queryType" class="input"><option value="">Select query type</option>${Object.keys(QUERY_TYPES).map((k) => `<option>${k}</option>`).join('')}</select><p class="err" data-err="queryType"></p></div>
+            <div><label class="label" for="c-query">Query ${req}</label><select id="c-query" name="query" class="input" disabled><option value="">Choose a query type first</option></select><p class="err" data-err="query"></p></div>
+            <div id="c-claimref" class="hidden sm:col-span-2"><label class="label" for="c-ref">Claim reference number</label><input id="c-ref" name="claimRefNo" class="input" placeholder="e.g. CLM260002" /></div>
+            <div class="sm:col-span-2"><label class="label" for="c-comment">Comments / description ${req}</label><textarea id="c-comment" name="comment" rows="4" maxlength="5000" class="input"></textarea><p class="err" data-err="comment"></p></div>
+            <div class="sm:col-span-2">${captchaField('cap-contact')}</div>
+            <div class="sm:col-span-2">${statusSlot}</div>
+            <div class="flex justify-end sm:col-span-2"><button class="btn-primary">Submit request ${icon('arrow-right')}</button></div>
+          </form>
+          <aside class="flex flex-col overflow-hidden rounded-card border border-line bg-surf text-sm">
+            <div class="space-y-3 p-5">
+              <a href="tel:04065126801" class="flex items-center gap-2 font-medium hover:text-pri-strong">${icon('phone', 'size-4 text-pri')} 040-65126801</a>
+              <a href="https://wa.me/919560684484?text=Hi" target="_blank" rel="noopener noreferrer" class="flex cursor-pointer items-center gap-2 font-medium hover:text-pri-strong">${icon('message-circle', 'size-4 text-ok')} +91 95606 84484</a>
+              <div class="flex gap-2 text-ink2">${icon('map-pin', 'mt-0.5 size-4 shrink-0 text-pri')}<address class="not-italic">Plot No. 172, JP House, 2nd Floor, Lane-2, Westend Marg, Saidulajab, Near Saket Metro Station, New Delhi, 110030, India</address></div>
+            </div>
+            <div class="relative flex min-h-56 flex-1 items-center justify-center bg-[radial-gradient(circle_at_1px_1px,#f1dde7_1px,transparent_0)] [background-size:18px_18px]">
+              <span class="flex flex-col items-center text-pri-strong">${icon('map-pin', 'size-9')}<span class="mt-1 rounded-full bg-page px-3 py-1 text-xs font-semibold shadow">Volo Health, Saket</span></span>
+            </div>
+          </aside>
+        </div>`);
+
+      /* ---- Content pages ---- */
+      const FAQS = [
+        ['What does TPA do?', 'A Third Party Administrator is licensed by the IRDAI to service health insurance policyholders under an agreement with the insurance company.'],
+        ['How can I get my E-card?', 'Download it from our <a class="link" href="https://wallet.volohealthtpa.com/" target="_blank" rel="noopener noreferrer">member portal</a> or through our WhatsApp ChatBot on 95606 84484.'],
+        ['Is treatment outside India covered?', 'Treatment is covered only in India.'],
+        ['Whom to contact in an emergency?', 'Call our 24/7 helpline 040-65126801 or message the WhatsApp ChatBot on 95606 84484.'],
+        ['How can I check network hospitals?', 'Use our <a class="link" href="https://wallet.volohealthtpa.com/public/hospital-network" target="_blank" rel="noopener noreferrer">hospital network search</a>. We have 8,000+ cashless hospitals.'],
+        ['What are the types of claims?', '<strong>Cashless</strong>: the hospital is paid directly for admissible amounts. <strong>Reimbursement</strong>: you pay and claim back, e.g. non-network hospitals or pre/post-hospitalisation expenses.'],
+        ['Time limit for pre-authorisation?', 'Planned: at least 48 hours before admission. Emergency: within 6 hours of admission.'],
+        ['How long does pre-authorisation take?', 'Within 2 hours of receiving all documents.'],
+        ['What is co-pay?', 'A percentage of the admissible amount the policyholder pays; the insurer pays the rest.'],
+        ['How do I submit a reimbursement claim?', 'Submit online on our <a class="link" href="https://wallet.volohealthtpa.com/" target="_blank" rel="noopener noreferrer">member portal</a> within 7 days of discharge, with documents as per the <a class="link" href="#/checklist">checklist</a>.'],
+        ['How can I check my claim status?', 'Use our <a class="link" href="#/claim-status">claim status tracker</a>, call our helpline, or ask the WhatsApp ChatBot.'],
+        ['How long does reimbursement take?', 'Processed within 10 working days of receiving all documents; paid within 5 working days of approval.'],
+        ['How can I raise a grievance?', 'Raise a request on our <a class="link" href="#/contact">contact form</a>.'],
+      ];
+      pages.faq = () => pageHeader('Frequently asked', 'questions', 'We keep you updated to ensure your healthcare journey remains smooth and transparent.') + wrap(`
+        <div class="grid items-start gap-8 lg:grid-cols-[1fr_18rem]">
+          <div class="divide-y divide-line rounded-card border border-line">
+            ${FAQS.map(([q, a]) => `<details class="group px-5"><summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-medium hover:text-pri-strong [&::-webkit-details-marker]:hidden">${q}${icon('chevron-down', 'size-4 shrink-0 text-ink3 transition group-open:rotate-180')}</summary><div class="pb-4 text-sm leading-relaxed text-ink2">${a}</div></details>`).join('')}
+          </div>
+          ${helpAside('Still need help?')}
+        </div>`);
+
+      const DOCS = [['OPD Checklist', 'Checklists', 'https://prod-ewa-open-documents.s3.ap-south-1.amazonaws.com/OPD+-+Checklist.pdf'], ['IPD Checklist', 'Checklists', 'https://prod-ewa-open-documents.s3.ap-south-1.amazonaws.com/Claim+Submission+Check+List.pdf'], ['Editable Claim Form Part-A & Part-B', 'Claim forms', 'https://prod-ewa-open-documents.s3.ap-south-1.amazonaws.com/Claim+Form+-+Part+A+%26+B.docx'], ['Sample Claim Form Part A', 'Claim forms', 'https://prod-ewa-open-documents.s3.ap-south-1.amazonaws.com/Sample%2BClaim_Form_partA.pdf'], ['PPN Declaration Form', 'Claim forms', 'https://prod-ewa-open-documents.s3.ap-south-1.amazonaws.com/PPN_Declaration_Form.pdf']];
+      pages.checklist = () => pageHeader('Claim forms', '& checklist', 'All the essential documents you need for your claim submission in one place.') + wrap(`
+        <div class="grid gap-6 md:grid-cols-2">${['Checklists', 'Claim forms'].map((g) => `<section class="card"><h2 class="mb-3 flex items-center gap-2 font-semibold">${icon(g === 'Checklists' ? 'clipboard-check' : 'file-text', 'size-5 text-pri')} ${g}</h2>
+          <ul class="space-y-2">${DOCS.filter(([, grp]) => grp === g).map(([t, , url]) => `<li><a href="${url}" target="_blank" rel="noopener noreferrer" class="group flex w-full cursor-pointer items-center gap-3 rounded-inner bg-surf p-3 text-left transition hover:bg-pri-soft">
+            <span class="flex h-9 w-11 shrink-0 items-center justify-center rounded-md bg-warn-soft text-[10px] font-bold text-warn-ink">PDF</span><span class="flex-1 text-sm font-medium">${t}</span>${icon('download', 'size-4 text-ink3 group-hover:text-pri')}</a></li>`).join('')}</ul></section>`).join('')}</div>`);
+
+      pages.compliance = () => pageHeader('Compliance &', 'public disclosure', 'Transparency and adherence to the highest standards.') + wrap(`
+        <h2 class="mb-3 font-semibold">Insurance companies <span class="font-normal text-ink2">(${INSURERS.length})</span></h2>
+        <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">${INSURERS.map(([n, url]) => `<li><a href="${url}" target="_blank" rel="noopener noreferrer" class="group flex h-full w-full cursor-pointer items-center justify-between gap-3 rounded-inner border border-line px-4 py-3 text-left text-sm transition hover:border-surf3 hover:bg-pri-soft">${n}${icon('chevron-right', 'size-4 shrink-0 text-ink3 group-hover:text-pri')}</a></li>`).join('')}</ul>`);
+
+      pages.notFound = () => pageHeader('Page', 'not found', 'That page does not exist in this mockup.') + wrap('<a href="#/" class="btn-primary">Back to home</a>');
+
+      /* ------------------------------------------------------------------ *
+       * Router                                                             *
+       * ------------------------------------------------------------------ */
+      let redirecting = null;
+      function redirect(hash) { redirecting = hash; return ''; }
+      function route() {
+        if (location.hash === '#app') return; // skip link target
+        const [path, query = ''] = location.hash.replace(/^#\/?/, '').split('?');
+        const q = new URLSearchParams(query);
+        const page = pages[path || 'home'] || pages.notFound;
+        redirecting = null;
+        const html = page(q);
+        if (redirecting) { location.replace(redirecting); return; }
+        $('#app').innerHTML = html;
+        $('#app').dataset.page = pages[path || 'home'] ? path || 'home' : 'notFound';
+        $('#partner-menu').open = false;
+        closeModal();
+        window.scrollTo(0, 0);
+        document.querySelectorAll('#app canvas[id^="cap-"]').forEach((c) => drawCaptcha(c.id));
+        if (path === 'claim-status' && q.get('id')) {
+          const id = q.get('id').toUpperCase();
+          if (claims()[id]) $('#claim-result').innerHTML = renderClaim(id, claims()[id]);
+        }
+        icons();
+        animatePage();
+      }
+
+      /* ------------------------------------------------------------------ *
+       * Motion: staggered fade-up on scroll + hero number count-up          *
+       * ------------------------------------------------------------------ */
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const revealObserver = 'IntersectionObserver' in window
+        ? new IntersectionObserver((entries) => entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            e.target.classList.add('in');
+            revealObserver.unobserve(e.target);
+          }), { threshold: 0.12 })
+        : null;
+      function animatePage() {
+        if (reduceMotion || !revealObserver) return;
+        const targets = '#app .hero-card, #app section > h2, #app .mb-6, #app .tile, #app .card, #app .rounded-card, #app .rounded-hero, #app details, #app aside, #app li > a';
+        const seen = new Map();
+        document.querySelectorAll(targets).forEach((el) => {
+          // Animate outer blocks; tiles, FAQ items and list links also stagger inside their block.
+          if (el.parentElement.closest('.reveal') && !el.matches('.tile, details, li > a')) return;
+          const group = el.closest('li')?.parentElement || el.parentElement; // items in one list stagger together
+          const i = seen.get(group) || 0;
+          seen.set(group, i + 1);
+          el.style.setProperty('--d', `${Math.min(i, 6) * 70}ms`);
+          el.classList.add('reveal');
+          revealObserver.observe(el);
+        });
+        document.querySelectorAll('#app .hero-card .num').forEach(countUp);
+      }
+      function countUp(el) {
+        const m = el.textContent.match(/^([\d,]+)(.*)$/);
+        if (!m || el.textContent.includes('/')) return; // skip "24/7"
+        const target = Number(m[1].replace(/,/g, ''));
+        const start = performance.now();
+        const step = (now) => {
+          const t = Math.min((now - start) / 1100, 1);
+          const v = Math.round(target * (1 - Math.pow(1 - t, 3)));
+          el.textContent = v.toLocaleString('en-IN') + m[2];
+          if (t < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+      /* ------------------------------------------------------------------ *
+       * Form handling                                                      *
+       * ------------------------------------------------------------------ */
+      const required = (form, names) => names.map((n) => fieldError(form, n, form.elements[n].value.trim() ? '' : 'This field is required.')).every(Boolean);
+
+      const handlers = {
+        'claim-status'(form) {
+          const card = $('#claim-card');
+          const id = form.claimId.value.trim().toUpperCase();
+          const okId = fieldError(form, 'claimId', id ? '' : 'Enter your claim number.');
+          const okCap = fieldError(form, 'captcha', checkCaptcha('cap-claim', form.captcha.value) ? '' : 'Captcha does not match. Try again.');
+          drawCaptcha('cap-claim');
+          form.captcha.value = '';
+          clearStatus(card);
+          if (!okId || !okCap) return;
+          const c = claims()[id];
+          if (!c) { $('#claim-result').innerHTML = ''; return formStatus(card, 'err', `No claim found with number ${esc(id)}. Check the number and try again.`); }
+          $('#claim-result').innerHTML = renderClaim(id, c);
+          icons();
+        },
+        contact(form) {
+          const ok = required(form, ['name', 'mobile', 'email', 'corporate', 'employeeId', 'queryType', 'comment']);
+          const okQuery = fieldError(form, 'query', form.query.value ? '' : 'Choose a query.');
+          const okPhone = !form.mobile.value || fieldError(form, 'mobile', /^[0-9+\-\s]{10,15}$/.test(form.mobile.value) ? '' : 'Enter a valid phone number (10–15 digits).');
+          const okEmail = !form.email.value || fieldError(form, 'email', /^\S+@\S+\.\S+$/.test(form.email.value) ? '' : 'Enter a valid email address.');
+          const okCap = fieldError(form, 'captcha', checkCaptcha('cap-contact', form.captcha.value) ? '' : 'Captcha does not match. Try again.');
+          drawCaptcha('cap-contact');
+          form.captcha.value = '';
+          clearStatus(form);
+          if (!ok || !okQuery || !okPhone || !okEmail || !okCap) return;
+          formStatus(form, 'ok', `Thanks — your request is logged as ticket <strong>${ref('TKT')}</strong>. We'll reply within 1 working day.`);
+          form.reset();
+          form.query.innerHTML = '<option value="">Choose a query type first</option>';
+          form.query.disabled = true;
+          $('#c-claimref').classList.add('hidden');
+        },
+      };
+
+      document.addEventListener('submit', (e) => {
+        const form = e.target.closest('form[data-form]');
+        if (!form) return;
+        e.preventDefault();
+        handlers[form.dataset.form]?.(form);
+        icons();
+      });
+      document.addEventListener('change', (e) => {
+        if (e.target.id === 'c-type') {
+          const sel = $('#c-query');
+          const opts = QUERY_TYPES[e.target.value] || [];
+          sel.innerHTML = `<option value="">${opts.length ? 'Select query' : 'Choose a query type first'}</option>` + opts.map((o) => `<option>${o}</option>`).join('');
+          sel.disabled = !opts.length;
+          $('#c-claimref').classList.toggle('hidden', !e.target.value.includes('Claims'));
+        }
+      });
+
+      /* ------------------------------------------------------------------ *
+       * Click actions                                                      *
+       * ------------------------------------------------------------------ */
+      const actions = {
+        'close-modal': closeModal,
+        'refresh-captcha': (el) => drawCaptcha(el.dataset.id),
+        // Same popup as the live site's "Cashless Anywhere" card.
+        cashless: () => openModal(`<h2 class="pr-8 text-lg font-semibold">Cashless Anywhere</h2>
+          <p class="mt-1 text-sm">Avail cashless facility at any hospital of your choice, even outside our network. Contact our Cashless Everywhere desk:</p>
+          <div class="mt-4 space-y-2 text-sm">
+            <a href="tel:9773770810" class="flex items-center gap-2 font-medium hover:underline">${icon('phone', 'size-4')} 97737 70810</a>
+            <a href="mailto:cashlesseverywhere@volohealthtpa.com" class="flex items-center gap-2 font-medium hover:underline">${icon('mail', 'size-4')} cashlesseverywhere@volohealthtpa.com</a>
+          </div>`),
+      };
+
+      document.addEventListener('click', (e) => {
+        const el = e.target.closest('[data-action]');
+        if (el && actions[el.dataset.action]) { e.preventDefault(); actions[el.dataset.action](el); return; }
+        if (e.target.id === 'modal') closeModal();
+        if (!e.target.closest('#partner-menu')) $('#partner-menu').open = false;
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); $('#partner-menu').open = false; } });
+
+      $('#year').textContent = new Date().getFullYear();
+      window.addEventListener('hashchange', route);
+      route();
+    </script>
+  </body>
+</html>
