@@ -297,7 +297,8 @@ nav.bar .links .ind::after{content:"";position:absolute;left:14px;right:14px;bot
 .clk.done .cp{background:var(--c-ins)}
 
 @container (max-width:340px){ .card,.st-home b{display:none} .scene .clk{top:36%} }
-@container (max-width:420px){ .st-hosp b{display:none} .scene .clk{top:31%} }
+@container (max-width:420px){ .scene .clk{top:31%} #scene[data-step="0"] .pt,#scene[data-step="1"] .pt,#scene[data-step="2"] .pt,#scene[data-step="3"] .pt,#scene[data-step="4"] .pt{top:67%} }
+@container (max-width:520px){ .st-hosp b{display:none} .scene[data-step="0"] .card{top:47%} }
 @container (max-width:520px){
   .st > span:not(.ic){display:none}
   .st{gap:3.4cqw}
