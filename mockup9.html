@@ -253,16 +253,6 @@ nav.bar .links .ind::after{content:"";position:absolute;left:14px;right:14px;bot
 .doc.msg,.doc.okd,.doc.inf{--bg:var(--c-vol);--fg:#fff}
 .doc.paid{--bg:var(--c-ins);--fg:var(--night)}
 .doc.home{--bg:var(--c-mem);--fg:var(--night)}
-/* clock: neutral white so it never reads as one of the parties */
-.clockd{position:absolute;left:50%;top:3.2cqw;transform:translateX(-50%);width:20cqw;text-align:center}
-.clockd svg{width:20cqw;height:20cqw;transform:rotate(-90deg)}
-.clockd .track{stroke:rgba(249,227,236,.14)}
-.clockd .arc{stroke:#fff;transition:stroke .3s}
-.clockd .lim{stroke:rgba(249,227,236,.6)}
-.clockd .read{position:absolute;inset:0 0 auto 0;height:20cqw;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.clockd .read b{font-family:var(--display);font-size:4.2cqw;font-weight:800;color:#fff;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
-.clockd .read span{font-size:clamp(9px,1.6cqw,12px);color:rgba(249,227,236,.7);margin-top:3px}
-.clockd .cap{display:inline-block;font-size:clamp(10px,1.8cqw,13px);font-weight:600;color:var(--blush);margin-top:4px;background:var(--night2);padding:2px 8px;border-radius:999px;position:relative}
 /* where each moving thing sits at each step */
 .mini{left:14%;top:86%}
 .scene[data-step="0"] .mini{left:16%;top:56%;opacity:1;transform:translate(-50%,-50%) rotate(-6deg)}
@@ -277,8 +267,8 @@ nav.bar .links .ind::after{content:"";position:absolute;left:14px;right:14px;bot
 .scene[data-step="3"] .inf{left:72%;top:46%;opacity:1}
 .bill{left:16%;top:30%}
 .scene[data-step="4"] .bill{left:27%;top:74%;opacity:1}
-.paid{left:84%;top:30%}
-.scene[data-step="5"] .paid{left:38%;top:46%;opacity:1}
+.paid{left:84%;top:22%}
+.scene[data-step="5"] .paid{left:50%;top:22%;opacity:1}
 .home{left:14%;top:86%;transform:translate(-50%,-50%) scale(.6)}
 .scene[data-step="5"] .home{left:36%;top:86%;opacity:1;transform:translate(-50%,-50%) scale(1)}
 /* small scenes (phones): drop sub-labels, keep names */
@@ -288,7 +278,8 @@ nav.bar .links .ind::after{content:"";position:absolute;left:14px;right:14px;bot
   .st .ic{width:36px;height:36px}
 }
 @container (max-width:520px){
-  .st > span:not(.ic),.who-p span,.clockd .cap{display:none}
+  .st > span:not(.ic),.who-p span{display:none}
+  .st{gap:3.4cqw}
   .st b{font-size:11px}
   .st-hosp{left:18%}.st-ins{left:82%}
 }
@@ -751,7 +742,6 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
             <line id="r-ih" x1="84" y1="30" x2="16" y2="30"/>
             <line id="r-vp" x1="50" y1="60" x2="14" y2="86"/>
           </svg>
-          <div class="clockd"><svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52" fill="none" stroke-width="8"/><circle class="arc" id="arc" cx="60" cy="60" r="52" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/><line class="lim" x1="118" y1="60" x2="106" y2="60" stroke-width="3"/></svg><div class="read"><b id="clk">0 min</b><span id="clock-of">of 60 min</span></div><p class="cap" id="clock-cap">At the desk</p></div>
           <div class="st st-hosp" id="st-h"><span class="ic"><svg class="i"><use href="#hosp"/></svg></span><b>Hospital</b><span>Insurance desk</span></div>
           <div class="st st-volo" id="st-v"><span class="ic"><img src="assets/volo_logo_white.png" alt="" /></span><b>Volo</b><span>Claims team and doctors</span></div>
           <div class="st st-ins" id="st-i"><span class="ic"><svg class="i"><use href="#shield"/></svg></span><b>Insurer</b><span>Priya's policy</span></div>
@@ -1095,9 +1085,8 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
 
   /* ---------- story: one cashless claim. Desktop: pinned and scroll-driven. Phones: one screen, auto-advancing, dots to jump. ---------- */
   const track = $('#story-track'), pin = $('#story-pin'), scene = $('#scene'), win = $('#steps-win'), list = $('#steps'), steps = $$('#steps li'), dots = $$('#dots button');
-  const arc = $('#arc'), clock = $('#clk'), clockOf = $('#clock-of'), cap = $('#clock-cap'), C = 326.7, ROW = 58;
-  const lerp = (a, b, t) => a + (b - a) * t;
-  const ACTIVE = [['st-p', 'st-h'], ['st-h', 'st-v'], ['st-v', 'st-p'], ['st-v', 'st-h', 'st-i'], ['st-h', 'st-v'], ['st-i', 'st-h', 'st-p']];
+  const ROW = 58;
+    const ACTIVE = [['st-p', 'st-h'], ['st-h', 'st-v'], ['st-v', 'st-p'], ['st-v', 'st-h', 'st-i'], ['st-h', 'st-v'], ['st-i', 'st-h', 'st-p']];
   // [route, flows backwards?, sender colour]
   const ROUTES = [[['r-ph', 0, 'mem']], [['r-hv', 0, 'hos']], [['r-vp', 0, 'vol']], [['r-hv', 1, 'vol'], ['r-vi', 0, 'vol']], [['r-hv', 0, 'hos']], [['r-ih', 0, 'ins']]];
   let cur = -1, live = false, mode = '';
@@ -1111,28 +1100,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     $$('.routes line', scene).forEach(l => { const r = ROUTES[i].find(x => x[0] === l.id); l.classList.toggle('on', !!r); l.classList.toggle('rev', !!(r && r[1])); l.style.setProperty('--lc', r ? 'var(--c-' + r[2] + ')' : ''); });
     if (live) list.style.transform = 'translateY(' + Math.round(Math.min(win.clientHeight * 0.3, win.clientHeight - parseFloat(getComputedStyle(steps[i]).getPropertyValue('--h')) - 24) - i * ROW) + 'px)';
   }
-  function setClock(i, t){
-    let label, of, frac, c;
-    if (i <= 3) {
-      const m = i === 0 ? 0 : i === 1 ? lerp(0, 3, t) : i === 2 ? lerp(3, 5, Math.min(t * 1.5, 1)) : lerp(5, 34, Math.min(t * 1.4, 1));
-      label = Math.round(m) + ' min'; of = 'of 60 min'; frac = m / 60;
-      c = i === 0 ? 'At the desk' : i === 1 ? 'Request on its way' : i === 2 ? 'Received' : t > .7 ? 'Approved' : 'Doctors reviewing';
-    } else {
-      const m = i === 4 ? lerp(0, 130, Math.min(t * 1.4, 1)) : 130;
-      label = Math.floor(m / 60) + ' h ' + String(Math.round(m % 60)).padStart(2, '0'); of = 'of 3 hours'; frac = m / 180;
-      c = i === 4 ? (t > .7 ? 'Discharge approved' : 'Final bill in') : 'Settled';
-    }
-    arc.style.strokeDashoffset = (C * (1 - Math.min(frac, 1))).toFixed(1);
-    clock.textContent = label; clockOf.textContent = of; cap.textContent = c;
-  }
-  // phones: show a step and run its clock over a second
-  let tween = 0;
-  function showStep(i){
-    setStep(i); cancelAnimationFrame(tween);
-    if (!motion) { setClock(i, 1); return; }
-    const t0 = performance.now();
-    (function f(now){ const t = Math.min((now - t0) / 1100, 1); setClock(i, t); if (t < 1) tween = requestAnimationFrame(f); })(t0);
-  }
+  function showStep(i){ setStep(i); }
   let inView = false, holdUntil = 0;
   const hold = () => { holdUntil = performance.now() + 15000; };
   setInterval(() => { if (mode === 'auto' && motion && inView && performance.now() > holdUntil) showStep((cur + 1) % steps.length); }, 4200);
@@ -1151,8 +1119,8 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     measure();
     const keep = cur; cur = -1;
     list.style.transform = '';
-    if (mode === 'static') { setStep(5); setClock(5, 1); steps.forEach(li => li.className = 'done'); }
-    else if (mode === 'auto') { setStep(keep < 0 ? 0 : keep); setClock(cur, 1); }
+    if (mode === 'static') { setStep(5); steps.forEach(li => li.className = 'done'); }
+    else if (mode === 'auto') { setStep(keep < 0 ? 0 : keep); }
     else storyScroll();
   }
   function storyScroll(){
@@ -1160,8 +1128,29 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     const r = track.getBoundingClientRect(), total = track.offsetHeight - pin.offsetHeight;
     const p = Math.max(0, Math.min(1, (head.offsetHeight - r.top) / total));
     const n = steps.length, f = Math.min(p * n, n - 0.0001), i = Math.floor(f);
-    setStep(i); setClock(i, f - i);
+    setStep(i);
   }
+  // desktop: one wheel scroll or key press moves exactly one step while the story is pinned
+  const stepY = k => track.getBoundingClientRect().top + scrollY - head.offsetHeight + (k + .5) / steps.length * (track.offsetHeight - pin.offsetHeight);
+  let lockUntil = 0;
+  function stepBy(dir, e){
+    if (mode !== 'live' || !dir) return;
+    const r = track.getBoundingClientRect();
+    if (r.top > head.offsetHeight + 4 || r.bottom < innerHeight - 4) return;
+    const next = cur + dir;
+    e.preventDefault();
+    if (performance.now() < lockUntil) return;
+    lockUntil = performance.now() + 700;
+    // past the last step: glide out to the next section; before the first: back to the story intro
+    const y = next >= steps.length ? r.bottom + scrollY - innerHeight + 2 : next < 0 ? r.top + scrollY - innerHeight * .6 : stepY(next);
+    scrollTo({ top: Math.round(y), behavior: 'smooth' });
+  }
+  addEventListener('wheel', e => stepBy(Math.sign(e.deltaY), e), { passive: false });
+  addEventListener('keydown', e => {
+    if (e.target.closest('input, textarea, select, [contenteditable]')) return;
+    const k = e.key, dir = (k === 'ArrowDown' || k === 'PageDown' || (k === ' ' && !e.shiftKey)) ? 1 : (k === 'ArrowUp' || k === 'PageUp' || (k === ' ' && e.shiftKey)) ? -1 : 0;
+    stepBy(dir, e);
+  });
   storyMode();
   addEventListener('resize', storyMode);
   let sTick = false;
