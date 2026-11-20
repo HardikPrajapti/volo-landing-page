@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Volo Health Insurance TPA: cashless claims, e-card, claim status</title>
+<meta name="description" content="Volo Health Insurance TPA (formerly East West Assist), IRDAI Reg. No. 018. Every claim acknowledged within 5 minutes. See what happens on our side of a cashless claim." />
+<meta name="theme-color" content="#1a0912" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+<!--
+  mockup11: "One claim, two sides".
+  A cinematic re-imagining of the claim story told from the TPA's side. Plain HTML + GSAP/ScrollTrigger + Lenis (CDN).
+  Palette: mockup10 tokens only. Colour = who is acting: Priya blush, Hospital amber, Volo magenta, Insurer mint.
+  Without GSAP, with reduced motion, or on very short screens the film is shown as a static list (nothing hidden).
+-->
+<style>
+/* ===== tokens: unchanged from mockup10 ===== */
+:root{
+  --night:#1a0912; --night2:#2a1220; --plum-line:rgba(249,227,236,.14);
+  --magenta:#c21f6e; --magenta-2:#e0468f;
+  --blush:#f9e3ec; --blush-2:#f3cfde;
+  --paper:#fffafc; --ink:#24121c; --ink-2:#6d5562; --rule:#ecd6e1;
+  --mint:#3ecf8e; --mint-ink:#0e7a4f; --amber:#f2b33d;
+  --card-plum:#8b2060;
+  --c-mem:var(--blush); --c-hos:var(--amber); --c-vol:var(--magenta-2); --c-ins:var(--mint);
+  --soft:rgba(249,227,236,.75);
+  --display:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;
+  --sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --head:72px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+html.lenis,html.lenis body{height:auto}
+html.lenis{scroll-behavior:auto}
+.lenis.lenis-stopped{overflow:hidden}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.025em;line-height:1.05}
+p{margin:0}
+a{color:inherit}
+img{max-width:100%;height:auto;display:block}
+:focus-visible{outline:3px solid var(--magenta-2);outline-offset:3px;border-radius:6px}
+.w{max-width:1280px;margin:0 auto;padding:0 28px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px}.skip:focus{left:10px;top:10px;z-index:200;background:#fff;padding:8px 12px}
+svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.demo{font:inherit;color:inherit}
+
+/* buttons that answer the hand */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;border-radius:999px;padding:12px 22px;font:600 15px/1.1 var(--sans);text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .25s var(--spring),box-shadow .25s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.96)}
+.btn-m{background:var(--magenta);color:#fff;box-shadow:0 10px 24px -12px rgba(194,31,110,.42)}.btn-m:hover{background:#a8185e}
+.btn-ghost{border-color:var(--plum-line);color:var(--blush);background:none}.btn-ghost:hover{border-color:var(--blush)}
+.btn-ink{border-color:var(--rule);color:var(--ink);background:#fff}.btn-ink:hover{border-color:var(--magenta);color:var(--magenta)}
+.btn svg.i{transition:transform .25s var(--spring)}
+.btn:hover svg.i{transform:translateX(3px)}
+.link{color:var(--magenta);font-weight:600;text-underline-offset:4px}
+.sec{padding:112px 0}
+.sec-h{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end}
+.sec-h h2,h2.big{font-size:clamp(34px,4.4vw,60px);font-weight:800}
+.lede{font-size:18px;color:var(--ink-2);max-width:34em}
+.dark{background:var(--night);color:var(--blush)}
+.dark h2{color:#fff}
+.dark .lede{color:var(--soft)}
+
+/* rise in, once */
+.js-m [data-rv]{opacity:0;transform:translateY(26px)}
+.js-m [data-rv].in{opacity:1;transform:none;transition:opacity .7s var(--ease) var(--d,0s),transform .8s var(--ease) var(--d,0s)}
+
+/* ===== notice (mockup2 option B) ===== */
+.notice{background:#a41c60;color:#fff}
+.notice-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 10px;padding-top:8px;padding-bottom:8px;text-align:center;font-size:14px;font-weight:500;line-height:1.4}
+.n-tag{display:inline-flex;align-items:center;gap:6px;background:#111111;color:#fff;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.025em}
+.notice s{border:1px solid #efd3e1;color:#efd3e1;border-radius:12px;padding:0 8px}
+.n-num{display:inline-flex;align-items:center;gap:6px;background:#fff;color:#a41c60;border-radius:999px;padding:4px 12px;font-weight:700;text-decoration:none}
+.n-num:hover{text-decoration:underline}
+.notice svg.i{width:14px;height:14px}
+.n-tag svg.i{animation:honk 1.6s ease-in-out .8s 2;transform-origin:30% 60%}
+@keyframes honk{0%,60%,100%{transform:none}70%{transform:rotate(-14deg) scale(1.1)}80%{transform:rotate(10deg) scale(1.1)}90%{transform:rotate(-6deg)}}
+
+/* ===== header (tested pattern from mockup6/7) ===== */
+.site-head{position:sticky;top:0;z-index:60;background:var(--night);color:var(--blush);transition:box-shadow .3s}
+.site-head.scrolled{box-shadow:0 24px 60px -28px rgba(0,0,0,.5)}
+nav.bar{display:flex;align-items:center;gap:8px;height:72px;transition:height .3s var(--ease)}
+.site-head.scrolled nav.bar{height:60px}
+nav.bar > a:first-child{margin-right:24px}
+nav.bar .logo{height:32px;width:auto;transition:height .3s var(--ease)}
+.site-head.scrolled nav.bar .logo{height:28px}
+nav.bar .links{position:relative;display:flex;gap:2px;margin-right:auto}
+nav.bar .links a{position:relative;z-index:1;text-decoration:none;font-size:15px;color:rgba(249,227,236,.78);padding:8px 12px;border-radius:999px;transition:color .2s}
+nav.bar .links a:hover,nav.bar .links a.on{color:#fff}
+nav.bar .links .ind{position:absolute;z-index:0;top:0;left:0;height:100%;width:0;border-radius:999px;background:rgba(255,255,255,.06);opacity:0;transition:transform .35s var(--ease),width .35s var(--ease),opacity .2s}
+nav.bar .links .ind::after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:2px;background:var(--magenta-2)}
+.signin{position:relative}
+.signin summary{list-style:none;cursor:pointer}.signin summary::-webkit-details-marker{display:none}
+.signin .panel{position:absolute;right:0;top:calc(100% + 10px);background:#fff;color:var(--ink);border-radius:16px;min-width:240px;padding:6px;box-shadow:0 24px 60px -20px rgba(0,0,0,.5);z-index:30;animation:drop .25s var(--ease)}
+.signin .panel p{font-size:12px;color:var(--ink-2);padding:10px 12px 4px}
+.signin .panel a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;font-size:14px}
+.signin .panel a:hover{background:var(--blush);color:var(--magenta)}
+.progress{position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--magenta-2);transform:scaleX(0);transform-origin:0 50%}
+.menu-btn{display:none;width:44px;height:44px;border-radius:999px;border:1.5px solid var(--plum-line);background:none;color:var(--blush);cursor:pointer;align-items:center;justify-content:center}
+.menu-btn:hover{border-color:var(--blush)}
+.mnav{position:absolute;left:12px;right:12px;top:calc(100% + 8px);background:#fff;color:var(--ink);border-radius:20px;padding:8px 16px 16px;box-shadow:0 24px 60px -20px rgba(0,0,0,.5);max-height:calc(100dvh - 90px);overflow:auto}
+.mnav:not([hidden]){animation:drop .28s var(--ease)}
+@keyframes drop{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
+.mnav-sec{display:grid;border-bottom:1px solid var(--rule);padding-bottom:6px}
+.mnav-sec a{display:flex;align-items:center;min-height:48px;padding:0 4px;text-decoration:none;font-family:var(--display);font-size:20px;font-weight:600}
+.mnav-sec a:hover,.mnav-sec a.on{color:var(--magenta)}
+.mnav-h{font-size:13px;font-weight:600;color:var(--ink-2);padding:16px 4px 8px}
+.mnav-btns{display:grid;gap:8px}
+.mnav-btns .btn{width:100%}
+.mnav-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mnav-grid a{display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:12px;background:var(--blush);text-decoration:none;font-size:15px;font-weight:500}
+.mnav-grid a:hover{color:var(--magenta)}
+.mnav-call{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--rule);min-height:44px;font-weight:600;color:var(--magenta);text-decoration:none}
+
+/* ===== hero: one centred line, a living glow, the e-card rises flat as you scroll ===== */
+.hero{position:relative;background:var(--night);color:var(--blush);overflow:clip;isolation:isolate}
+.aurora{position:absolute;inset:0;width:100%;height:100%;z-index:-1;filter:blur(40px) saturate(115%);opacity:.95}
+.hero-in{position:relative;text-align:center;padding:72px 0 0;display:flex;flex-direction:column;align-items:center}
+.promise{max-width:100%;text-align:left;display:inline-flex;align-items:center;gap:10px;border:1px solid var(--plum-line);background:rgba(26,9,18,.55);border-radius:999px;padding:6px 14px 6px 6px;font-size:14px;font-weight:600;color:#fff;margin-bottom:26px}
+.promise b{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:var(--mint);color:var(--night);border-radius:999px;padding:4px 10px;font-size:13px}
+.promise b i{width:7px;height:7px;border-radius:50%;background:var(--night);animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{50%{transform:scale(1.6);opacity:.5}}
+#hero-h{font-size:clamp(38px,5.6vw,80px);font-weight:800;color:#fff;max-width:17ch;letter-spacing:-.022em;line-height:1.02;font-variation-settings:"opsz" 96;text-wrap:balance}
+#hero-h .wd{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+#hero-h .wd > span{display:inline-block}
+.js-m #hero-h .wd > span{transform:translateY(105%);animation:wordup .9s var(--ease) var(--d,0s) forwards}
+@keyframes wordup{to{transform:none}}
+.hero .sub{font-size:19px;color:var(--soft);max-width:36em;margin-top:24px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:32px}
+.js-m .rise{opacity:0;animation:rise .8s var(--ease) var(--d,0s) forwards}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.card-stage{position:relative;perspective:1600px;display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:64px;padding-bottom:72px;width:100%}
+.card-lift{width:min(500px,100%);transform-origin:50% 100%;transform-style:preserve-3d;will-change:transform}
+/* four parties orbit the card: a preview of the story's colours */
+.orbit{position:absolute;inset:-10px 0 auto;height:calc(100% - 60px);pointer-events:none}
+.orbit span{position:absolute;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#fff;background:rgba(26,9,18,.72);border:1px solid var(--plum-line);border-radius:999px;padding:6px 12px 6px 8px;animation:bob 5s ease-in-out infinite;animation-delay:var(--bd,0s)}
+.orbit span i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.orbit .o1{left:calc(50% - 400px);top:18%}.orbit .o2{left:calc(50% - 360px);top:66%;--bd:-1.2s}
+.orbit .o3{right:calc(50% - 400px);top:12%;--bd:-2.4s}.orbit .o4{right:calc(50% - 370px);top:62%;--bd:-3.6s}
+@keyframes bob{50%{transform:translateY(-10px)}}
+
+/* ===== e-card (designed from the real Volo e-card layout) ===== */
+.ecard{text-align:left;position:relative;width:100%;aspect-ratio:1.6;transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(calc(var(--ry,0deg) + var(--flip,0deg)));transition:transform .7s var(--ease);will-change:transform;cursor:pointer}
+.ecard.tracking{transition:transform .12s linear}
+.ecard.flipped{--flip:180deg}
+.js-m .ecard.intro{animation:cardin 1.1s var(--ease) .3s both}
+@keyframes cardin{from{opacity:0;transform:translateY(50px) rotateX(30deg) rotateY(-28deg)}to{opacity:1}}
+.face{position:absolute;inset:0;border-radius:18px;background:#fff;color:#2b1621;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 0 #e7d2dd,0 3px 0 #d9bccb,0 50px 80px -36px rgba(0,0,0,.6)}
+.face::after{content:"";position:absolute;inset:0;background:radial-gradient(300px circle at var(--gx,30%) var(--gy,20%),rgba(255,255,255,.12),transparent 70%);pointer-events:none}
+.band{background:var(--card-plum);color:#fff;height:18%;display:flex;align-items:center;justify-content:space-between;padding:0 5%;flex-shrink:0}
+.band img{height:46%;width:auto}
+.band span{font-size:clamp(9px,1.05vw,12.5px);font-weight:600;text-align:right;line-height:1.3;opacity:.95}
+.f-body{flex:1;min-height:0;padding:2.6% 5% 2.4%;display:flex;flex-direction:column;gap:2.2%;font-size:clamp(8.5px,.95vw,11.5px)}
+.f-name{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.f-name b{font-family:var(--display);font-size:clamp(15px,1.75vw,22px);font-weight:600;letter-spacing:-.01em;color:#1f0f18}
+.f-name span{color:var(--card-plum);font-weight:600}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#f8eef3;border-radius:10px;overflow:hidden}
+.f-grid div{padding:3px 9px;line-height:1.35;border-bottom:1px solid #eedce6}
+.f-grid div:nth-child(odd){border-right:1px solid #eedce6}
+.f-grid div:last-child{grid-column:1/-1;border-right:0;border-bottom:0}
+.f-grid dt,.f-grid dd{margin:0}
+.f-grid dt{color:var(--card-plum);font-weight:600;font-size:.92em}
+.f-grid dd{color:#2b1621;font-weight:500}
+.f-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;color:#5b4450}
+.f-foot .stamp{font-size:.9em;font-weight:700;color:#fff;background:var(--card-plum);border-radius:999px;padding:2px 8px}
+.face.back{transform:rotateY(180deg)}
+.b-body{flex:1;display:grid;grid-template-columns:1fr auto;gap:4%;padding:4% 5%;font-size:clamp(8.5px,.95vw,11.5px)}
+.b-body h3{font-family:var(--sans);font-size:1.1em;font-weight:700;color:var(--card-plum);letter-spacing:0;margin-bottom:4px}
+.b-body .tel{font-family:var(--display);font-size:clamp(15px,1.75vw,22px);font-weight:800;color:#1f0f18;letter-spacing:-.02em;display:block}
+.b-body p{color:#4a3540;line-height:1.45}
+.b-body .qr{width:clamp(56px,7vw,92px);height:auto;border-radius:6px}
+.b-body .disc{grid-column:1/-1;border-top:1px solid #eedce6;padding-top:3%}
+.flip-btn{min-height:44px}
+
+/* ===== get help: four big rows, each one action ===== */
+.rows{margin-top:48px;border-top:1px solid var(--rule)}
+.row{position:relative;display:grid;grid-template-columns:72px minmax(0,1.1fr) minmax(0,1fr) auto;gap:28px;align-items:center;padding:28px 8px;border-bottom:1px solid var(--rule);isolation:isolate}
+.row::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--blush);transform:scaleX(0);transform-origin:0 50%;transition:transform .55s var(--ease)}
+.row:hover::before,.row:focus-within::before{transform:scaleX(1)}
+.row h3{font-size:clamp(24px,2.6vw,36px);font-weight:600;letter-spacing:-.03em;transition:transform .45s var(--ease)}
+.row:hover h3{transform:translateX(8px)}
+.row p{color:var(--ink-2)}
+.row .art{width:72px;height:72px;border-radius:20px;background:var(--night);color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .45s var(--spring),background .3s}
+.row .art svg.i{width:30px;height:30px}
+.row:hover .art{transform:rotate(-8deg) scale(1.06);background:var(--magenta)}
+.row .act{justify-self:end}
+.row .track{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;justify-self:end;width:min(360px,100%)}
+.track-form{display:flex;gap:6px}
+.track-form input{flex:1;min-width:0;width:100%;height:48px;border:1.5px solid var(--rule);border-radius:999px;padding:0 18px;font:500 15px var(--sans);color:var(--ink);background:#fff}
+.track-form input:focus{border-color:var(--magenta);outline:none;box-shadow:0 0 0 3px var(--blush-2)}
+.track-form input[aria-invalid="true"]{border-color:#c2411f}
+.t-help{font-size:13px;color:var(--ink-2);padding-left:18px}
+.t-err{font-size:13px;color:#c2411f;font-weight:500;padding-left:18px}
+.t-err:empty,.t-out:empty{display:none}
+.t-out{border-radius:16px;background:#fff;border:1px solid var(--rule);padding:12px 16px;font-size:14px;animation:pop .35s var(--spring)}
+.t-out b{display:block;font-family:var(--display);font-size:18px;color:var(--magenta)}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+
+/* ===== the film: one claim, two sides ===== */
+.story{background:var(--night);color:var(--blush);position:relative}
+.story-intro{padding:120px 0 64px}
+.story-intro h2{font-size:clamp(40px,6vw,88px);font-weight:800;color:#fff;letter-spacing:-.04em;line-height:.98;text-wrap:balance}
+.story-intro .lede{margin-top:22px;color:var(--soft);font-size:19px}
+.story-intro .keys{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;padding:0;list-style:none;font-size:14px;color:var(--soft)}
+.keys li{display:inline-flex;align-items:center;gap:8px}
+.keys i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+
+.film{position:relative;height:calc(100svh - var(--head));min-height:520px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;border-top:1px solid var(--plum-line)}
+.side{position:relative;display:flex;flex-direction:column;padding:36px clamp(20px,4vw,64px) 28px;min-width:0}
+.side.fam{background:var(--night)}
+.side.desk{background:var(--night2);overflow:hidden}
+.side-h{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;color:#fff}
+.side-h i{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.side-h span{color:var(--soft);font-weight:500}
+.seam{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--plum-line);z-index:3}
+.seam::after{content:"";position:absolute;left:-1px;width:3px;height:22%;top:var(--sy,0%);background:linear-gradient(var(--night2),var(--magenta-2),var(--night2));transition:top .9s var(--ease)}
+
+/* family side: a vignette and one big line */
+.vig{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.vig svg.scene{position:absolute;inset:6% 0;width:100%;height:88%;opacity:0;transform:translateY(16px) scale(.97);transition:opacity .6s var(--ease),transform .8s var(--ease)}
+.vig svg.scene.on{opacity:1;transform:none}
+.lines{position:relative;min-height:3.4em;font-size:clamp(24px,2.7vw,40px)}
+.lines p{position:absolute;inset:auto 0 0 0;font-family:var(--display);font-weight:600;color:#fff;letter-spacing:-.03em;line-height:1.12;opacity:0;transform:translateY(24px);transition:opacity .5s var(--ease),transform .7s var(--ease)}
+.lines p.on{opacity:1;transform:none;transition-delay:.12s}
+.lines p.was{transform:translateY(-24px)}
+.dots{display:flex;align-items:center;gap:6px;margin-top:22px}
+.dots button{width:44px;height:44px;border:0;background:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:12px}
+.dots button i{width:10px;height:10px;border-radius:50%;background:var(--plum-line);outline:2px solid transparent;transition:background .3s,transform .35s var(--spring),width .35s var(--ease)}
+.dots button.done i{background:var(--c);opacity:.55}
+.dots button[aria-current="step"] i{background:var(--c);width:28px;border-radius:6px;opacity:1}
+.dots button:hover i{transform:scale(1.25)}
+.dots .count{margin-left:8px;font-size:14px;color:var(--soft);font-variant-numeric:tabular-nums}
+
+/* desk side: Volo's claim file, building up row by row */
+.file{position:relative;margin:auto 0;background:var(--paper);color:var(--ink);border-radius:24px;padding:22px 22px 14px;box-shadow:0 50px 90px -40px rgba(0,0,0,.7);max-width:520px;width:100%;align-self:center}
+.file-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--rule)}
+.file-top b{display:block;font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em}
+.file-top span{font-size:13.5px;color:var(--ink-2)}
+.state{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;background:var(--blush);color:var(--magenta);transition:background .4s,color .4s}
+.state i{width:8px;height:8px;border-radius:50%;background:currentColor;animation:beat 1.6s ease-in-out infinite}
+.state.ok{background:#e3f6ee;color:var(--mint-ink)}
+.log{list-style:none;margin:0;padding:6px 0 0}
+.log li{display:none;grid-template-columns:14px minmax(0,1fr) auto;gap:12px;align-items:start;padding:11px 0;border-bottom:1px dashed var(--rule)}
+.log li:last-child{border-bottom:0}
+.log li.on{display:grid;animation:rowin .6s var(--ease) both}
+.log li.far{padding:7px 0}
+.log li.far span,.log li.far em,.log li.far .checks{display:none}
+.log li.far b{font-size:14px;font-weight:500;color:var(--ink-2)}
+.log li.far > i{margin-top:4px;width:10px;height:10px}
+.log li.now{background:linear-gradient(90deg,var(--blush),transparent 80%);margin:0 -10px;padding:11px 10px;border-radius:12px;border-bottom-color:transparent}
+@keyframes rowin{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+.log li > i{width:12px;height:12px;border-radius:50%;margin-top:5px;background:var(--c);box-shadow:0 0 0 3px #fff,0 0 0 4px var(--rule)}
+.log li b{display:block;font-weight:600;font-size:15px;line-height:1.35}
+.log li span{font-size:13.5px;color:var(--ink-2)}
+.log li em{font-style:normal;font-size:12px;font-weight:600;white-space:nowrap;border-radius:999px;padding:3px 9px;background:var(--night);color:#fff;align-self:center}
+.checks{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.checks li{display:inline-flex!important;align-items:center;gap:5px;padding:3px 9px!important;border:1px solid var(--rule)!important;border-radius:999px;font-size:12.5px;color:var(--ink);background:#fff}
+.checks li svg.i{width:13px;height:13px;color:var(--mint-ink)}
+.js-m .log li.now .checks li{opacity:0;animation:pop .4s var(--spring) forwards}
+.js-m .log li.now .checks li:nth-child(1){animation-delay:.5s}.js-m .log li.now .checks li:nth-child(2){animation-delay:.8s}.js-m .log li.now .checks li:nth-child(3){animation-delay:1.1s}
+.ins{display:flex;align-items:center;gap:10px;margin-top:18px;align-self:flex-start;border:1px solid var(--plum-line);border-radius:999px;padding:8px 14px 8px 10px;font-size:14px;color:#fff;transition:border-color .4s,box-shadow .4s}
+.ins i{width:12px;height:12px;border-radius:50%;background:var(--c-ins)}
+.ins span{color:var(--soft)}
+.ins.lit{border-color:var(--mint);box-shadow:0 0 0 6px rgba(62,207,142,.12)}
+
+/* the curtain: Volo's side is hidden until the film starts */
+.curtain{position:absolute;inset:0;z-index:4;background:var(--magenta);color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:36px clamp(20px,4vw,64px);will-change:transform}
+.curtain b{font-family:var(--display);font-size:clamp(34px,4.4vw,64px);font-weight:800;letter-spacing:-.04em;line-height:1}
+.curtain span{margin-top:12px;font-size:17px;max-width:24em}
+
+/* things that cross the seam, in the sender's colour */
+.packet{position:absolute;z-index:6;left:0;top:0;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border-radius:999px;padding:8px 14px 8px 10px;font-size:14px;font-weight:600;background:var(--c);color:var(--night);box-shadow:0 18px 40px -14px rgba(0,0,0,.6);opacity:0;pointer-events:none}
+.packet svg.i{width:16px;height:16px}
+.packet.vol{color:#fff}
+
+/* static story (reduced motion, no script, short screens): every step visible */
+.film-list{list-style:none;margin:0;padding:0 0 96px;display:grid;gap:12px;counter-reset:s}
+.film-list li{display:grid;grid-template-columns:44px 1fr 1fr;gap:20px;align-items:start;border:1px solid var(--plum-line);border-radius:20px;padding:20px;counter-increment:s}
+.film-list li::before{content:counter(s);width:36px;height:36px;border-radius:50%;background:var(--c);color:var(--night);font:700 15px var(--sans);display:flex;align-items:center;justify-content:center}
+.film-list b{display:block;color:#fff;font-family:var(--display);font-size:20px;font-weight:600;letter-spacing:-.02em}
+.film-list p{color:var(--soft);margin-top:4px}
+.film-list .vol b{color:#fff}
+.film-list .t{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:600;border:1px solid var(--plum-line);border-radius:999px;padding:2px 10px;color:#fff}
+.story-live .film-list{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;padding:0}
+html:not(.story-live) .film{display:none}
+.story-outro{padding:72px 0 120px;text-align:center}
+.story-outro p{font-family:var(--display);font-size:clamp(28px,3.6vw,52px);font-weight:600;color:#fff;letter-spacing:-.035em;max-width:20ch;margin:0 auto;line-height:1.08}
+.story-outro .btn{margin-top:28px}
+
+/* ===== band: two lines of large type, moved by the scroll ===== */
+.band-sec{background:var(--magenta);color:#fff;padding:56px 0;overflow:hidden}
+.band-line{display:flex;gap:40px;white-space:nowrap;font-family:var(--display);font-weight:800;font-size:clamp(44px,7vw,112px);letter-spacing:-.045em;line-height:1.05;will-change:transform}
+.band-line + .band-line{margin-top:6px;color:var(--night)}
+.band-line span{display:inline-flex;align-items:center;gap:40px}
+.band-line span::after{content:"";width:.32em;height:.32em;border-radius:50%;background:currentColor;opacity:.55}
+
+/* ===== numbers: large figures on hairlines, no cards ===== */
+.figs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:56px;border-top:1px solid var(--rule)}
+.fig{padding:32px 28px 32px 0;border-bottom:1px solid var(--rule);transition:background .3s}
+.fig + .fig{padding-left:28px;border-left:1px solid var(--rule)}
+.fig:nth-child(4n+1){padding-left:0;border-left:0}
+.fig .v{display:block;font-family:var(--display);font-size:clamp(44px,5.4vw,80px);font-weight:800;color:var(--magenta);letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.fig .v small{display:block;font-family:var(--sans);font-size:16px;font-weight:600;color:var(--ink);letter-spacing:0;margin-top:10px}
+.fig h3{font-size:19px;font-weight:600;margin-top:16px}
+.fig p{color:var(--ink-2);font-size:14.5px;margin-top:4px;max-width:22em}
+.fig.key .v{color:var(--night)}
+.fig.key{position:relative}
+.fig.key::before{content:"";position:absolute;left:0;right:28px;top:-1px;height:3px;background:var(--magenta)}
+.figs-note{margin-top:16px;font-size:13.5px;color:var(--ink-2)}
+
+/* ===== trusted by: everything visible at once ===== */
+.trust{background:var(--blush);overflow:clip}
+.trust .sec-h .lede{color:var(--ink-2)}
+.marq-wrap{margin-top:40px;display:grid;gap:14px}
+.marq-label{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:15px;color:var(--ink-2)}
+.marq{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.marq ul{list-style:none;margin:0;padding:6px 0;display:flex;gap:14px;width:max-content;animation:slide var(--dur,42s) linear infinite}
+.marq.rev ul{animation-direction:reverse}
+.marq:hover ul,.marq:focus-within ul,.trust.paused .marq ul{animation-play-state:paused}
+@keyframes slide{to{transform:translateX(-50%)}}
+.marq li{width:190px;height:96px;flex-shrink:0;background:#fff;border:1px solid var(--blush-2);border-radius:20px;display:flex;align-items:center;justify-content:center;padding:14px 18px;transition:transform .35s var(--spring),box-shadow .35s,border-color .3s}
+.marq li:hover{transform:translateY(-5px) scale(1.04);border-color:var(--magenta-2);box-shadow:0 24px 40px -26px rgba(26,9,18,.4)}
+.marq li img{max-height:52px;max-width:100%;width:auto;object-fit:contain}
+.pause-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;border:1.5px solid var(--blush-2);background:#fff;border-radius:999px;padding:8px 16px;font:600 14px var(--sans);color:var(--ink);cursor:pointer}
+.pause-btn:hover{border-color:var(--magenta)}
+.voices{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+.voice{background:#fff;border:1px solid var(--blush-2);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;transition:transform .4s var(--ease),box-shadow .4s}
+.voice:hover{transform:translateY(-6px) rotate(-.4deg);box-shadow:0 30px 50px -32px rgba(26,9,18,.4)}
+.voice .who{display:flex;align-items:center;gap:10px}
+.voice .av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;background:var(--magenta);flex-shrink:0}
+.voice:nth-child(2) .av{background:var(--night)}
+.voice:nth-child(3) .av{background:var(--mint);color:var(--night)}
+.voice:nth-child(4) .av{background:var(--amber);color:var(--night)}
+.voice .kind{font-size:12px;font-weight:700;color:var(--magenta)}
+.voice blockquote{margin:0;font-family:var(--display);font-size:18px;font-weight:600;line-height:1.35;letter-spacing:-.01em}
+.voice .by{margin-top:auto;font-size:13.5px;color:var(--ink-2)}
+
+/* ===== app ===== */
+.app-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+.phone-stage{perspective:1400px;display:flex;justify-content:center}
+.phone{width:290px;aspect-ratio:9/19;border-radius:44px;background:var(--night);padding:12px;transform:rotateX(var(--rx,6deg)) rotateY(var(--ry,-16deg));transition:transform .5s var(--ease);box-shadow:0 3px 0 #2a1220,0 6px 0 #120509,0 60px 80px -40px rgba(26,9,18,.6)}
+.phone.tracking{transition:transform .12s linear}
+.screen{height:100%;border-radius:34px;background:var(--paper);overflow:hidden;display:flex;flex-direction:column;padding:16px 14px;gap:10px;font-size:12px}
+.screen .bar{display:flex;justify-content:space-between;font-weight:600;font-size:11px;color:var(--ink-2)}
+.screen .hi{font-family:var(--display);font-size:20px;font-weight:600}
+.screen .ec{border-radius:12px;background:#fff;border:1px solid var(--rule);overflow:hidden}
+.screen .ec .bd{background:var(--card-plum);color:#fff;padding:7px 10px;display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:600}
+.screen .ec .bd img{height:12px;width:auto}
+.screen .ec .ct{padding:8px 10px}
+.screen .ec b{font-family:var(--display);font-size:14px}
+.screen .lbl{font-weight:600;color:var(--ink-2);margin-top:4px}
+.screen .cl{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:10px}
+.screen .cl em{font-style:normal;font-weight:600;font-size:11px;border-radius:999px;padding:2px 8px;background:var(--blush);color:var(--magenta)}
+.screen .cl em.ok{background:#e3f6ee;color:var(--mint-ink)}
+.screen .nav{margin-top:auto;display:flex;justify-content:space-around;border-top:1px solid var(--rule);padding-top:10px;color:var(--ink-2);font-weight:600;font-size:11px}
+.screen .nav span:first-child{color:var(--magenta)}
+.phone-cap{text-align:center;font-size:13px;color:var(--ink-2);margin-top:14px}
+.feat{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}
+.feat li{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:14px;transition:background .25s}
+.feat li:hover{background:var(--blush)}
+.feat li svg{color:var(--magenta);margin-top:2px;transition:transform .35s var(--spring)}
+.feat li:hover svg{transform:scale(1.2) rotate(-8deg)}
+.feat b{display:block;font-weight:600}
+.feat span{font-size:14px;color:var(--ink-2)}
+.apps{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.apps a{display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;border-radius:16px;background:#fff;border:1px solid var(--rule);text-decoration:none;transition:border-color .2s,transform .3s var(--spring)}
+.apps a:hover{border-color:var(--magenta);transform:translateY(-3px)}
+.apps .qr{width:72px;height:72px;border-radius:8px}
+.apps .badge{height:36px;width:auto}
+
+/* ===== HR ===== */
+.hr-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.hrlist{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hrlist li{border:1px solid var(--plum-line);border-radius:18px;padding:18px;transition:border-color .3s,transform .35s var(--ease),background .3s}
+.hrlist li:hover{border-color:var(--magenta-2);transform:translateY(-4px);background:var(--night2)}
+.hrlist b{font-family:var(--display);font-size:18px;font-weight:600;color:#fff}
+.hrlist p{color:rgba(249,227,236,.72);margin-top:4px;font-size:14.5px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.case{background:var(--paper);color:var(--ink);border-radius:24px;padding:28px}
+.case h3{font-size:24px;font-weight:600;margin-top:12px}
+.case .ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.case .ba div{border:1px solid var(--rule);border-radius:16px;padding:16px}
+.case .ba div > span{display:block;font-size:13px;color:var(--ink-2)}
+.case .ba b{display:block;font-family:var(--display);font-size:26px;font-weight:800;margin-top:6px}
+.case p{color:var(--ink-2);margin-top:16px;font-size:15px}
+
+/* ===== safe + help ===== */
+.safe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+.safe-grid > div{border:1px solid var(--rule);border-radius:20px;padding:24px;background:#fff;transition:transform .35s var(--ease),box-shadow .35s}
+.safe-grid > div:hover{transform:translateY(-4px);box-shadow:0 26px 44px -30px rgba(26,9,18,.35)}
+.safe-grid h3{font-size:21px;font-weight:600}
+.safe-grid p{color:var(--ink-2);margin-top:8px;font-size:15px}
+.esc{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.esc li{display:grid;grid-template-columns:auto 1fr;gap:10px;font-size:14px;color:var(--ink-2)}
+.esc li span{font-weight:700;color:var(--magenta);font-size:13px;padding-top:1px}
+.esc li b{color:var(--ink)}
+.help-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:start}
+.faq{margin-top:28px;border-top:1px solid var(--rule)}
+.faq details{border-bottom:1px solid var(--rule)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:56px;padding:12px 0;font-weight:600;font-size:17px;transition:color .2s}
+.faq summary:hover{color:var(--magenta)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary svg{transition:transform .3s var(--spring);color:var(--ink-2)}
+.faq details[open] summary svg{transform:rotate(180deg)}
+.faq details[open] > div{animation:pop .3s var(--ease)}
+.faq details > div{padding:0 0 18px;color:var(--ink-2);max-width:42em}
+.contact{position:sticky;top:90px;background:var(--night);color:var(--blush);border-radius:24px;padding:28px}
+.contact h2{color:#fff;font-size:28px;font-weight:800}
+.contact a.c{display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 0;border-bottom:1px solid var(--plum-line);text-decoration:none;transition:padding-left .3s var(--ease)}
+.contact a.c:hover{padding-left:6px}
+.contact a.c svg{color:var(--magenta-2)}
+.contact a.c b{display:block;color:#fff;font-size:18px}
+.contact a.c span{font-size:13px;color:rgba(249,227,236,.7)}
+.contact address{font-style:normal;font-size:14px;color:rgba(249,227,236,.7);margin-top:18px}
+
+/* ===== footer ===== */
+footer{background:var(--night);color:rgba(249,227,236,.72);font-size:14px;border-top:1px solid var(--plum-line)}
+footer .grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:32px;padding:56px 28px 32px}
+footer h2{font:600 14px var(--sans);color:#fff;margin:0 0 10px;letter-spacing:0}
+footer ul{list-style:none;padding:0;margin:0;display:grid}
+footer li a{display:flex;align-items:center;min-height:36px;text-decoration:none}
+footer a:hover{color:#fff;text-decoration:underline}
+footer .logo{height:34px;width:auto}
+footer .lic{margin-top:16px;line-height:1.7}
+footer .lic b{color:#fff}
+footer .base{border-top:1px solid var(--plum-line);padding:18px 28px;text-align:center;font-size:12.5px}
+
+/* ===== responsive ===== */
+@media (max-width:1100px){
+  .voices{grid-template-columns:1fr 1fr}
+  .orbit .o1,.orbit .o3{display:none}
+}
+@media (max-width:1000px){
+  .site-head .signin,nav.bar .links{display:none}
+  .menu-btn{display:inline-flex}
+  nav.bar{gap:10px}
+  nav.bar > a:first-child{margin-right:auto}
+  .sec-h,.app-grid,.hr-grid,.help-grid{grid-template-columns:1fr;gap:28px}
+  .safe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .figs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fig:nth-child(4n+1){padding-left:28px;border-left:1px solid var(--rule)}
+  .fig:nth-child(2n+1){padding-left:0;border-left:0}
+  .row{grid-template-columns:56px minmax(0,1fr) auto;gap:16px 20px}
+  .row p{grid-column:2/-1;grid-row:2}
+  .row .art{width:56px;height:56px;border-radius:16px}
+  .row .track{grid-column:1/-1;justify-self:stretch;width:auto}
+  .contact{position:static}
+  footer .grid{grid-template-columns:1fr 1fr}
+  .orbit{display:none}
+}
+@media (min-width:1001px){ .mnav{display:none!important} }
+/* film stacks: family on top, desk below, one screen */
+@media (max-width:820px){
+  .film{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(0,1fr);min-height:420px}
+  .seam{left:0;right:0;top:50%;bottom:auto;width:auto;height:1px}
+  .seam::after{display:none}
+  .side{padding:16px 18px 12px}
+  .side-h{font-size:14px}
+  .vig{min-height:0}
+  .vig svg.scene{inset:2% 0;height:96%}
+  .lines{font-size:clamp(19px,5.4vw,26px);min-height:3.5em}
+  .dots{margin-top:6px;gap:0}
+  .dots button{width:40px}
+  .dots .count{font-size:13px}
+  .file{padding:14px 14px 6px;border-radius:18px;margin:10px 0 0}
+  .file-top{padding-bottom:10px}
+  .file-top b{font-size:17px}
+  .file-top span{font-size:12.5px}
+  .state{font-size:12px;padding:5px 10px}
+  .log li{padding:8px 0;gap:10px}
+  .log li.now{padding:8px}
+  .log li b{font-size:14px}
+  .log li span{font-size:12.5px}
+  .log li.far{display:none!important}
+  .log li.past{padding:6px 0}
+  .log li.past span,.log li.past .checks{display:none}
+  .log li.past b{font-size:13px;font-weight:500;color:var(--ink-2)}
+  .file-top span{display:none}
+  .file-top b{font-size:16px}
+  .checks li{font-size:11.5px;padding:2px 7px!important}
+  .side.desk{position:relative}
+  .ins{position:absolute;top:12px;right:18px;margin:0;padding:4px 10px 4px 8px;font-size:12px}
+  .ins span{display:none}
+  .log li em{display:none}
+  .ins{margin-top:8px;font-size:13px;padding:6px 12px 6px 8px}
+  .curtain{padding:18px}
+  .curtain b{font-size:30px}
+  .curtain span{font-size:15px}
+  .packet{font-size:13px;padding:6px 12px 6px 8px}
+  .film-list li{grid-template-columns:36px 1fr;gap:12px}
+  .film-list li > div + div{grid-column:2}
+}
+@media (max-width:640px){
+  .w{padding:0 18px}
+  html{scroll-padding-top:68px}
+  .notice-in{font-size:12px}
+  .nav-login{padding:10px 14px!important;font-size:14px}
+  nav.bar .logo{height:28px}
+  .sec{padding:72px 0}
+  .hero-in{padding-top:44px}
+  .hero .sub{font-size:16px}
+  .hero .ctas{flex-direction:column;align-items:stretch;width:100%}
+  .card-stage{margin-top:44px;padding-bottom:48px}
+  .story-intro{padding:80px 0 40px}
+  .safe-grid,.voices,.feat,.hrlist,.case .ba{grid-template-columns:1fr}
+  .figs{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .fig{padding:22px 14px 22px 0}
+  .fig + .fig,.fig:nth-child(4n+1){padding-left:14px}
+  .fig:nth-child(2n+1){padding-left:0}
+  .fig .v{font-size:40px}
+  .fig .v small{font-size:14px;margin-top:6px}
+  .fig h3{font-size:16px}
+  .fig p{font-size:13px}
+  .row{grid-template-columns:48px minmax(0,1fr);padding:22px 4px}
+  .row .art{width:48px;height:48px;border-radius:14px}
+  .row .art svg.i{width:24px;height:24px}
+  .row p{grid-column:1/-1}
+  .row .act{grid-column:1/-1;justify-self:stretch}
+  .row .act .btn{width:100%}
+  .marq li{width:150px;height:80px}
+  .phone{width:240px}
+  .f-grid .opt{display:none}
+  .band-sec{padding:36px 0}
+  footer .grid{grid-template-columns:1fr;padding:40px 18px 24px}
+}
+@media (max-height:620px) and (max-width:820px){
+  .vig{display:none}
+  .film{grid-template-rows:auto minmax(0,1fr)}
+  .seam{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .marq ul{flex-wrap:wrap;width:auto;justify-content:center}
+  .marq li[aria-hidden="true"]{display:none}
+  .marq{mask-image:none;-webkit-mask-image:none}
+  .band-line{white-space:normal;flex-wrap:wrap}
+}
+</style>
+<script>
+document.documentElement.classList.add('js');
+try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window){ document.documentElement.classList.add('js-m'); } }catch(e){}
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></symbol>
+  <symbol id="chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2-5.4A8.4 8.4 0 1 1 21 11.5Z"/></symbol>
+  <symbol id="hosp" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M10 9h4M12 7v4M9 21v-5h6v5"/></symbol>
+  <symbol id="send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></symbol>
+  <symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M16 3.5a4 4 0 0 1 0 8M22 21a7 7 0 0 0-4-6.3"/></symbol>
+  <symbol id="chart" viewBox="0 0 24 24"><path d="M3 3v18h18M8 16v-5M13 16V8M18 16v-9"/></symbol>
+  <symbol id="list" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="pin" viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+  <symbol id="flip" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></symbol>
+  <symbol id="rupee" viewBox="0 0 24 24"><path d="M6 3h12M6 8h12M6 13h3a5 5 0 0 0 0-10M6 13l9 8"/></symbol>
+  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="megaphone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="notice" role="region" aria-label="Important notice">
+  <p class="w notice-in">
+    <span class="n-tag"><svg class="i"><use href="#megaphone"/></svg> Notice</span>
+    <span>Our toll-free number <s>1800-202-030</s> has been discontinued. For assistance, please call our new number</span>
+    <a class="n-num" href="tel:04065126801"><svg class="i"><use href="#phone"/></svg> 040-65126801</a>
+  </p>
+</div>
+
+<header class="site-head" id="site-head">
+  <div class="w">
+    <nav class="bar" aria-label="Main">
+      <a href="#top" aria-label="Volo Health Insurance TPA, home"><img class="logo" src="assets/volo_logo_white.png" alt="Volo, by your side" width="173" height="75" /></a>
+      <div class="links" id="navlinks"><span class="ind" aria-hidden="true"></span>
+        <a href="#help">Get help</a>
+        <a href="#story">How it works</a>
+        <a href="#trust">Trusted by</a>
+        <a href="#app">App</a>
+        <a href="#hr">For HR</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <details class="signin">
+        <summary class="btn btn-ghost" style="min-height:44px;padding:10px 18px">Sign in</summary>
+        <div class="panel">
+          <p>Members</p>
+          <a href="https://wallet.volohealthtpa.com/">Member login</a>
+          <a href="https://www.eastwestassist.com/home/volohealth">Retail member login</a>
+          <p>Partners</p>
+          <a href="https://provider.volohealthtpa.com">Hospital</a>
+          <a href="https://pulsepoint.volohealthtpa.com">Insurer</a>
+          <a href="https://pulsepoint.volohealthtpa.com">Broker</a>
+          <a href="https://pulsepoint.volohealthtpa.com">Corporate HR</a>
+          <a href="https://www.eastwestassist.com/home/volohealth">Agent</a>
+        </div>
+      </details>
+      <a class="btn btn-m nav-login" href="https://wallet.volohealthtpa.com/" style="min-height:44px;padding:10px 20px">Member login</a>
+      <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="mnav" aria-label="Open menu"><svg class="i"><use href="#menu"/></svg></button>
+    </nav>
+  </div>
+  <i class="progress" aria-hidden="true"></i>
+  <div class="mnav" id="mnav" hidden>
+    <nav class="mnav-sec" aria-label="Sections">
+      <a href="#help">Get help</a>
+      <a href="#story">How it works</a>
+      <a href="#trust">Trusted by</a>
+      <a href="#app">App</a>
+      <a href="#hr">For HR</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <p class="mnav-h">Members</p>
+    <div class="mnav-btns">
+      <a class="btn btn-m" href="https://wallet.volohealthtpa.com/">Member login</a>
+      <a class="btn btn-ink" href="https://www.eastwestassist.com/home/volohealth">Retail member login</a>
+    </div>
+    <p class="mnav-h">Partners</p>
+    <div class="mnav-grid">
+      <a href="https://provider.volohealthtpa.com">Hospital</a>
+      <a href="https://pulsepoint.volohealthtpa.com">Insurer</a>
+      <a href="https://pulsepoint.volohealthtpa.com">Broker</a>
+      <a href="https://pulsepoint.volohealthtpa.com">Corporate HR</a>
+      <a href="https://www.eastwestassist.com/home/volohealth">Agent</a>
+    </div>
+    <a class="mnav-call" href="tel:04065126801"><svg class="i"><use href="#phone"/></svg> Helpline 040-65126801</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" aria-labelledby="hero-h" id="top">
+  <canvas class="aurora" id="aurora" aria-hidden="true"></canvas>
+  <div class="w hero-in">
+    <p class="promise rise" style="--d:.1s"><b><i></i>5 min</b>Every claim acknowledged within 5 minutes</p>
+    <h1 id="hero-h">We run your health cover, so the hospital desk just works.</h1>
+    <p class="sub rise" style="--d:.8s">Volo is the TPA behind the cover your employer or insurer gives you. Show your e-card at the hospital. We handle everything after that.</p>
+    <div class="ctas rise" style="--d:.95s">
+      <a class="btn btn-m" href="https://wallet.volohealthtpa.com/">Get my e-card <svg class="i"><use href="#arrow"/></svg></a>
+      <a class="btn btn-ghost" href="#story">See a claim from our side</a>
+    </div>
+
+    <div class="card-stage" id="card-stage">
+      <div class="orbit" aria-hidden="true">
+        <span class="o1" style="--c:var(--c-mem)"><i></i>You</span>
+        <span class="o2" style="--c:var(--c-hos)"><i></i>Hospital</span>
+        <span class="o3" style="--c:var(--c-vol)"><i></i>Volo</span>
+        <span class="o4" style="--c:var(--c-ins)"><i></i>Insurer</span>
+      </div>
+      <div class="card-lift" id="card-lift">
+        <div class="ecard intro" id="ecard" aria-hidden="true">
+          <div class="face front">
+            <div class="band"><img src="assets/volo_logo_white.png" alt="" /><span>Health e-card<br />Cashless at network hospitals</span></div>
+            <div class="f-body">
+              <div class="f-name"><b>Priya Sharma</b><span>ID VOL-0000245</span></div>
+              <dl class="f-grid">
+                <div class="opt"><dt>Gender</dt><dd>Female</dd></div>
+                <div class="opt"><dt>Relation</dt><dd>Self</dd></div>
+                <div><dt>Date of birth</dt><dd>12-04-1990</dd></div>
+                <div><dt>Validity</dt><dd>01-04-2026 to 31-03-2027</dd></div>
+                <div><dt>Policy holder</dt><dd>Sample Corp Pvt Ltd</dd></div>
+                <div><dt>Employee ID</dt><dd>EMP-00245</dd></div>
+                <div><dt>Insurer</dt><dd>Sample Insurance Co.</dd></div>
+              </dl>
+              <div class="f-foot"><span>TPA: Volo Health Insurance TPA Pvt Ltd (formerly East West Assist)</span></div>
+            </div>
+          </div>
+          <div class="face back">
+            <div class="band"><img src="assets/volo_logo_white.png" alt="" /><span>Customer support<br />24x7</span></div>
+            <div class="b-body">
+              <div>
+                <h3>Call or write to us</h3>
+                <span class="tel">040-65126801</span>
+                <p>cs@volohealthtpa.com</p>
+              </div>
+              <div style="text-align:center"><img class="qr" src="assets/QR_code.png" alt="" /><p style="margin-top:4px">WhatsApp</p></div>
+              <div class="disc">
+                <h3>For cashless treatment</h3>
+                <p>Give this e-card and the patient's photo ID (masked Aadhaar, PAN or driving licence) at the hospital's insurance desk. Volo processes the request under your policy terms and informs the hospital.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sr" id="card-desc">A sample Volo health e-card for Priya Sharma, ID VOL-0000245, valid 01-04-2026 to 31-03-2027. The back lists the helpline 040-65126801, cs@volohealthtpa.com, a WhatsApp QR code, and how to use the card for cashless treatment.</p>
+      <button type="button" class="btn btn-ghost flip-btn rise" style="--d:1.3s" id="flip-btn" aria-pressed="false" aria-describedby="card-desc"><svg class="i"><use href="#flip"/></svg><span>Turn the card over</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GET HELP: four rows, one action each ============ -->
+<section class="sec" id="help" aria-labelledby="help-h">
+  <div class="w">
+    <div class="sec-h" data-rv>
+      <h2 id="help-h">What do you need right now?</h2>
+      <p class="lede">Pick what's happening and go straight to it.</p>
+    </div>
+    <div class="rows">
+      <article class="row" data-rv>
+        <span class="art" aria-hidden="true"><svg class="i"><use href="#hosp"/></svg></span>
+        <h3>I'm at the hospital</h3>
+        <p>Show your e-card at the insurance desk. You'll have a cashless decision within the hour.</p>
+        <div class="act"><a class="btn btn-m" href="https://wallet.volohealthtpa.com/">Get my e-card</a></div>
+      </article>
+      <article class="row" data-rv>
+        <span class="art" aria-hidden="true"><svg class="i"><use href="#rupee"/></svg></span>
+        <h3>I paid, I want it back</h3>
+        <p>Paid the hospital yourself? Claim it back within 7 days of discharge.</p>
+        <div class="act"><a class="btn btn-ink" href="https://wallet.volohealthtpa.com/">Submit a claim</a></div>
+      </article>
+      <article class="row" data-rv id="track">
+        <span class="art" aria-hidden="true"><svg class="i"><use href="#search"/></svg></span>
+        <h3>Where's my claim?</h3>
+        <p>The number is on our SMS or email. Try CLM260001.</p>
+        <div class="track">
+          <form class="track-form" id="claim-form" novalidate>
+            <label for="claim-id" class="sr">Claim number</label>
+            <input id="claim-id" name="claimId" autocomplete="off" placeholder="CLM260001" aria-describedby="claim-err" />
+            <button class="btn btn-m" type="submit" id="claim-go">Check status</button>
+          </form>
+          <p class="t-err" id="claim-err"></p>
+          <div class="t-out" id="claim-out" aria-live="polite"></div>
+        </div>
+      </article>
+      <article class="row" data-rv>
+        <span class="art" aria-hidden="true"><svg class="i"><use href="#pin"/></svg></span>
+        <h3>Find a cashless hospital</h3>
+        <p><span class="demo">8,000+</span> network hospitals across India.</p>
+        <div class="act"><a class="btn btn-ink" href="https://wallet.volohealthtpa.com/public/hospital-network">Find near me</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE FILM: one claim, two sides ============ -->
+<section class="story" id="story" aria-labelledby="story-h">
+  <div class="w story-intro">
+    <h2 id="story-h" data-rv>One claim, two sides.</h2>
+    <p class="lede" data-rv style="--d:.08s">Priya is in hospital for one night. On the left is what her family sees. On the right is what we're doing at the same moment.</p>
+    <ul class="keys" data-rv style="--d:.16s" aria-label="Colour key: who is acting">
+      <li><i style="--c:var(--c-mem)"></i>Priya</li><li><i style="--c:var(--c-hos)"></i>Hospital</li><li><i style="--c:var(--c-vol)"></i>Volo</li><li><i style="--c:var(--c-ins)"></i>Insurer</li>
+    </ul>
+  </div>
+
+  <div class="film" id="film" data-step="-1">
+    <div class="side fam" id="side-fam">
+      <p class="side-h" aria-hidden="true"><i style="--c:var(--c-mem)"></i>At the hospital <span>what her family sees</span></p>
+      <div class="vig" id="vig" aria-hidden="true">
+        <!-- 1 desk: her husband hands over the e-card -->
+        <svg class="scene" viewBox="0 0 320 200"><rect x="40" y="118" width="240" height="14" rx="4" fill="#3a1a2c"/><rect x="58" y="132" width="204" height="56" rx="6" fill="#2a1220"/><rect x="196" y="62" width="62" height="40" rx="6" fill="#2a1220" stroke="#f2b33d" stroke-width="2"/><path d="M212 76h30M212 86h20" stroke="#f2b33d" stroke-width="3" stroke-linecap="round"/><circle cx="110" cy="62" r="13" fill="#f9e3ec"/><path d="M88 118c0-24 10-38 22-38s22 14 22 38" fill="#f9e3ec"/><g class="ani-card"><rect x="134" y="96" width="44" height="28" rx="4" fill="#fff"/><rect x="134" y="96" width="44" height="8" rx="3" fill="#8b2060"/><rect x="139" y="110" width="20" height="3" rx="1.5" fill="#c21f6e"/></g><circle cx="76" cy="70" r="11" fill="#f3cfde" opacity=".7"/><path d="M58 118c0-20 8-32 18-32s18 12 18 32" fill="#f3cfde" opacity=".7"/></svg>
+        <!-- 2 ward: admitted, drip, heartbeat -->
+        <svg class="scene" viewBox="0 0 320 200"><path d="M60 92v76M60 140h200v28M260 140v-16a14 14 0 0 0-14-14h-96v30" stroke="#f9e3ec" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="96" cy="122" r="13" fill="#f9e3ec"/><rect x="112" y="116" width="124" height="22" rx="10" fill="#f3cfde" opacity=".8"/><path d="M286 40v110M276 40h20" stroke="#f9e3ec" stroke-width="3" stroke-linecap="round"/><rect x="278" y="48" width="16" height="22" rx="4" fill="#f2b33d"/><rect x="186" y="26" width="76" height="46" rx="8" fill="#2a1220" stroke="#f2b33d" stroke-width="2"/><path class="ani-beat" d="M192 50h16l6-12 8 22 6-10h28" stroke="#f2b33d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/></svg>
+        <!-- 3 the family's phone gets our message -->
+        <svg class="scene" viewBox="0 0 320 200"><g class="ani-buzz"><rect x="118" y="18" width="84" height="164" rx="16" fill="#2a1220" stroke="#f9e3ec" stroke-width="3"/><rect x="146" y="26" width="28" height="5" rx="2.5" fill="#f9e3ec" opacity=".4"/><rect x="128" y="62" width="64" height="44" rx="10" fill="#e0468f"/><path d="M136 76h40M136 86h30M136 96h22" stroke="#fff" stroke-width="3" stroke-linecap="round"/><rect x="128" y="114" width="46" height="20" rx="8" fill="#f9e3ec" opacity=".25"/></g><path class="ani-wave" d="M220 70a26 26 0 0 1 0 40M232 58a42 42 0 0 1 0 64M100 70a26 26 0 0 0 0 40M88 58a42 42 0 0 0 0 64" stroke="#e0468f" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+        <!-- 4 treatment carries on: sitting up, approval in place -->
+        <svg class="scene" viewBox="0 0 320 200"><path d="M60 92v76M60 140h200v28M260 140v-16a14 14 0 0 0-14-14h-96v30" stroke="#f9e3ec" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="112" cy="86" r="13" fill="#f9e3ec"/><path d="M98 140c0-26 6-40 16-40s16 10 18 22l40 0" stroke="#f9e3ec" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="140" y="116" width="98" height="22" rx="10" fill="#f3cfde" opacity=".8"/><g class="ani-pop"><circle cx="240" cy="62" r="28" fill="#e0468f"/><path d="m226 62 9 9 18-18" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+        <!-- 5 discharge: standing at the door, final bill goes out -->
+        <svg class="scene" viewBox="0 0 320 200"><rect x="196" y="40" width="70" height="140" rx="6" fill="#2a1220" stroke="#f9e3ec" stroke-width="3"/><circle cx="252" cy="112" r="4" fill="#f9e3ec"/><circle cx="130" cy="64" r="14" fill="#f9e3ec"/><path d="M112 180v-46c0-26 8-46 18-46s18 20 18 46v46" fill="#f9e3ec"/><g class="ani-bill"><path d="M50 70h40v56l-6-4-7 4-7-4-7 4-6-4-7 4Z" fill="#f2b33d"/><path d="M58 84h24M58 94h18M58 104h22" stroke="#1a0912" stroke-width="3" stroke-linecap="round"/></g></svg>
+        <!-- 6 home: well again -->
+        <svg class="scene" viewBox="0 0 320 200"><path d="M70 102 160 34l90 68" stroke="#f9e3ec" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M88 92v86h144V92" fill="#2a1220" stroke="#f9e3ec" stroke-width="4"/><rect x="140" y="128" width="40" height="50" rx="4" fill="#3a1a2c"/><circle cx="118" cy="122" r="12" fill="#f9e3ec"/><path d="M104 178v-26c0-12 6-20 14-20s14 8 14 20v26" fill="#f9e3ec"/><g class="ani-pop"><circle cx="230" cy="58" r="24" fill="#3ecf8e"/><path d="m219 58 7 7 14-14" stroke="#1a0912" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+      </div>
+      <div class="lines" id="lines" aria-hidden="true">
+        <p>Priya arrives unwell. Her husband hands her e-card to the insurance desk.</p>
+        <p>She's admitted and treatment starts. The hospital sends us the cashless request.</p>
+        <p>Her family's phone buzzes. We've got her claim.</p>
+        <p>Approved. Her care carries on, and nobody asks them to pay for it.</p>
+        <p>She's well again. The hospital sends us the final bill.</p>
+        <p>Priya goes home. She pays only for what her policy doesn't cover.</p>
+      </div>
+      <div class="dots" id="dots" role="group" aria-label="Story steps">
+        <button type="button" style="--c:var(--c-mem)" aria-label="Step 1: At the insurance desk"><i></i></button>
+        <button type="button" style="--c:var(--c-hos)" aria-label="Step 2: Admitted, request sent"><i></i></button>
+        <button type="button" style="--c:var(--c-vol)" aria-label="Step 3: Acknowledged in 5 minutes"><i></i></button>
+        <button type="button" style="--c:var(--c-vol)" aria-label="Step 4: Approved within the hour"><i></i></button>
+        <button type="button" style="--c:var(--c-hos)" aria-label="Step 5: Discharge"><i></i></button>
+        <button type="button" style="--c:var(--c-ins)" aria-label="Step 6: Home"><i></i></button>
+        <span class="count" id="count">1 of 6</span>
+      </div>
+    </div>
+
+    <div class="side desk" id="side-desk">
+      <p class="side-h" aria-hidden="true"><i style="--c:var(--c-vol)"></i>At Volo <span>what we're doing</span></p>
+      <div class="file" id="file" aria-hidden="true">
+        <div class="file-top">
+          <div><b>Priya Sharma</b><span>Cashless claim, network hospital, Pune</span></div>
+          <span class="state" id="state"><i></i><span id="state-t">Policy on file</span></span>
+        </div>
+        <ol class="log" id="log">
+          <li style="--c:var(--c-vol)"><i></i><div><b>Policy on file, cover active</b><span>Her e-card details match. Ready before she reaches the desk.</span></div><em>24x7</em></li>
+          <li style="--c:var(--c-hos)"><i></i><div><b>Cashless request received</b><span>From the hospital, with her diagnosis and estimate.</span></div><em>Request in</em></li>
+          <li style="--c:var(--c-vol)"><i></i><div><b>Claim acknowledged</b><span>SMS and WhatsApp sent to Priya's family.</span></div><em>Within 5 min, our promise</em></li>
+          <li style="--c:var(--c-vol)"><i></i><div><b>Approved by our doctors</b><span>Hospital told, insurer kept informed.</span>
+            <ul class="checks"><li><svg class="i"><use href="#check"/></svg>Treatment covered</li><li><svg class="i"><use href="#check"/></svg>Documents complete</li><li><svg class="i"><use href="#check"/></svg>Sum insured available</li></ul></div><em>Within 1 hour, IRDAI's limit</em></li>
+          <li style="--c:var(--c-hos)"><i></i><div><b>Final bill approved</b><span>Checked against the policy, so discharge isn't held up.</span></div><em>Within 3 hours, IRDAI's limit</em></li>
+          <li style="--c:var(--c-ins)"><i></i><div><b>Insurer paid the hospital</b><span>Claim closed. Priya never handled the bill.</span></div><em>Settled</em></li>
+        </ol>
+      </div>
+      <p class="ins" id="ins" aria-hidden="true"><i></i>Insurer <span>Priya's policy</span></p>
+      <div class="curtain" id="curtain" aria-hidden="true"><b>The side you don't see.</b><span>Scroll, and we'll open it.</span></div>
+    </div>
+
+    <div class="seam" id="seam" aria-hidden="true"></div>
+    <span class="packet" id="packet" aria-hidden="true"><svg class="i"><use href="#send"/></svg><span></span></span>
+  </div>
+
+  <!-- the same story as a list: read by screen readers, and shown when the film doesn't run -->
+  <div class="w">
+    <ol class="film-list" id="film-list">
+      <li style="--c:var(--c-mem)"><div><b>At the insurance desk</b><p>Priya arrives unwell. Her husband hands her e-card to the insurance desk.</p></div><div class="vol"><b>At Volo</b><p>Her policy is already on file and her cover is active.</p></div></li>
+      <li style="--c:var(--c-hos)"><div><b>Admitted, request sent</b><p>She's admitted and treatment starts. The hospital sends us the cashless request.</p></div><div class="vol"><b>At Volo</b><p>The request lands with her diagnosis and estimate.</p></div></li>
+      <li style="--c:var(--c-vol)"><div><b>Acknowledged in 5 minutes</b><p>Her family's phone buzzes. We've got her claim.</p></div><div class="vol"><b>At Volo</b><p>We acknowledge it by SMS and WhatsApp.</p><span class="t">Within 5 min, our promise</span></div></li>
+      <li style="--c:var(--c-vol)"><div><b>Approved within the hour</b><p>Approved. Her care carries on, and nobody asks them to pay for it.</p></div><div class="vol"><b>At Volo</b><p>Our doctors check the treatment against her policy, tell the hospital and keep the insurer informed.</p><span class="t">Within 1 hour, IRDAI's limit</span></div></li>
+      <li style="--c:var(--c-hos)"><div><b>Discharge</b><p>She's well again. The hospital sends us the final bill.</p></div><div class="vol"><b>At Volo</b><p>We approve the final bill, so discharge isn't held up.</p><span class="t">Within 3 hours, IRDAI's limit</span></div></li>
+      <li style="--c:var(--c-ins)"><div><b>Home</b><p>Priya goes home. She pays only for what her policy doesn't cover.</p></div><div class="vol"><b>At Volo</b><p>The insurer pays the hospital directly and we close the claim.</p><span class="t">Settled</span></div></li>
+    </ol>
+  </div>
+
+  <div class="w story-outro">
+    <p data-rv>You only saw one side. That's the point.</p>
+    <a class="btn btn-m" data-rv style="--d:.1s" href="https://wallet.volohealthtpa.com/public/hospital-network">Find a cashless hospital</a>
+  </div>
+</section>
+
+<!-- ============ BAND: moved by the scroll ============ -->
+<section class="band-sec" aria-label="Our promise">
+  <p class="sr">Every claim acknowledged within 5 minutes. Cashless at 8,000+ hospitals. Helpline open 24x7.</p>
+  <div class="band-line" id="band-a" aria-hidden="true"><span>Every claim acknowledged within 5 minutes</span><span>Every claim acknowledged within 5 minutes</span><span>Every claim acknowledged within 5 minutes</span></div>
+  <div class="band-line" id="band-b" aria-hidden="true"><span>Cashless at 8,000+ hospitals</span><span>Helpline open 24x7</span><span>Cashless at 8,000+ hospitals</span><span>Helpline open 24x7</span></div>
+</section>
+
+<!-- ============ NUMBERS ============ -->
+<section class="sec" id="numbers" aria-labelledby="num-h">
+  <div class="w">
+    <div class="sec-h" data-rv>
+      <h2 id="num-h">Volo in numbers.</h2>
+      <p class="lede">As of <span class="demo">31 March 2026</span>.</p>
+    </div>
+    <div class="figs">
+      <div class="fig key" data-rv><span class="v"><span data-count="5">5<small>min</small></span></span><h3>Claim acknowledged</h3><p>Every claim, from the moment it is filed.</p></div>
+      <div class="fig" data-rv style="--d:.05s"><span class="v"><span data-count="60" data-pre="&lt;">&lt;60<small>min</small></span></span><h3>Cashless approval</h3><p>Decision on every cashless request. Our average: <span class="demo">38 min</span>.</p></div>
+      <div class="fig" data-rv style="--d:.10s"><span class="v" data-count="7">7<small>days</small></span><h3>Average claim turnaround</h3><p>Reimbursement, from all documents in to money paid.</p></div>
+      <div class="fig" data-rv style="--d:.15s"><span class="v"><span data-count="24" data-suf="x7">24x7<small>support</small></span></span><h3>Always available</h3><p>Helpline 040-65126801 and WhatsApp, day and night.</p></div>
+      <div class="fig" data-rv><span class="v" data-count="23">23<small>insurers</small></span><h3>Insurance partners</h3><p>Whose policies we administer, cashless to settlement.</p></div>
+      <div class="fig" data-rv style="--d:.05s"><span class="v" data-count="500" data-suf="+">500+<small>corporates</small></span><h3>Employers</h3><p>Whose group health cover we run.</p></div>
+      <div class="fig" data-rv style="--d:.10s"><span class="v" data-count="4" data-suf=" lakh+">4 lakh+</span><h3>Claims settled</h3><p>Cashless and reimbursement, <span class="demo">FY 2025-26</span>.</p></div>
+      <div class="fig" data-rv style="--d:.15s"><span class="v" data-count="8000" data-suf="+">8,000+<small>hospitals</small></span><h3>Cashless network</h3><p>Hospitals across India where you pay nothing upfront.</p></div>
+    </div>
+    <p class="figs-note">IRDAI requires a cashless decision within 60 minutes. The average above is ours.</p>
+  </div>
+</section>
+
+<!-- ============ TRUSTED BY: everything visible ============ -->
+<section class="sec trust" id="trust" aria-labelledby="trust-h">
+  <div class="w">
+    <div class="sec-h" data-rv>
+      <h2 id="trust-h">Trusted by employers and insurers.</h2>
+      <p class="lede">Employers whose health cover we run, and the insurers we work with.</p>
+    </div>
+    <div class="marq-wrap" data-rv>
+      <div class="marq-label"><span>Employers</span></div>
+      <div class="marq" style="--dur:38s"><ul id="corp-row"></ul></div>
+      <div class="marq-label"><span>Insurers</span></div>
+      <div class="marq rev" style="--dur:46s"><ul id="ins-row"></ul></div>
+    </div>
+    <div class="voices">
+      <figure class="voice" data-rv style="margin:0"><div class="who"><span class="av">HR</span><span><span class="kind">HR team</span></span></div><blockquote>"Our people get cashless approval at the hospital desk without calling us first. That alone changed how they see their health cover."</blockquote><figcaption class="by">Head of HR, manufacturing company, 3,000+ employees</figcaption></figure>
+      <figure class="voice" data-rv style="margin:0;--d:.08s"><div class="who"><span class="av">IN</span><span><span class="kind">Insurer</span></span></div><blockquote>"Requests reach us complete and on time, so decisions are faster and disputes are rare."</blockquote><figcaption class="by">Head of Health Claims, general insurer</figcaption></figure>
+      <figure class="voice" data-rv style="margin:0;--d:.16s"><div class="who"><span class="av">M</span><span><span class="kind">Member</span></span></div><blockquote>"My father was admitted late at night. The cashless approval came before we finished the paperwork."</blockquote><figcaption class="by">Member, Pune. Cashless claim</figcaption></figure>
+      <figure class="voice" data-rv style="margin:0;--d:.24s"><div class="who"><span class="av">PB</span><span><span class="kind">Partner</span></span></div><blockquote>"Our customers hear back within minutes of filing, and our team can follow every claim."</blockquote><figcaption class="by">Partnerships lead, insurance marketplace</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<section class="sec" id="app" aria-labelledby="app-h">
+  <div class="w app-grid">
+    <div class="phone-stage" id="phone-stage" data-rv>
+      <div>
+        <div class="phone" id="phone-mock" aria-hidden="true">
+          <div class="screen">
+            <div class="bar"><span>9:41</span><span>VOLO-Wallet</span></div>
+            <div class="hi">Hi Priya</div>
+            <div class="ec"><div class="bd"><img src="assets/volo_logo_white.png" alt="" /><span>Health e-card</span></div><div class="ct"><b>Priya Sharma</b><br />VOL-0000245</div></div>
+            <div class="lbl">Your claims</div>
+            <div class="cl"><span>Ruby Hall Clinic</span><em>Under review</em></div>
+            <div class="cl"><span>Manipal Hospital</span><em class="ok">Settled</em></div>
+            <div class="lbl">Family on cover</div>
+            <div class="cl"><span>Priya, Rahul, Aarav</span><span>3</span></div>
+            <div class="nav"><span>Home</span><span>Claims</span><span>Hospitals</span><span>Help</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-rv style="--d:.1s">
+      <h2 id="app-h" class="big">Your cover, in your pocket.</h2>
+      <p class="lede" style="margin-top:14px">Your family's cover, claims and e-cards in the VOLO-Wallet app.</p>
+      <ul class="feat">
+        <li><svg class="i"><use href="#card"/></svg><div><b>E-cards</b><span>For everyone on your cover</span></div></li>
+        <li><svg class="i"><use href="#list"/></svg><div><b>Claim status</b><span>Every claim, every stage</span></div></li>
+        <li><svg class="i"><use href="#users"/></svg><div><b>Family</b><span>Add a newborn or spouse</span></div></li>
+        <li><svg class="i"><use href="#chart"/></svg><div><b>Sum insured</b><span>Used and left</span></div></li>
+        <li><svg class="i"><use href="#pin"/></svg><div><b>Hospitals</b><span>Cashless ones near you</span></div></li>
+        <li><svg class="i"><use href="#chat"/></svg><div><b>WhatsApp</b><span>E-card and status by chat</span></div></li>
+      </ul>
+      <div class="apps">
+        <a href="https://play.google.com/store/apps/details?id=com.ewa.tpa"><img class="qr" src="assets/android.png" alt="QR code: VOLO-Wallet on Google Play" width="500" height="500" loading="lazy" /><img class="badge" src="assets/play.png" alt="Get VOLO-Wallet on Google Play" /></a>
+        <a href="https://apps.apple.com/in/app/volo-wallet/id1660906209"><img class="qr" src="assets/Apple.png" alt="QR code: VOLO-Wallet on the App Store" width="500" height="500" loading="lazy" /><img class="badge" src="assets/appstore.svg" alt="Download VOLO-Wallet on the App Store" /></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HR ============ -->
+<section class="sec dark" id="hr" aria-labelledby="hr-h">
+  <div class="w hr-grid">
+    <div data-rv>
+      <h2 id="hr-h" class="big">For HR: your workforce's cover in one portal.</h2>
+      <ul class="hrlist">
+        <li><b>Enrol people</b><p>Joiners and dependants, with e-cards issued.</p></li>
+        <li><b>Endorsements</b><p>Additions and deletions through the year.</p></li>
+        <li><b>Policies at a glance</b><p>Who is covered, under which plan.</p></li>
+        <li><b>Every claim visible</b><p>Answer an employee in seconds.</p></li>
+      </ul>
+      <div class="ctas">
+        <a class="btn btn-m" href="mailto:partnerships@volohealthtpa.com">Talk to our corporate team</a>
+        <a class="btn btn-ghost" href="https://pulsepoint.volohealthtpa.com">HR sign in</a>
+      </div>
+    </div>
+    <article class="case" data-rv style="--d:.1s" aria-labelledby="case-h">
+      <h3 id="case-h">A logistics company moved <span class="demo">3,200</span> employees to Volo.</h3>
+      <div class="ba">
+        <div><span>Cashless share, before</span><b><span class="demo">52%</span></b></div>
+        <div><span>After a year with Volo</span><b style="color:var(--mint-ink)"><span class="demo">81%</span></b></div>
+        <div><span>Reimbursement time, before</span><b><span class="demo">21 days</span></b></div>
+        <div><span>After a year with Volo</span><b style="color:var(--mint-ink)"><span class="demo">9 days</span></b></div>
+      </div>
+      <p>"Claims stopped landing on HR's desk. Employees just follow them in the app."</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ SAFE ============ -->
+<section class="sec" id="safe" aria-labelledby="safe-h">
+  <div class="w">
+    <div class="sec-h" data-rv>
+      <h2 id="safe-h">Licensed, accountable, easy to reach.</h2>
+      <p class="lede">East West Assist is now Volo: the same company and registration, since <span class="demo">2002</span>.</p>
+    </div>
+    <div class="safe-grid">
+      <div data-rv><h3>Licensed by IRDAI</h3><p>Third Party Administrator, Registration No. 018.</p><p><a class="link" href="assets/docs/East_west_RenewalCeritificate_Signed.pdf">View registration certificate</a></p></div>
+      <div data-rv style="--d:.08s"><h3>Only these channels are ours</h3><p>040-65126801, WhatsApp +91 95606 84484 and @volohealthtpa.com email. We never ask for an OTP or payment to process a claim.</p></div>
+      <div data-rv style="--d:.16s"><h3>If something goes wrong</h3>
+        <ol class="esc">
+          <li><span>1</span><div><b>Helpline or email</b><br />040-65126801, cs@volohealthtpa.com</div></li>
+          <li><span>2</span><div><b>Grievance officer</b><br />In writing, if level 1 hasn't resolved it</div></li>
+          <li><span>3</span><div><b>IRDAI Bima Bharosa</b><br /><a class="link" href="https://bimabharosa.irdai.gov.in/">bimabharosa.irdai.gov.in</a></div></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ + CONTACT ============ -->
+<section class="sec" id="faq" aria-labelledby="faq-h" style="background:#fff;border-top:1px solid var(--rule)">
+  <div class="w help-grid">
+    <div data-rv>
+      <h2 id="faq-h" class="big">Questions people ask us.</h2>
+      <div class="faq">
+        <details><summary>How do I get my e-card? <svg class="i"><use href="#down"/></svg></summary><div>From the <a class="link" href="https://wallet.volohealthtpa.com/">member portal</a>, the VOLO-Wallet app, or our WhatsApp chatbot on +91 95606 84484.</div></details>
+        <details><summary>Cashless or reimbursement: what's the difference? <svg class="i"><use href="#down"/></svg></summary><div><b>Cashless:</b> the hospital is paid directly. <b>Reimbursement:</b> you pay, then claim it back, for example at a non-network hospital.</div></details>
+        <details><summary>When must the hospital ask for cashless? <svg class="i"><use href="#down"/></svg></summary><div>Planned treatment: at least 48 hours before admission. Emergency: within 6 hours of admission.</div></details>
+        <details><summary>Which documents does a reimbursement claim need? <svg class="i"><use href="#down"/></svg></summary><div>Claim form, final bill and receipts, discharge summary, reports and prescriptions, within 7 days of discharge.</div></details>
+        <details><summary>How long does reimbursement take? <svg class="i"><use href="#down"/></svg></summary><div>Processed within 10 working days of all documents; paid within 5 working days of approval.</div></details>
+        <details><summary>What does a TPA do? <svg class="i"><use href="#down"/></svg></summary><div>A Third Party Administrator, licensed by IRDAI, services health insurance for the insurer: e-cards, cashless approvals and claims.</div></details>
+      </div>
+    </div>
+    <div class="contact" data-rv style="--d:.1s">
+      <h2>Talk to a person.</h2>
+      <a class="c" href="tel:04065126801"><svg class="i"><use href="#phone"/></svg><span><b>040-65126801</b><span>24x7 helpline</span></span></a>
+      <a class="c" href="https://wa.me/919560684484?text=Hi"><svg class="i"><use href="#chat"/></svg><span><b>+91 95606 84484</b><span>WhatsApp, say "Hi"</span></span></a>
+      <a class="c" href="mailto:cs@volohealthtpa.com"><svg class="i"><use href="#mail"/></svg><span><b>cs@volohealthtpa.com</b><span>Customer support</span></span></a>
+      <a class="c" href="tel:9773770810"><svg class="i"><use href="#hosp"/></svg><span><b>97737 70810</b><span>Cashless outside the network</span></span></a>
+      <address>Plot No. 172, JP House, 2nd Floor, Lane-2, Westend Marg, Saidulajab, near Saket Metro Station, New Delhi 110030</address>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="w grid">
+    <div>
+      <img class="logo" src="assets/volo_logo_white.png" alt="Volo" width="173" height="75" />
+      <p class="lic"><b>Volo Health Insurance TPA Private Limited</b><br />(formerly East West Assist Insurance TPA Pvt. Ltd.)<br />IRDAI Registration No. 018</p>
+    </div>
+    <div><h2>Members</h2><ul><li><a href="https://wallet.volohealthtpa.com/">Get e-card</a></li><li><a href="#track">Track a claim</a></li><li><a href="https://wallet.volohealthtpa.com/public/hospital-network">Find a hospital</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+    <div><h2>Sign in</h2><ul><li><a href="https://wallet.volohealthtpa.com/">Member login</a></li><li><a href="https://www.eastwestassist.com/home/volohealth">Retail member login</a></li><li><a href="https://pulsepoint.volohealthtpa.com">Corporate HR</a></li><li><a href="https://provider.volohealthtpa.com">Hospital</a></li></ul></div>
+    <div><h2>Company</h2><ul><li><a href="#trust">Trusted by</a></li><li><a href="#hr">For HR</a></li><li><a href="#safe">Licence and grievances</a></li><li><a href="assets/docs/East_west_RenewalCeritificate_Signed.pdf">Registration certificate</a></li></ul></div>
+  </div>
+  <p class="base">&copy; 2026 Volo Health Insurance TPA Private Limited</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(function(){
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const root = document.documentElement;
+  const motion = root.classList.contains('js-m');
+  const gsapOK = !!(window.gsap && window.ScrollTrigger);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const head = $('#site-head');
+  const headH = () => head.offsetHeight;
+  const setHead = () => root.style.setProperty('--head', headH() + 'px');
+  setHead();
+  if (gsapOK) gsap.registerPlugin(ScrollTrigger);
+
+  /* ---------- smooth scroll (Lenis), driven by GSAP's ticker ---------- */
+  let lenis = null;
+  if (motion && window.Lenis) {
+    lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    if (gsapOK) {
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(t => lenis.raf(t * 1000));
+      gsap.ticker.lagSmoothing(0);
+    } else {
+      (function raf(t){ lenis.raf(t); requestAnimationFrame(raf); })(performance.now());
+    }
+  }
+  let jumping = false, jumpT;
+  function scrollToY(y, dur){
+    y = Math.max(0, Math.round(y));
+    jumping = true; clearTimeout(jumpT); jumpT = setTimeout(() => { jumping = false; }, (dur || 1) * 1000 + 150);
+    if (lenis) lenis.scrollTo(y, { duration: dur || 1, lock: true, force: true, easing: t => 1 - Math.pow(1 - t, 3) });
+    else scrollTo({ top: y, behavior: motion ? 'smooth' : 'auto' });
+  }
+  // in-page links glide under the sticky header
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || a.classList.contains('skip')) return;
+    const id = a.getAttribute('href'), t = id === '#top' ? document.body : document.querySelector(id);
+    if (!t) return;
+    e.preventDefault();
+    scrollToY(id === '#top' ? 0 : t.getBoundingClientRect().top + scrollY - headH() + 1, 1.2);
+    history.replaceState(null, '', id);
+  });
+
+  /* ---------- hero headline: words rise ---------- */
+  const h1 = $('#hero-h');
+  if (motion) {
+    h1.setAttribute('aria-label', h1.textContent);
+    h1.innerHTML = h1.textContent.split(' ').map((w, i) => '<span class="wd" aria-hidden="true"><span style="--d:' + (0.2 + i * 0.055).toFixed(2) + 's">' + w + '</span></span>').join(' ');
+  }
+
+  /* ---------- hero glow: three palette lights drifting, leaning to the pointer ---------- */
+  const cv = $('#aurora'), hero = $('#top'), ctx = cv.getContext && cv.getContext('2d');
+  const LIGHTS = [
+    { c: '194,31,110', a: .62, r: .62, sx: .00021, sy: .00017, px: .78, py: .18, ph: 0 },   // magenta
+    { c: '139,32,96',  a: .70, r: .70, sx: .00013, sy: .00019, px: .20, py: .30, ph: 2 },   // card plum
+    { c: '224,70,143', a: .34, r: .40, sx: .00025, sy: .00011, px: .55, py: .80, ph: 4 },   // magenta-2
+  ];
+  let pX = .5, pY = .4, tpX = .5, tpY = .4, glowOn = false;
+  function sizeGlow(){ if (!ctx) return; cv.width = Math.max(64, Math.round(hero.offsetWidth / 6)); cv.height = Math.max(64, Math.round(hero.offsetHeight / 6)); }
+  function drawGlow(t){
+    if (!ctx) return;
+    const W = cv.width, H = cv.height, m = Math.max(W, H);
+    pX += (tpX - pX) * .04; pY += (tpY - pY) * .04;
+    ctx.fillStyle = '#1a0912'; ctx.fillRect(0, 0, W, H);
+    LIGHTS.forEach((L, i) => {
+      const x = (L.px + Math.sin(t * L.sx + L.ph) * .18 + (pX - .5) * (i === 0 ? .25 : .1)) * W;
+      const y = (L.py + Math.cos(t * L.sy + L.ph) * .14 + (pY - .5) * (i === 0 ? .2 : .08)) * H;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, L.r * m);
+      g.addColorStop(0, 'rgba(' + L.c + ',' + L.a + ')'); g.addColorStop(1, 'rgba(' + L.c + ',0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    });
+  }
+  function glowLoop(t){ if (!glowOn) return; drawGlow(t); requestAnimationFrame(glowLoop); }
+  sizeGlow(); drawGlow(9000);
+  if (motion && ctx) {
+    new IntersectionObserver(es => { const v = es[0].isIntersecting; if (v && !glowOn) { glowOn = true; requestAnimationFrame(glowLoop); } else if (!v) glowOn = false; }).observe(hero);
+    hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); tpX = (e.clientX - r.left) / r.width; tpY = (e.clientY - r.top) / r.height; });
+  }
+
+  /* ---------- header: shrink, progress, scrollspy ---------- */
+  const bar = $('.progress', head);
+  const links = $$('#navlinks a'), ind = $('#navlinks .ind');
+  function spy(){
+    const line = headH() + 40; let cur = null;
+    links.forEach(a => { const r = document.querySelector(a.getAttribute('href')).getBoundingClientRect(); if (r.top <= line && r.bottom > line) cur = a; });
+    links.forEach(l => l.classList.toggle('on', l === cur));
+    $$('.mnav-sec a').forEach(l => l.classList.toggle('on', !!cur && l.getAttribute('href') === cur.getAttribute('href')));
+    if (!cur) { ind.style.opacity = 0; return; }
+    ind.style.opacity = 1; ind.style.width = cur.offsetWidth + 'px'; ind.style.transform = 'translateX(' + cur.offsetLeft + 'px)';
+  }
+  let ticking = false;
+  function onScroll(){
+    const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+    head.classList.toggle('scrolled', y > 8);
+    bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(y / max, 1) : 0) + ')';
+    spy();
+    ticking = false;
+  }
+
+  /* ---------- mobile menu + sign-in ---------- */
+  const mbtn = $('#menu-btn'), mnav = $('#mnav');
+  function setMenu(open){
+    mnav.hidden = !open; mbtn.setAttribute('aria-expanded', open);
+    mbtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    $('use', mbtn).setAttribute('href', open ? '#close' : '#menu');
+    if (lenis) open ? lenis.stop() : lenis.start();
+  }
+  mbtn.addEventListener('click', e => { e.stopPropagation(); setMenu(mnav.hidden); });
+  mnav.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+  document.addEventListener('click', e => { if (!mnav.hidden && !mnav.contains(e.target)) setMenu(false); });
+  mnav.setAttribute('data-lenis-prevent', '');
+  const signin = $('.signin');
+  document.addEventListener('click', e => { if (!signin.contains(e.target)) signin.open = false; });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (!mnav.hidden) { setMenu(false); mbtn.focus(); }
+    if (signin.open) { signin.open = false; $('summary', signin).focus(); }
+  });
+
+  /* ---------- e-card: rises flat with the scroll, tilts to the pointer, flips ---------- */
+  const card = $('#ecard'), stage = $('#card-stage'), flip = $('#flip-btn');
+  function setFlip(on){
+    card.classList.toggle('flipped', on); flip.setAttribute('aria-pressed', on);
+    $('span', flip).textContent = on ? 'Turn back to the front' : 'Turn the card over';
+  }
+  flip.addEventListener('click', () => setFlip(!card.classList.contains('flipped')));
+  card.addEventListener('click', () => setFlip(!card.classList.contains('flipped')));
+  card.addEventListener('animationend', () => card.classList.remove('intro'));
+  function tiltable(el, area, range){
+    if (!motion) return;
+    area.addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse') return;
+      const r = area.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      el.classList.add('tracking');
+      el.style.setProperty('--ry', ((x - .5) * range[1]).toFixed(2) + 'deg');
+      el.style.setProperty('--rx', ((.5 - y) * range[0]).toFixed(2) + 'deg');
+      el.style.setProperty('--gx', (x * 100).toFixed(0) + '%'); el.style.setProperty('--gy', (y * 100).toFixed(0) + '%');
+    });
+    area.addEventListener('pointerleave', () => { el.classList.remove('tracking'); el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); });
+  }
+  tiltable(card, stage, [12, 20]);
+  tiltable($('#phone-mock'), $('#phone-stage'), [14, 30]);
+
+  /* ---------- claim tracker (demo data, no server) ---------- */
+  const CLAIMS = {
+    CLM260001: { patient: 'Rahul Sharma', hospital: 'Manipal Hospital, Bengaluru', type: 'Cashless', status: 'Settled' },
+    CLM260002: { patient: 'Priya Sharma', hospital: 'Ruby Hall Clinic, Pune', type: 'Reimbursement', status: 'Under review' },
+    CLM260003: { patient: 'Sneha Iyer', hospital: 'Lilavati Hospital, Mumbai', type: 'Reimbursement', status: 'Query raised', note: 'We need the final bill breakup. Upload it on the member portal.' },
+  };
+  const form = $('#claim-form'), input = $('#claim-id'), err = $('#claim-err'), out = $('#claim-out'), go = $('#claim-go');
+  const clean = v => v.replace(/[\s-]/g, '').toUpperCase();
+  const check = v => !v ? 'Enter your claim number, for example CLM260001.' : !/^CLM\d{6}$/.test(v) ? 'Claim numbers are CLM and 6 digits, like CLM260001.' : '';
+  const setErr = m => { err.textContent = m; input.setAttribute('aria-invalid', m ? 'true' : 'false'); };
+  input.addEventListener('blur', () => { if (input.value.trim()) setErr(check(clean(input.value))); });
+  input.addEventListener('input', () => { if (err.textContent && !check(clean(input.value))) setErr(''); });
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (go.getAttribute('aria-busy') === 'true') return;
+    const v = clean(input.value), m = check(v);
+    setErr(m); out.innerHTML = '';
+    if (m) { input.focus(); return; }
+    go.setAttribute('aria-busy', 'true'); go.textContent = 'Checking…';
+    setTimeout(() => {
+      go.removeAttribute('aria-busy'); go.textContent = 'Check status';
+      const c = CLAIMS[v];
+      out.innerHTML = c
+        ? '<b>' + esc(c.status) + '</b>' + v + ', ' + esc(c.type) + ', ' + esc(c.hospital) + (c.note ? '<br />' + esc(c.note) : '')
+        : '<b>Not found</b>No claim ' + esc(v) + '. Check your SMS or email, or call 040-65126801.';
+    }, 600);
+  });
+
+  /* ---------- trusted by: two moving logo rows; hover, focus or tap pauses ---------- */
+  const CORPS = [['nbcc.svg', 'NBCC (India) Limited'], ['nokia.svg', 'Nokia Solutions and Networks'], ['dmrc.svg', 'Delhi Metro Rail Corporation'], ['spykar.png', 'Spykar Lifestyles'], ['siyaram.svg', "Siyaram's"], ['motherdairy.svg', 'Mother Dairy'], ['haldiram.svg', "Haldiram's"]];
+  const INS = [['icici.svg', 'ICICI Lombard'], ['abhi.png', 'Aditya Birla Health Insurance'], ['hdfcergo.png', 'HDFC ERGO'], ['uiic.svg', 'United India Insurance'], ['sbig.webp', 'SBI General Insurance'], ['indusind.png', 'IndusInd General Insurance'], ['nic.svg', 'National Insurance'], ['newindia.png', 'The New India Assurance'], ['tataaig.png', 'Tata AIG'], ['bajaj.gif', 'Bajaj General Insurance']];
+  const row = (list, copy) => list.map(([f, n]) => '<li' + (copy ? ' aria-hidden="true"' : '') + '><img src="assets/logos/' + f + '" alt="' + (copy ? '' : esc(n)) + '" title="' + esc(n) + '" /></li>').join('');
+  $('#corp-row').innerHTML = row(CORPS) + row(CORPS, true) + row(CORPS, true) + row(CORPS, true);
+  $('#ins-row').innerHTML = row(INS) + row(INS, true);
+  const trust = $('#trust');
+  trust.addEventListener('click', e => { if (e.target.closest('.marq') && matchMedia('(hover: none)').matches) trust.classList.toggle('paused'); });
+
+  /* ---------- rise in, count-ups ---------- */
+  if (motion) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in'); io.unobserve(e.target);
+    }), { threshold: .2, rootMargin: '0px 0px -40px 0px' });
+    $$('[data-rv]').forEach(el => io.observe(el));
+    const cio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const el = e.target, to = +el.dataset.count, sm = el.querySelector('small'), small = sm ? sm.outerHTML : '', pre = (el.dataset.pre || '').replace('<', '&lt;'), suf = el.dataset.suf || '', t0 = performance.now(); (function f(now){ const p = Math.min((now - t0) / 1100, 1); el.innerHTML = pre + Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString('en-IN') + suf + small; if (p < 1) requestAnimationFrame(f); })(t0); cio.unobserve(el); } }), { threshold: .6 });
+    $$('[data-count]').forEach(el => { const sm = el.querySelector('small'); el.innerHTML = (el.dataset.pre || '').replace('<', '&lt;') + '0' + (el.dataset.suf || '') + (sm ? sm.outerHTML : ''); cio.observe(el); });
+  }
+
+  /* ---------- scroll-linked moments: the card rises flat, the band slides ---------- */
+  if (motion && gsapOK) {
+    gsap.fromTo('#card-lift', { rotateX: 34, y: 60, scale: .9 }, { rotateX: 0, y: 0, scale: 1, ease: 'none', scrollTrigger: { trigger: '#card-stage', start: 'top bottom', end: 'center 62%', scrub: .6 } });
+    gsap.fromTo('#band-a', { xPercent: 0 }, { xPercent: -28, ease: 'none', scrollTrigger: { trigger: '.band-sec', start: 'top bottom', end: 'bottom top', scrub: .4 } });
+    gsap.fromTo('#band-b', { xPercent: -28 }, { xPercent: 0, ease: 'none', scrollTrigger: { trigger: '.band-sec', start: 'top bottom', end: 'bottom top', scrub: .4 } });
+  }
+
+  /* =====================================================================
+     THE FILM: one claim, two sides.
+     Pinned split screen. One wheel scroll / key press = one step (desktop);
+     on touch screens the scroll snaps to steps. Colour = who is acting.
+     ===================================================================== */
+  const film = $('#film'), N = 6;
+  const scenes = $$('#vig .scene'), lines = $$('#lines p'), dots = $$('#dots button'), rows = $$('#log > li');
+  const stateT = $('#state-t'), stateEl = $('#state'), ins = $('#ins'), count = $('#count'), seam = $('#seam'), curtain = $('#curtain');
+  const packet = $('#packet'), pText = $('span', packet), pUse = $('use', packet);
+  const STATES = ['Policy on file', 'Request in', 'Acknowledged', 'Approved', 'Bill approved', 'Settled'];
+  // [from, to, colour, label, icon]; anchors: fam = family vignette, file = Volo's claim file, ins = insurer
+  const FLIGHTS = [
+    [],
+    [['fam', 'file', 'hos', 'Cashless request', 'send']],
+    [['file', 'fam', 'vol', 'Claim received', 'chat']],
+    [['file', 'fam', 'vol', 'Approved', 'check'], ['file', 'ins', 'vol', 'Insurer informed', 'shield']],
+    [['fam', 'file', 'hos', 'Final bill', 'doc']],
+    [['ins', 'fam', 'ins', 'Paid to hospital', 'rupee']],
+  ];
+  let cur = -1, st = null, flightTl = null, live = false;
+
+  function anchor(name){
+    const f = film.getBoundingClientRect();
+    const el = name === 'fam' ? $('#vig') : name === 'file' ? $('#file') : ins;
+    let r = el.getBoundingClientRect();
+    if (name === 'fam' && r.height < 20) r = $('#lines').getBoundingClientRect();
+    return { x: r.left - f.left + r.width / 2, y: r.top - f.top + r.height / 2 };
+  }
+  function fly(k){
+    if (!motion || !gsapOK) return;
+    if (flightTl) flightTl.kill();
+    gsap.set(packet, { opacity: 0 });
+    const legs = FLIGHTS[k]; if (!legs.length) return;
+    flightTl = gsap.timeline({ delay: .15 });
+    legs.forEach(([from, to, c, label, icon]) => {
+      flightTl.call(() => {
+        packet.style.setProperty('--c', 'var(--c-' + c + ')'); packet.classList.toggle('vol', c === 'vol');
+        pText.textContent = label; pUse.setAttribute('href', '#' + icon);
+      })
+        .set(packet, { x: () => anchor(from).x, y: () => anchor(from).y, xPercent: -50, yPercent: -50, scale: .7, opacity: 0 })
+        .to(packet, { opacity: 1, scale: 1, duration: .25, ease: 'back.out(2)' })
+        .to(packet, { x: () => anchor(to).x, y: () => anchor(to).y, duration: .9, ease: 'power2.inOut' })
+        .to(packet, { opacity: 0, scale: .85, duration: .3, delay: .35 });
+    });
+  }
+  function setStep(k){
+    if (k === cur) return;
+    cur = k;
+    film.dataset.step = k;
+    scenes.forEach((s, i) => s.classList.toggle('on', i === k));
+    lines.forEach((p, i) => { p.classList.toggle('on', i === k); p.classList.toggle('was', i < k); });
+    dots.forEach((d, i) => { d.classList.toggle('done', i < k); i === k ? d.setAttribute('aria-current', 'step') : d.removeAttribute('aria-current'); });
+    rows.forEach((li, i) => { li.classList.toggle('on', i <= k); li.classList.toggle('now', i === k); li.classList.toggle('past', i < k); li.classList.toggle('far', i < k - 1); });
+    stateT.textContent = STATES[k]; stateEl.classList.toggle('ok', k === N - 1);
+    ins.classList.toggle('lit', k === 3 || k === 5);
+    count.textContent = (k + 1) + ' of ' + N;
+    seam.style.setProperty('--sy', (k / (N - 1) * 78).toFixed(1) + '%');
+    fly(k);
+  }
+
+  const stepY = k => st.start + (k + .5) / N * (st.end - st.start);
+  function goStep(k){
+    if (!st) return;
+    if (k >= N) return scrollToY(st.end + 2, 1);
+    if (k < 0) return scrollToY(st.start - innerHeight * .55, 1);
+    scrollToY(stepY(k), .9);
+  }
+  dots.forEach((d, k) => d.addEventListener('click', () => goStep(k)));
+
+  // desktop: one wheel scroll or key press = one step; past the ends it glides out (never traps the page)
+  let lockUntil = 0;
+  function stepBy(dir, e){
+    if (!live || !st || !st.isActive || !dir || matchMedia('(pointer: coarse)').matches) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (performance.now() < lockUntil) return;
+    lockUntil = performance.now() + 850;
+    goStep(cur + dir);
+  }
+  addEventListener('wheel', e => { if (Math.abs(e.deltaY) >= 2) stepBy(Math.sign(e.deltaY), e); else if (live && st && st.isActive) e.preventDefault(); }, { passive: false, capture: true });
+  addEventListener('keydown', e => {
+    if (e.target.closest('input, textarea, select, [contenteditable]')) return;
+    const k = e.key, dir = (k === 'ArrowDown' || k === 'PageDown' || (k === ' ' && !e.shiftKey && !e.target.closest('button, a, summary'))) ? 1 : (k === 'ArrowUp' || k === 'PageUp' || (k === ' ' && e.shiftKey)) ? -1 : 0;
+    stepBy(dir, e);
+  }, true);
+
+  const curtainTw = [];
+  function buildFilm(){
+    const want = motion && gsapOK && innerHeight >= 480;
+    if (want === live && (st || !want)) return;
+    live = want;
+    root.classList.toggle('story-live', live);
+    if (st) { st.kill(true); st = null; }
+    curtainTw.forEach(t => t.scrollTrigger && t.scrollTrigger.kill()); curtainTw.length = 0;
+    if (!live) { if (gsapOK) gsap.set(curtain, { yPercent: 0 }); return; }
+    cur = -1; setStep(0);
+    // the curtain lifts as the film arrives
+    curtainTw.push(gsap.fromTo(curtain, { yPercent: 0 }, { yPercent: -101, ease: 'power1.in', scrollTrigger: { trigger: film, start: 'top 55%', end: () => 'top ' + (headH() + 2), scrub: .5 } }));
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    st = ScrollTrigger.create({
+      trigger: film,
+      start: () => 'top ' + headH(),
+      end: () => '+=' + Math.round(N * innerHeight * .8),
+      pin: true, anticipatePin: 1,
+      snap: coarse ? { snapTo: v => (Math.min(N - 1, Math.floor(v * N)) + .5) / N, duration: { min: .2, max: .5 }, delay: .05 } : false,
+      onUpdate: self => setStep(Math.min(N - 1, Math.floor(self.progress * N * .9999))),
+      onEnter: () => { if (lenis && !coarse && !jumping && scrollY < stepY(0) - 4) { lockUntil = performance.now() + 700; scrollToY(stepY(0), .6); } },
+      onEnterBack: () => { if (lenis && !coarse && !jumping && scrollY > stepY(N - 1) + 4) { lockUntil = performance.now() + 700; scrollToY(stepY(N - 1), .6); } },
+    });
+  }
+  buildFilm();
+  let rT;
+  addEventListener('resize', () => {
+    clearTimeout(rT);
+    rT = setTimeout(() => { setHead(); sizeGlow(); drawGlow(9000); if (innerWidth > 1000 && !mnav.hidden) setMenu(false); buildFilm(); if (gsapOK) ScrollTrigger.refresh(); spy(); }, 150);
+  });
+
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  onScroll();
+  // fonts change heights: re-measure pins once they are in
+  if (document.fonts && gsapOK) document.fonts.ready.then(() => ScrollTrigger.refresh());
+})();
+</script>
+</body>
+</html>
