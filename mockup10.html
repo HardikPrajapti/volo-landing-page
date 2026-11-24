@@ -210,171 +210,163 @@ nav.bar .links .ind::after{content:"";position:absolute;left:14px;right:14px;bot
 @keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 .btn[aria-busy="true"]{opacity:.8;cursor:progress}
 
-/* ===== story: one cashless claim. Colour = who is acting. Scroll moves one step. ===== */
-:root{--c-mem:#f9e3ec;--c-hos:#f2b33d;--c-vol:#c21f6e;--c-ins:#3ecf8e}
+/* ===== story: one PLANNED cashless claim, five steps. Colour = who is acting. Scroll moves one step; each step plays in beats. ===== */
+:root{--c-mem:#f9e3ec;--c-hos:#f2b33d;--c-vol:#e0468f;--c-ins:#3ecf8e}
 .story-head{padding-top:64px}
 .story-head .sec-h{align-items:end;gap:24px}
 .story-head h2{font-size:clamp(30px,3.4vw,46px)}
 .story-head .hl{color:var(--magenta-2)}
 .story-head .lede{font-size:16.5px}
 .story-track{position:relative}
-.story-live .story-track{height:600vh}
-.story-livem .story-track{height:540vh}
+.story-live .story-track{height:520vh}
+.story-livem .story-track{height:470vh}
 .story-pin{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(28px,4vw,56px);align-items:center;padding-top:24px;padding-bottom:64px}
 .story-live .story-pin,.story-livem .story-pin{position:sticky;top:var(--head,60px);height:calc(100svh - var(--head,60px));padding-top:0;padding-bottom:0}
 .stage-col{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
-.scene{position:relative;container-type:inline-size;aspect-ratio:7/6;width:min(100%,calc((100svh - var(--head,60px) - 90px) * 7 / 6));border-radius:28px;background:var(--night2);border:1px solid var(--plum-line);overflow:hidden;touch-action:pan-y}
+.scene{position:relative;container-type:inline-size;aspect-ratio:7/6;width:min(100%,calc((100svh - var(--head,60px) - 90px) * 7 / 6));border-radius:28px;background:radial-gradient(120% 90% at 50% 40%,#341628,var(--night2) 70%);border:1px solid var(--plum-line);overflow:hidden;touch-action:pan-y}
 .legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;font-size:13.5px;color:rgba(249,227,236,.82)}
 .legend li{display:flex;align-items:center;gap:7px}
 .legend li:first-child{color:rgba(249,227,236,.6)}
 .legend i,.pair i{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--c);flex-shrink:0}
 /* routes glow in the sender's colour and flow towards the receiver */
 .scene .routes{position:absolute;inset:0;width:100%;height:100%}
-.scene .routes line,.scene .routes polyline{fill:none;stroke:transparent;stroke-width:4;stroke-dasharray:9 8;vector-effect:non-scaling-stroke;opacity:0;transition:opacity .4s}
+.scene .routes line,.scene .routes polyline{fill:none;stroke:transparent;stroke-width:4;stroke-dasharray:9 8;stroke-linejoin:round;vector-effect:non-scaling-stroke;opacity:0;transition:opacity .4s}
 .scene .routes line.on,.scene .routes polyline.on{opacity:1;stroke:var(--lc);animation:flow .8s linear infinite}
 .scene .routes .on.rev{animation-direction:reverse}
 @keyframes flow{to{stroke-dashoffset:-17}}
-/* parties */
+/* parties: Volo top-left, Insurer top-right, the hospital in the centre, Priya's home bottom-right */
 .st,.obj,.pt{position:absolute;transform:translate(-50%,-50%)}
-.st{width:24cqw;display:flex;flex-direction:column;align-items:center;gap:2cqw;text-align:center;font-size:clamp(10px,1.9cqw,13px);color:rgba(249,227,236,.68)}
-.st-hosp{--c:var(--c-hos);left:16%;top:30%}.st-volo{--c:var(--c-vol);left:50%;top:60%}.st-ins{--c:var(--c-ins);left:84%;top:30%}
-.st-home{--c:var(--c-mem);left:89%;top:86%;width:14cqw}
-.st .ic{width:clamp(40px,9.6cqw,70px);height:clamp(40px,9.6cqw,70px);border-radius:30%;background:var(--night);border:2px solid var(--c);color:var(--c);display:flex;align-items:center;justify-content:center;opacity:.75;transition:background .45s,transform .5s var(--spring),box-shadow .45s,opacity .3s,color .3s}
-.st-home .ic{width:clamp(32px,7cqw,50px);height:clamp(32px,7cqw,50px)}
+.st{--ic:clamp(40px,9.6cqw,70px);width:24cqw;display:flex;flex-direction:column;align-items:center;gap:2cqw;text-align:center;font-size:clamp(10px,1.9cqw,13px);color:rgba(249,227,236,.68);transform:translate(-50%,calc(var(--ic) * -.5))}
+.st-hosp{--c:var(--c-hos);left:50%;top:34%}
+.st-volo{--c:var(--c-vol);left:18%;top:11%}.st-ins{--c:var(--c-ins);left:82%;top:11%}
+.st-home{--c:var(--c-mem);--ic:clamp(32px,7cqw,50px);left:91%;top:84%;width:14cqw}
+.st-volo > span:not(.ic),.st-ins > span:not(.ic){display:none}
+.st .ic{position:relative;width:var(--ic);height:var(--ic);border-radius:30%;background:var(--night);border:2px solid var(--c);color:var(--c);display:flex;align-items:center;justify-content:center;opacity:.7;transition:background .45s,transform .5s var(--spring),box-shadow .45s,opacity .3s,color .3s}
 .st .ic svg{width:42%;height:42%}
 .st .ic img{height:auto;width:62%}
 .st b{color:#fff;font-size:clamp(11px,2.2cqw,16px);font-weight:600;line-height:1.2}
 .st b,.st > span:not(.ic),.pt .nm{background:var(--night2);border-radius:5px;padding:1px 5px}
 .st.on .ic{background:var(--c);color:var(--night);opacity:1;transform:scale(1.14);box-shadow:0 0 0 8px color-mix(in srgb,var(--c) 32%,transparent)}
-/* Priya: a person. Stands at the desk, lies in a hospital bed during treatment, walks home along an L-shaped path. */
-.pt{left:16%;top:63%;display:flex;flex-direction:column;align-items:center;gap:1.4cqw;transition:left 1.1s var(--ease),top .8s var(--ease) 1.1s}
-.scene[data-step="5"] .pt{left:72%;top:86%;transition:top .8s var(--ease),left 1.1s var(--ease) .8s}
+.hosp-box{position:absolute;left:28%;top:34%;width:44%;height:42%;border:2px solid color-mix(in srgb,var(--c-hos) 30%,transparent);border-radius:3.5cqw;background:color-mix(in srgb,var(--c-hos) 4%,transparent);transition:border-color .4s,background .4s}
+.scene.h-on .hosp-box{border-color:var(--c-hos);background:color-mix(in srgb,var(--c-hos) 11%,transparent)}
+/* step 1: the nearest network hospital is "found" - a locating ping on it */
+.st-hosp .ic::after{content:"";position:absolute;inset:-4px;border-radius:32%;border:2px solid var(--c-vol);opacity:0}
+.scene[data-step="0"] .st-hosp .ic::after{animation:ping 1.6s var(--ease) infinite}
+@keyframes ping{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
+/* Priya: at home while she plans, in a hospital bed for treatment, walks home happy */
+.pt{left:50%;top:64%;display:flex;flex-direction:column;align-items:center;gap:1.4cqw;transition:left 1.1s var(--ease),top .8s var(--ease) 1.1s}
+.scene[data-step="0"] .pt,.scene[data-step="1"] .pt,.scene[data-step="4"] .pt{left:74%;top:84%;transition:top .8s var(--ease),left 1.1s var(--ease) .8s}
 .pt .fig{position:relative;width:clamp(38px,8.4cqw,60px);height:clamp(38px,8.4cqw,60px);border-radius:28%;background:var(--night);border:2px solid var(--c-mem);color:var(--c-mem);display:flex;align-items:center;justify-content:center;transition:background .45s,color .45s,box-shadow .45s}
 .pt .fig svg{position:absolute;width:68%;height:68%;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .35s}
-.pt[data-pose="admit"] .p-admit,.pt[data-pose="sick"] .p-sick,.pt[data-pose="recover"] .p-recover,.pt[data-pose="well"] .p-well,.pt[data-pose="walk"] .p-walk{opacity:1}
+.pt[data-pose="admit"] .p-admit,.pt[data-pose="sick"] .p-sick,.pt[data-pose="recover"] .p-recover,.pt[data-pose="well"] .p-well,.pt[data-pose="walk"] .p-walk,.pt[data-pose="phone"] .p-phone{opacity:1}
 .pt[data-pose="walk"] .p-walk{animation:stride .5s ease-in-out infinite alternate}
+.pt[data-pose="well"] .fig{animation:joy .6s var(--spring) 2}
 @keyframes stride{to{transform:translateY(-6%) rotate(-3deg)}}
+@keyframes joy{50%{transform:translateY(-14%)}}
 .pt.on .fig{background:var(--c-mem);color:var(--night);box-shadow:0 0 0 4px color-mix(in srgb,var(--c-mem) 30%,transparent)}
 .pt .nm{display:flex;align-items:baseline;gap:1cqw;white-space:nowrap;line-height:1}
 .pt b{color:#fff;font-size:clamp(10px,1.9cqw,13px);font-weight:600}
 .pt .hs{font-size:clamp(9px,1.6cqw,12px);color:rgba(249,227,236,.75);font-weight:600}
 .pt .hb{width:clamp(46px,10cqw,78px);height:clamp(5px,1cqw,7px);border-radius:9px;background:rgba(249,227,236,.16);overflow:hidden}
 .pt .hb i{display:block;height:100%;width:var(--hp,25%);background:var(--c-mem);border-radius:9px;transition:width 1.2s var(--ease)}
-/* Priya's routes only appear when she is part of the step */
+.pt .ecg{position:absolute;left:calc(50% + clamp(38px,8.4cqw,60px) * .5 + 1.2cqw);top:clamp(19px,4.2cqw,30px);width:6cqw;height:3cqw;transform:translateY(-50%);opacity:0;transition:opacity .4s}
+.pt .ecg path{fill:none;stroke:var(--c-mem);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:46;stroke-dashoffset:46;animation:beat 1.5s linear infinite}
+@keyframes beat{to{stroke-dashoffset:-46}}
+.pt[data-pose="admit"] .ecg,.pt[data-pose="recover"] .ecg{opacity:1}
 
-/* things that travel: start at the sender, stop on the line between the two parties */
+/* things that travel: each starts at its sender and stops on the line to the receiver.
+   data-k = "step-beat": every step plays in beats, so one step can hold a request and its answer. */
 .obj{opacity:0;transition:left .9s var(--ease),top .9s var(--ease),opacity .45s,transform .5s var(--spring);pointer-events:none;white-space:nowrap}
 .doc{display:flex;align-items:center;gap:1.1cqw;background:var(--bg);color:var(--fg);border-radius:12px;padding:1.2cqw 1.8cqw;font-size:clamp(10px,1.9cqw,13.5px);font-weight:600;box-shadow:0 14px 26px -12px rgba(0,0,0,.6)}
 .doc svg{width:1.3em;height:1.3em;color:currentColor}
-.doc.req,.doc.bill{--bg:var(--c-hos);--fg:var(--night)}
-.doc.msg,.doc.okd,.doc.inf{--bg:var(--c-vol);--fg:#fff}
-.doc.paid{--bg:var(--c-ins);--fg:var(--night)}
-.doc.home,.doc.card{--bg:var(--c-mem);--fg:var(--night)}
-.card{left:16%;top:63%}
-.scene[data-step="0"] .card{left:16%;top:47.5%;opacity:1}
-.req,.bill{left:16%;top:30%}
-.scene[data-step="1"] .req,.scene[data-step="4"] .bill{left:32.5%;top:44.6%;opacity:1}
-.msg{left:50%;top:60%;transform:translate(-50%,-50%) scale(.6)}
-.scene[data-step="2"] .msg{left:34%;top:61.5%;opacity:1;transform:translate(-50%,-50%) scale(1)}
-.okd,.inf{left:50%;top:60%}
-.scene[data-step="3"] .okd{left:33%;top:45%;opacity:1}
-.scene[data-step="3"] .inf{left:67%;top:45%;opacity:1}
-.paid{left:84%;top:30%}
-.scene[data-step="5"] .paid{left:50%;top:30%;opacity:1}
-.home{left:16%;top:86%;transform:translate(-50%,-50%) scale(.6)}
-.scene[data-step="5"] .home{left:40%;top:86%;opacity:1;transform:translate(-50%,-50%) scale(1)}
-/* clock: driven by the claim, not by scrolling. Shown for request, acknowledgement and approval, then it leaves. */
-.clk{position:absolute;left:50%;top:2.6cqw;width:17cqw;transform:translateX(-50%) scale(.85);text-align:center;opacity:0;transition:opacity .4s,transform .5s var(--spring);pointer-events:none}
-.scene[data-step="1"] .clk,.scene[data-step="2"] .clk,.scene[data-step="3"] .clk{opacity:1;transform:translateX(-50%) scale(1)}
-.clk svg{width:17cqw;height:17cqw;transform:rotate(-90deg)}
+.doc.m{--bg:var(--c-mem);--fg:var(--night)}
+.doc.h{--bg:var(--c-hos);--fg:var(--night)}
+.doc.v{--bg:var(--c-vol);--fg:#fff}
+.doc.n{--bg:var(--c-ins);--fg:var(--night)}
+/* step 1: Priya -> Volo (request), Volo -> hospital (found) */
+.o-req{left:70%;top:84%}            .scene[data-k="0-1"] .o-req{left:38%;top:84%;opacity:1}
+.o-fnd{left:18%;top:11%}            .scene[data-k="0-0"] .o-fnd,.scene[data-k="0-1"] .o-fnd{left:37%;top:25%;opacity:1}
+/* step 2: Volo reviews, then approves to hospital, Priya and the insurer */
+.o-rev{left:18%;top:11%;transform:translate(-50%,-50%) scale(.6)}
+.scene[data-k="1-0"] .o-rev{left:18%;top:30%;opacity:1;transform:translate(-50%,-50%) scale(1)}
+.o-apv{left:18%;top:11%}            .scene[data-k="1-1"] .o-apv{left:37%;top:25%;opacity:1}
+.o-sms{left:18%;top:11%}            .scene[data-k="1-1"] .o-sms{left:18%;top:56%;opacity:1}
+.o-inf{left:18%;top:11%}            .scene[data-k="1-1"] .o-inf{left:50%;top:11%;opacity:1}
+/* step 3: e-card at the desk, then an enhancement request and its approval */
+.o-card{left:50%;top:62%}           .scene[data-k="2-0"] .o-card{left:50%;top:50.5%;opacity:1}
+.o-enr{left:50%;top:34%}            .scene[data-k="2-1"] .o-enr{left:37%;top:25%;opacity:1}
+.o-ena{left:18%;top:11%}            .scene[data-k="2-2"] .o-ena{left:37%;top:25%;opacity:1}
+/* step 4: final bill in, discharge approved */
+.o-bill{left:50%;top:34%}           .scene[data-k="3-0"] .o-bill{left:37%;top:25%;opacity:1}
+.o-dis{left:18%;top:11%}            .scene[data-k="3-1"] .o-dis{left:37%;top:25%;opacity:1}
+/* step 5: insurer settles with the hospital; Priya is home */
+.o-paid{left:82%;top:11%}           .scene[data-k="4-0"] .o-paid,.scene[data-k="4-1"] .o-paid{left:60%;top:27%;opacity:1}
+.o-home{left:74%;top:84%;transform:translate(-50%,-50%) scale(.6)}
+.scene[data-k="4-1"] .o-home{left:74%;top:68%;opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* clock: how long Volo takes, against the IRDAI limit. Sits in the open space right of the hospital. */
+.clk{position:absolute;left:86%;top:40%;width:13cqw;transform:translateX(-50%) scale(.85);text-align:center;opacity:0;transition:opacity .4s,transform .5s var(--spring);pointer-events:none}
+.scene[data-step="1"] .clk,.scene[data-step="3"] .clk{opacity:1;transform:translateX(-50%) scale(1)}
+.clk svg{width:13cqw;height:13cqw;transform:rotate(-90deg)}
 .clk .tr{stroke:rgba(249,227,236,.14)}
 .clk .ar{stroke:#fff;transition:stroke .3s}
 .clk.done .ar{stroke:var(--c-ins)}
-.clk .rd{position:absolute;inset:0 0 auto 0;height:17cqw;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.clk .rd b{font-family:var(--display);font-size:3.6cqw;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.03em;line-height:1}
+.clk .rd{position:absolute;inset:0 0 auto 0;height:13cqw;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.clk .rd b{font-family:var(--display);font-size:2.6cqw;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.03em;line-height:1}
 .clk .rd span{font-size:clamp(8px,1.4cqw,11px);color:rgba(249,227,236,.7);margin-top:2px}
 .clk .cp{display:inline-block;margin-top:.6cqw;font-size:clamp(9px,1.6cqw,12.5px);font-weight:700;color:var(--night);background:#fff;border-radius:999px;padding:.3cqw 1.4cqw;white-space:nowrap}
 .clk.done .cp{background:var(--c-ins)}
 
-@container (max-width:340px){ .card,.st-home b,.scene .clk{display:none} }
-@container (max-width:420px){ .scene .hosp-box{height:48%} .scene .clk{top:31%} #scene[data-step="0"] .pt,#scene[data-step="1"] .pt,#scene[data-step="2"] .pt,#scene[data-step="3"] .pt,#scene[data-step="4"] .pt{top:67%} }
-@container (max-width:520px){ .st-hosp b{display:none} .scene[data-step="0"] .card{top:47%} }
+@container (max-width:340px){ .st-home b,.scene .clk{display:none} }
+@container (max-width:420px){ .scene .hosp-box{height:48%} #scene[data-step="2"] .pt,#scene[data-step="3"] .pt{top:67%} }
 @container (max-width:520px){
+  .st-hosp b{display:none}
   .st > span:not(.ic){display:none}
   .st{gap:3.4cqw}
   .st b{font-size:11px}
-  .pt .hs,.clk .cp .x{display:none}
+  .pt .hs{display:none}
   /* small scenes: tags become icon chips in the sender colour; the caption below carries the words */
   .doc{padding:1.8cqw;border-radius:50%;gap:0}
   .doc span{display:none}
   .doc svg{width:clamp(13px,3.6cqw,18px);height:clamp(13px,3.6cqw,18px)}
 }
-/* ===== layout: one hospital in the centre; Volo top-left, Insurer top-right, Home bottom-right ===== */
-.st{--ic:clamp(40px,9.6cqw,70px);transform:translate(-50%,calc(var(--ic) * -.5))}
-.st .ic{width:var(--ic);height:var(--ic)}
-.st-home{--ic:clamp(32px,7cqw,50px)}
-.st-volo > span:not(.ic),.st-ins > span:not(.ic){display:none}
-.hosp-box{position:absolute;left:28%;top:34%;width:44%;height:42%;border:2px solid color-mix(in srgb,var(--c-hos) 35%,transparent);border-radius:3.5cqw;background:color-mix(in srgb,var(--c-hos) 5%,transparent);transition:border-color .4s,background .4s}
-.scene.h-on .hosp-box{border-color:var(--c-hos);background:color-mix(in srgb,var(--c-hos) 11%,transparent)}
-.st-hosp{left:50%;top:34%}
-.st-volo{left:18%;top:11%}.st-ins{left:82%;top:11%}.st-home{left:91%;top:84%}
-/* Priya stays in the hospital until she walks out of its door and home */
-.pt{left:50%;top:64%}
-.scene[data-step="0"] .pt,.scene[data-step="1"] .pt,.scene[data-step="2"] .pt,.scene[data-step="3"] .pt,.scene[data-step="4"] .pt{left:50%;top:64%}
-.scene[data-step="5"] .pt{left:60%;top:84%}
-/* heartbeat monitor beside her while she is admitted and treated */
-.pt .ecg{position:absolute;left:calc(50% + clamp(38px,8.4cqw,60px) * .5 + 1.2cqw);top:clamp(19px,4.2cqw,30px);width:6cqw;height:3cqw;transform:translateY(-50%);opacity:0;transition:opacity .4s}
-.pt .ecg path{fill:none;stroke:var(--c-mem);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:46;stroke-dashoffset:46;animation:beat 1.5s linear infinite}
-@keyframes beat{to{stroke-dashoffset:-46}}
-.pt[data-pose="admit"] .ecg,.pt[data-pose="recover"] .ecg{opacity:1}
-/* clock: Volo's response time, under Volo */
-.clk{left:16%;top:28%;width:13cqw}
-.clk svg{width:13cqw;height:13cqw}
-.clk .rd{height:13cqw}
-.clk .rd b{font-size:2.9cqw}
-/* tags: start at the sender, stop on the line */
-.card{left:50%;top:60%}
-.scene[data-step="0"] .card{left:50%;top:50.5%;opacity:1}
-.req,.bill{left:50%;top:34%}
-.scene[data-step="1"] .req,.scene[data-step="4"] .bill{left:34%;top:22.5%;opacity:1}
-.msg,.okd,.inf{left:18%;top:11%}
-.scene[data-step="2"] .msg,.scene[data-step="3"] .okd{left:34%;top:22.5%;opacity:1}
-.scene[data-step="3"] .inf{left:50%;top:11%;opacity:1}
-.paid{left:82%;top:11%}
-.scene[data-step="5"] .paid{left:66%;top:22.5%;opacity:1}
-.home{left:50%;top:84%}
-.scene[data-step="5"] .home{left:77%;top:84%;opacity:1}
 
 /* step list: the step colour is the acting party's colour */
 .steps-win{position:relative;height:100%;overflow:hidden}
-.story-live .steps-win{mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
+.story-live .steps-win{mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent)}
 .steps{list-style:none;margin:0;padding:0;transition:transform .6s var(--ease)}
 .steps li{position:relative;padding:8px 0 16px 58px;--fg:var(--night)}
 .steps li[data-c="mem"]{--c:var(--c-mem)}.steps li[data-c="hos"]{--c:var(--c-hos)}.steps li[data-c="vol"]{--c:var(--c-vol);--fg:#fff}.steps li[data-c="ins"]{--c:var(--c-ins)}
 .steps li::before{content:attr(data-n);position:absolute;left:0;top:8px;width:40px;height:40px;border-radius:50%;border:2px solid var(--c);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blush);background:var(--night);transition:all .4s}
 .steps li.done::before{background:var(--c);color:var(--fg);opacity:.6}
 .steps li.on::before{background:var(--c);color:var(--fg);box-shadow:0 0 0 7px color-mix(in srgb,var(--c) 32%,transparent)}
+.steps .k{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c);margin-bottom:2px}
 .steps b{display:block;font-family:var(--display);font-size:clamp(24px,2.4vw,32px);font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.15;transform-origin:0 50%;transition:transform .5s var(--ease),color .4s}
 .pair{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:14px;font-weight:600;color:rgba(249,227,236,.9)}
 .pair i{margin-left:4px}
-.steps p{color:rgba(249,227,236,.82);font-size:17px;margin-top:8px;max-width:28em}
+.steps p{color:rgba(249,227,236,.84);font-size:16.5px;margin-top:8px;max-width:30em}
+.steps .you{display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding:9px 12px;border-radius:12px;background:rgba(249,227,236,.06);border:1px solid var(--plum-line);font-size:14px;color:var(--blush);max-width:32em}
+.steps .you svg{width:16px;height:16px;flex-shrink:0;margin-top:2px;color:var(--c-ins)}
 .steps .t{display:inline-block;margin-top:10px;font-size:13.5px;font-weight:600;color:var(--blush);border:1px solid var(--plum-line);border-radius:999px;padding:3px 12px}
 .story-live .steps li{height:58px;overflow:hidden;transition:height .55s var(--ease)}
+.story-live .steps li .k{display:none}
+.story-live .steps li.on .k{display:block}
 .story-live .steps li b{transform:scale(.62);color:rgba(249,227,236,.62)}
-.story-live .steps li .pair,.story-live .steps li p,.story-live .steps li .t{opacity:0;transition:opacity .35s}
+.story-live .steps li .pair,.story-live .steps li p,.story-live .steps li .you,.story-live .steps li .t{opacity:0;transition:opacity .35s}
 .story-live .steps li.on{height:var(--h,240px)}
 .story-live .steps li.on b{transform:none;color:#fff}
-.story-live .steps li.on .pair,.story-live .steps li.on p,.story-live .steps li.on .t{opacity:1;transition-delay:.15s}
+.story-live .steps li.on .pair,.story-live .steps li.on p,.story-live .steps li.on .you,.story-live .steps li.on .t{opacity:1;transition-delay:.15s}
 /* phones and tablets: scene + current step + progress dots on one pinned screen; scrolling moves the story */
 .dots{display:none}
 .story-livem .story-pin,.story-manual .story-pin{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;align-content:center;gap:12px}
-.story-livem .scene,.story-manual .scene{width:min(100%,560px,calc((100svh - var(--head,60px) - 370px) * 7 / 6))}
+.story-livem .scene,.story-manual .scene{width:min(100%,560px,calc((100svh - var(--head,60px) - 390px) * 7 / 6))}
 .story-livem .steps-win,.story-manual .steps-win{height:auto;overflow:visible;max-width:560px;width:100%;justify-self:center}
 .story-livem .steps,.story-manual .steps{display:grid;transform:none!important}
 .story-livem .steps li,.story-manual .steps li{grid-area:1/1;visibility:hidden;opacity:0;transition:opacity .4s}
 .story-livem .steps li.on,.story-manual .steps li.on{visibility:visible;opacity:1}
 .story-livem .steps b,.story-manual .steps b{font-size:22px}
 .story-livem .steps p,.story-manual .steps p{font-size:15px;margin-top:6px}
+.story-livem .steps .you,.story-manual .steps .you{display:none}
 .story-livem .pair,.story-manual .pair{font-size:13.5px;margin-top:6px}
 .story-livem .steps .t,.story-manual .steps .t{margin-top:8px}
 .story-livem .dots,.story-manual .dots{display:flex;justify-content:center;margin-top:2px}
@@ -627,6 +619,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
         <a href="#app">App</a>
         <a href="#hr">For HR</a>
         <a href="#faq">FAQ</a>
+        <a href="insights.html">Insights</a>
       </div>
       <details class="signin">
         <summary class="btn btn-ghost" style="min-height:44px;padding:10px 18px">Sign in</summary>
@@ -655,6 +648,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
       <a href="#app">App</a>
       <a href="#hr">For HR</a>
       <a href="#faq">FAQ</a>
+      <a href="insights.html">Insights</a>
     </nav>
     <p class="mnav-h">Members</p>
     <div class="mnav-btns">
@@ -789,42 +783,45 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
   </div>
 </section>
 
-<!-- ============ STORY: how a cashless claim works ============ -->
+<!-- ============ STORY: how a planned cashless claim works ============ -->
 <section class="dark story" id="story" aria-labelledby="story-h">
   <div class="w story-head">
     <div class="sec-h" data-rv>
-      <h2 id="story-h">How a cashless claim works with <span class="hl">Volo</span>.</h2>
-      <p class="lede">Follow Priya from the hospital desk back home, healthy. Each colour is one party.</p>
+      <h2 id="story-h">Your cashless claim with <span class="hl">Volo</span>, in five steps.</h2>
+      <p class="lede">Follow Priya through a planned surgery, from finding a hospital to going home with nothing to pay upfront. Each colour shows who is doing the work.</p>
     </div>
   </div>
   <div class="story-track" id="story-track">
     <div class="w story-pin" id="story-pin">
       <div class="stage-col">
-        <div class="scene" id="scene" data-step="0" aria-hidden="true">
+        <div class="scene" id="scene" data-step="0" data-k="0-0" aria-hidden="true">
           <div class="hosp-box"></div>
           <svg class="routes" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <polyline id="r-ph" points="50,60 50,34"/>
+            <polyline id="r-pv" points="68,84 18,84 18,19"/>
             <line id="r-hv" x1="50" y1="34" x2="18" y2="11"/>
             <line id="r-vi" x1="18" y1="11" x2="82" y2="11"/>
             <line id="r-ih" x1="82" y1="11" x2="50" y2="34"/>
-            <polyline id="r-vp" points="18,11 50,34 50,60"/>
-            <polyline id="r-go" points="50,34 50,84 91,84"/>
+            <polyline id="r-walk" points="50,64 50,84 68,84"/>
           </svg>
-          <div class="clk" id="clk"><svg viewBox="0 0 120 120"><circle class="tr" cx="60" cy="60" r="52" fill="none" stroke-width="9"/><circle class="ar" id="clk-arc" cx="60" cy="60" r="52" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg><div class="rd"><b id="clk-v">0 min</b><span>of 60 min</span></div><span class="cp" id="clk-c">Request in</span></div>
-          <div class="st st-hosp" id="st-h"><span class="ic"><svg class="i"><use href="#hosp"/></svg></span><b>Hospital</b></div>
+          <div class="clk" id="clk"><svg viewBox="0 0 120 120"><circle class="tr" cx="60" cy="60" r="52" fill="none" stroke-width="9"/><circle class="ar" id="clk-arc" cx="60" cy="60" r="52" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg><div class="rd"><b id="clk-v">0 min</b><span id="clk-of">of 1 hour</span></div><span class="cp" id="clk-c">Reviewing</span></div>
+          <div class="st st-hosp" id="st-h"><span class="ic"><svg class="i"><use href="#hosp"/></svg></span><b>Network hospital</b></div>
           <div class="st st-volo" id="st-v"><span class="ic"><img src="assets/volo_logo_white.png" alt="" /></span><b>Volo</b><span>Claims team</span></div>
           <div class="st st-ins" id="st-i"><span class="ic"><svg class="i"><use href="#shield"/></svg></span><b>Insurer</b><span>Priya's policy</span></div>
           <div class="st st-home" id="st-home"><span class="ic"><svg class="i"><use href="#house"/></svg></span><b>Home</b></div>
-          <div class="pt" id="pt" data-pose="sick" style="position:absolute"><span class="fig"><svg class="p-admit" viewBox="0 0 24 24"><path d="M2 8v12M2 16h17v4M2 13.5h3"/><circle cx="6" cy="11.5" r="1.8"/><path d="M8.5 13.5H17"/><path d="M20.5 3v13M19 3h3M19 4h3v3.2h-3z"/><path d="M20.5 7.2c0 3-2.5 4-4 6.3"/></svg><svg class="p-sick" viewBox="0 0 24 24"><circle cx="9" cy="6" r="3"/><path d="M3 21v-1.5a6 6 0 0 1 12 0V21"/><path d="M19 3v8"/><circle cx="19" cy="13" r="1.8"/><path d="M14 3.5l1.3 1.3M14 7.5l1.3-1.3"/></svg><svg class="p-recover" viewBox="0 0 24 24"><path d="M2 9v11M22 16v4M2 16h20"/><circle cx="8" cy="6" r="2.2"/><path d="M8 8.5V14h6.5"/><path d="M8 11l3-1.5"/></svg><svg class="p-well" viewBox="0 0 24 24"><circle cx="12" cy="4.2" r="2.4"/><path d="M12 7v7.5M6.5 5.5 12 9l5.5-3.5M12 14.5l-3 6.5M12 14.5l3 6.5"/></svg><svg class="p-walk" viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="2.4"/><path d="M12 7.5l-1 7M11 14.5l-3 6.5M11 14.5l4 6.5M12 9l-4 2.5M12 9l3 3.5 3-1"/></svg></span><span class="nm"><b>Priya</b><span class="hs" id="hs">Unwell</span></span><span class="hb"><i id="hp"></i></span><svg class="ecg" viewBox="0 0 40 20"><path d="M0 10h10l3-7 4 14 3-7h20"/></svg></div>
-          <div class="obj doc card"><svg class="i"><use href="#card"/></svg><span>E-card and ID</span></div>
-          <div class="obj doc req"><svg class="i"><use href="#send"/></svg><span>Cashless request</span></div>
-          <div class="obj doc msg"><svg class="i"><use href="#chat"/></svg><span>Claim received</span></div>
-          <div class="obj doc okd"><svg class="i"><use href="#check"/></svg><span>Approved</span></div>
-          <div class="obj doc inf"><svg class="i"><use href="#check"/></svg><span>Insurer informed</span></div>
-          <div class="obj doc bill"><svg class="i"><use href="#doc"/></svg><span>Final bill</span></div>
-          <div class="obj doc paid"><svg class="i"><use href="#rupee"/></svg><span>Paid to hospital</span></div>
-          <div class="obj doc home"><svg class="i"><use href="#check"/></svg><span>Going home</span></div>
-        </div>
+          <div class="pt" id="pt" data-pose="sick" style="position:absolute"><span class="fig"><svg class="p-admit" viewBox="0 0 24 24"><path d="M2 8v12M2 16h17v4M2 13.5h3"/><circle cx="6" cy="11.5" r="1.8"/><path d="M8.5 13.5H17"/><path d="M20.5 3v13M19 3h3M19 4h3v3.2h-3z"/><path d="M20.5 7.2c0 3-2.5 4-4 6.3"/></svg><svg class="p-sick" viewBox="0 0 24 24"><circle cx="9" cy="6" r="3"/><path d="M3 21v-1.5a6 6 0 0 1 12 0V21"/><rect x="16.5" y="8" width="5.5" height="9" rx="1.2"/><path d="M18.6 15h1.3"/></svg><svg class="p-recover" viewBox="0 0 24 24"><path d="M2 9v11M22 16v4M2 16h20"/><circle cx="8" cy="6" r="2.2"/><path d="M8 8.5V14h6.5"/><path d="M8 11l3-1.5"/></svg><svg class="p-well" viewBox="0 0 24 24"><circle cx="12" cy="4.2" r="2.4"/><path d="M12 7v7.5M6.5 5.5 12 9l5.5-3.5M12 14.5l-3 6.5M12 14.5l3 6.5"/></svg><svg class="p-walk" viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="2.4"/><path d="M12 7.5l-1 7M11 14.5l-3 6.5M11 14.5l4 6.5M12 9l-4 2.5M12 9l3 3.5 3-1"/></svg></span><span class="nm"><b>Priya</b><span class="hs" id="hs">Planning surgery</span></span><span class="hb"><i id="hp"></i></span><svg class="ecg" viewBox="0 0 40 20"><path d="M0 10h10l3-7 4 14 3-7h20"/></svg></div>
+          <div class="obj doc m o-req"><svg class="i"><use href="#send"/></svg><span>Pre-approval request</span></div>
+          <div class="obj doc v o-fnd"><svg class="i"><use href="#pin"/></svg><span>Nearest network hospital</span></div>
+          <div class="obj doc v o-rev"><svg class="i"><use href="#doc"/></svg><span>Doctors reviewing</span></div>
+          <div class="obj doc v o-apv"><svg class="i"><use href="#check"/></svg><span>Pre-approved</span></div>
+          <div class="obj doc v o-sms"><svg class="i"><use href="#chat"/></svg><span>Approval on WhatsApp</span></div>
+          <div class="obj doc v o-inf"><svg class="i"><use href="#check"/></svg><span>Insurer informed</span></div>
+          <div class="obj doc m o-card"><svg class="i"><use href="#card"/></svg><span>E-card and ID</span></div>
+          <div class="obj doc h o-enr"><svg class="i"><use href="#send"/></svg><span>Enhancement request</span></div>
+          <div class="obj doc v o-ena"><svg class="i"><use href="#check"/></svg><span>Extra amount approved</span></div>
+          <div class="obj doc h o-bill"><svg class="i"><use href="#doc"/></svg><span>Final bill</span></div>
+          <div class="obj doc v o-dis"><svg class="i"><use href="#check"/></svg><span>Discharge approved</span></div>
+          <div class="obj doc n o-paid"><svg class="i"><use href="#rupee"/></svg><span>Paid to hospital</span></div>
+                  </div>
         <ul class="legend" aria-label="Colour key">
           <li>Who is acting:</li>
           <li><i style="--c:var(--c-mem)"></i>Priya</li><li><i style="--c:var(--c-hos)"></i>Hospital</li><li><i style="--c:var(--c-vol)"></i>Volo</li><li><i style="--c:var(--c-ins)"></i>Insurer</li>
@@ -832,21 +829,19 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
       </div>
       <div class="steps-win" id="steps-win">
         <ol class="steps" id="steps">
-          <li data-n="1" data-c="mem"><div class="in"><b>At the hospital</b><span class="pair">From <i style="--c:var(--c-mem)"></i>Priya to <i style="--c:var(--c-hos)"></i>the hospital</span><p>Priya arrives unwell at a network hospital. At the insurance desk she shows her Volo e-card and a photo ID. That's all she needs.</p><span class="t">0 min</span></div></li>
-          <li data-n="2" data-c="hos"><div class="in"><b>Admitted, request sent</b><span class="pair">From <i style="--c:var(--c-hos)"></i>the hospital to <i style="--c:var(--c-vol)"></i>Volo</span><p>Priya is admitted to the ward and treatment starts. The hospital sends us the cashless request; she fills in no forms.</p><span class="t">A few minutes</span></div></li>
-          <li data-n="3" data-c="vol"><div class="in"><b>Acknowledged in 5 minutes</b><span class="pair">From <i style="--c:var(--c-vol)"></i>Volo to <i style="--c:var(--c-mem)"></i>Priya</span><p>We confirm we have her claim by SMS and WhatsApp, so her family can focus on her care, not paperwork.</p><span class="t">Within 5 min, our promise</span></div></li>
-          <li data-n="4" data-c="vol"><div class="in"><b>Approved within the hour</b><span class="pair">From <i style="--c:var(--c-vol)"></i>Volo to <i style="--c:var(--c-hos)"></i>the hospital and <i style="--c:var(--c-ins)"></i>insurer</span><p>Our doctors check her treatment against the policy and approve it; the insurer is kept informed. Priya is recovering in the ward.</p><span class="t">Within 1 hour, IRDAI's limit</span></div></li>
-          <li data-n="5" data-c="hos"><div class="in"><b>Discharge</b><span class="pair">From <i style="--c:var(--c-hos)"></i>the hospital to <i style="--c:var(--c-vol)"></i>Volo</span><p>Priya is healthy again. At the desk the hospital sends the final bill and we approve it, so she isn't kept waiting.</p><span class="t">Within 3 hours, IRDAI's limit</span></div></li>
-          <li data-n="6" data-c="ins"><div class="in"><b>Home and healthy</b><span class="pair">From <i style="--c:var(--c-ins)"></i>the insurer to <i style="--c:var(--c-hos)"></i>the hospital</span><p>The insurer pays the hospital directly. Priya goes home recovered, paying only for anything her policy doesn't cover.</p><span class="t">Settled</span></div></li>
-        </ol>
+          <li data-n="1" data-c="mem"><div class="in"><span class="k">Step 1 · Find a hospital</span><b>Request pre-approval</b><span class="pair">From <i style="--c:var(--c-mem)"></i>Priya to <i style="--c:var(--c-vol)"></i>Volo</span><p>Priya's doctor has advised a planned surgery. On the Volo app she finds a cashless network hospital near her. With our team guiding her, the hospital's insurance desk sends us her pre-approval request with the doctor's notes.</p><span class="you"><svg class="i"><use href="#check"/></svg><span>You don't pay a deposit. Call or WhatsApp us and we'll tell you which documents to bring.</span></span><span class="t">A few days before admission</span></div></li>
+          <li data-n="2" data-c="vol"><div class="in"><span class="k">Step 2 · Before admission</span><b>Approved before she arrives</b><span class="pair">From <i style="--c:var(--c-vol)"></i>Volo to <i style="--c:var(--c-hos)"></i>the hospital and <i style="--c:var(--c-mem)"></i>Priya</span><p>Our doctors check the planned treatment against her policy and approve it. Priya gets the approval by SMS and WhatsApp, the hospital knows what is covered, and her insurer is kept informed.</p><span class="you"><svg class="i"><use href="#check"/></svg><span>You'll know what's covered before you walk in.</span></span><span class="t">Within 1 hour, as IRDAI requires</span></div></li>
+          <li data-n="3" data-c="hos"><div class="in"><span class="k">Step 3 · In hospital</span><b>Admitted, treatment begins</b><span class="pair">From <i style="--c:var(--c-hos)"></i>the hospital to <i style="--c:var(--c-vol)"></i>Volo, and back</span><p>Priya shows her Volo e-card and a photo ID and is admitted cashless. If her treatment needs more than was first approved, the hospital asks us for the extra amount (an enhancement), and we approve it while she rests.</p><span class="you"><svg class="i"><use href="#check"/></svg><span>Extra costs during your stay are handled between the hospital and us. You fill in nothing.</span></span><span class="t">Enhancement only if needed</span></div></li>
+          <li data-n="4" data-c="hos"><div class="in"><span class="k">Step 4 · Final bill</span><b>Discharge approved</b><span class="pair">From <i style="--c:var(--c-hos)"></i>the hospital to <i style="--c:var(--c-vol)"></i>Volo, then back</span><p>When Priya is ready to leave, the hospital sends us her final bill. We check it and approve the discharge quickly, so she isn't kept waiting at the desk.</p><span class="you"><svg class="i"><use href="#check"/></svg><span>You only pay for items your policy doesn't cover, such as some consumables.</span></span><span class="t">Within 3 hours, as IRDAI requires</span></div></li>
+          <li data-n="5" data-c="ins"><div class="in"><span class="k">Step 5 · Settled</span><b>Home happy, claim settled</b><span class="pair">From <i style="--c:var(--c-ins)"></i>the insurer to <i style="--c:var(--c-hos)"></i>the hospital</span><p>Priya goes home, recovered and smiling. Her insurer pays the hospital directly and the claim is closed. Nothing more for her to do.</p><span class="you"><svg class="i"><use href="#check"/></svg><span>You can see the settlement anytime in the Volo app.</span></span><span class="t">Settled, cashless</span></div></li>
+          </ol>
         <div class="dots" id="dots" role="group" aria-label="Story steps">
-          <button type="button" style="--c:var(--c-mem)" aria-label="Step 1: At the hospital"><i></i></button>
-          <button type="button" style="--c:var(--c-hos)" aria-label="Step 2: Admitted, request sent"><i></i></button>
-          <button type="button" style="--c:var(--c-vol)" aria-label="Step 3: Acknowledged in 5 minutes"><i></i></button>
-          <button type="button" style="--c:var(--c-vol)" aria-label="Step 4: Approved within the hour"><i></i></button>
-          <button type="button" style="--c:var(--c-hos)" aria-label="Step 5: Discharge"><i></i></button>
-          <button type="button" style="--c:var(--c-ins)" aria-label="Step 6: Home and healthy"><i></i></button>
-        </div>
+          <button type="button" style="--c:var(--c-mem)" aria-label="Step 1: Request pre-approval"><i></i></button>
+          <button type="button" style="--c:var(--c-vol)" aria-label="Step 2: Approved before she arrives"><i></i></button>
+          <button type="button" style="--c:var(--c-hos)" aria-label="Step 3: Admitted, treatment begins"><i></i></button>
+          <button type="button" style="--c:var(--c-hos)" aria-label="Step 4: Discharge approved"><i></i></button>
+          <button type="button" style="--c:var(--c-ins)" aria-label="Step 5: Home happy, claim settled"><i></i></button>
+          </div>
         <p class="scroll-cue" id="scroll-cue">Scroll to follow the claim</p>
       </div>
     </div>
@@ -870,7 +865,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
       <div class="stat" data-rv style="--d:0.30s"><span class="v"><span data-count="24" data-suf="x7">24x7<small>support</small></span></span><h3>Always available</h3><p>Helpline 040-65126801 and WhatsApp, day and night.</p></div>
       <div class="stat" data-rv style="--d:0.35s"><span class="v" data-count="8000" data-suf="+">8,000+<small>hospitals</small></span><h3>Cashless network</h3><p>Hospitals across India where you pay nothing upfront.</p></div>
     </div>
-    <p class="stats-note">IRDAI requires a cashless decision within 60 minutes. The average above is ours.</p>
+    <p class="stats-note">IRDAI requires a cashless decision within 60 minutes. The average above is ours. <a class="link" href="insights.html">See today's claim speed in Volo's Insights &rarr;</a></p>
   </div>
 </section>
 
@@ -1020,7 +1015,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     </div>
     <div><h2>Members</h2><ul><li><a href="https://wallet.volohealthtpa.com/">Get e-card</a></li><li><a href="#track">Track a claim</a></li><li><a href="https://wallet.volohealthtpa.com/public/hospital-network">Find a hospital</a></li><li><a href="#faq">FAQ</a></li></ul></div>
     <div><h2>Sign in</h2><ul><li><a href="https://wallet.volohealthtpa.com/">Member login</a></li><li><a href="https://www.eastwestassist.com/home/volohealth">Retail member login</a></li><li><a href="https://pulsepoint.volohealthtpa.com">Corporate HR</a></li><li><a href="https://provider.volohealthtpa.com">Hospital</a></li></ul></div>
-    <div><h2>Company</h2><ul><li><a href="#trust">Trusted by</a></li><li><a href="#hr">For HR</a></li><li><a href="#safe">Licence and grievances</a></li><li><a href="assets/docs/East_west_RenewalCeritificate_Signed.pdf">Registration certificate</a></li></ul></div>
+    <div><h2>Company</h2><ul><li><a href="#trust">Trusted by</a></li><li><a href="#hr">For HR</a></li><li><a href="#safe">Licence and grievances</a></li><li><a href="insights.html">Volo's Insights</a></li><li><a href="assets/docs/East_west_RenewalCeritificate_Signed.pdf">Registration certificate</a></li></ul></div>
   </div>
   <p class="base">&copy; 2026 Volo Health Insurance TPA Private Limited</p>
 </footer>
@@ -1042,12 +1037,12 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
 
   /* ---------- header: shrink, progress, scrollspy ---------- */
   const head = $('#site-head'), bar = $('.progress', head);
-  const links = $$('#navlinks a'), ind = $('#navlinks .ind');
+  const links = $$('#navlinks a[href^="#"]'), ind = $('#navlinks .ind');
   function spy(){
     const line = head.offsetHeight + 40; let cur = null;
     links.forEach(a => { const r = document.querySelector(a.getAttribute('href')).getBoundingClientRect(); if (r.top <= line && r.bottom > line) cur = a; });
     links.forEach(l => l.classList.toggle('on', l === cur));
-    $$('.mnav-sec a').forEach(l => l.classList.toggle('on', !!cur && l.getAttribute('href') === cur.getAttribute('href')));
+    $$('.mnav-sec a[href^="#"]').forEach(l => l.classList.toggle('on', !!cur && l.getAttribute('href') === cur.getAttribute('href')));
     if (!cur) { ind.style.opacity = 0; return; }
     ind.style.opacity = 1; ind.style.width = cur.offsetWidth + 'px'; ind.style.transform = 'translateX(' + cur.offsetLeft + 'px)';
   }
@@ -1154,42 +1149,67 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
   const trust = $('#trust');
   $$('.marq', trust).forEach(m => m.addEventListener('click', () => trust.classList.toggle('paused')));
 
-  /* ---------- story: scroll moves one step (desktop and phones); the clock runs on claim time, not scroll ---------- */
+  /* ---------- story: scroll moves one step; inside a step, beats play on their own (request, then answer). The clock runs on claim time. ---------- */
   const track = $('#story-track'), pin = $('#story-pin'), scene = $('#scene'), win = $('#steps-win'), list = $('#steps'), steps = $$('#steps li'), dots = $$('#dots button');
-  const pt = $('#pt'), hp = $('#hp'), hs = $('#hs'), clk = $('#clk'), clkV = $('#clk-v'), clkC = $('#clk-c'), clkArc = $('#clk-arc');
-  const ROW = 58, C = 326.7;
-  const ACTIVE = [['pt', 'st-h'], ['st-h', 'st-v'], ['st-v', 'pt'], ['st-v', 'st-h', 'st-i'], ['st-h', 'st-v'], ['st-i', 'st-h', 'pt', 'st-home']];
-  // [route, flows backwards?, sender colour]
-  const ROUTES = [[['r-ph', 0, 'mem']], [['r-hv', 0, 'hos']], [['r-vp', 0, 'vol']], [['r-hv', 1, 'vol'], ['r-vi', 0, 'vol']], [['r-hv', 0, 'hos']], [['r-ih', 0, 'ins'], ['r-go', 0, 'mem']]];
-  const HEALTH = [22, 30, 42, 62, 82, 100];
-  const CLOCK = { 1: [3, 'Request in', false], 2: [5, 'Acknowledged', true], 3: [34, 'Approved', true] };
-  let cur = -1, mode = '', shown = 0, clkRaf = 0;
-  function drawClock(m){ shown = m; clkV.textContent = Math.round(m) + ' min'; clkArc.style.strokeDashoffset = (C * (1 - Math.min(m, 60) / 60)).toFixed(1); }
-  function runClock(i){
-    const c = CLOCK[i]; if (!c) return;
-    clkC.innerHTML = c[1]; clk.classList.toggle('done', c[2]);
+  const pt = $('#pt'), hp = $('#hp'), hs = $('#hs'), clk = $('#clk'), clkV = $('#clk-v'), clkOf = $('#clk-of'), clkC = $('#clk-c'), clkArc = $('#clk-arc');
+  const ROW = 58, C = 326.7, N = steps.length;
+  // each step is a list of beats. A beat: active parties, routes [id, backwards?, sender colour], Priya's pose, status, health %, clock [minutes, limit, caption, done]
+  const BEATS = [
+    [ { on: ['pt', 'st-v', 'st-h'], r: [['r-hv', 1, 'vol']], pose: 'sick', hs: 'Planning surgery', hp: 30 },
+      { on: ['pt', 'st-v', 'st-h'], r: [['r-pv', 0, 'mem'], ['r-hv', 1, 'vol']], pose: 'sick', hs: 'Request sent', hp: 30 } ],
+    [ { on: ['st-v'], r: [], pose: 'sick', hs: 'Waiting for approval', hp: 32, clk: [24, 60, 'Doctors reviewing', false] },
+      { on: ['st-v', 'st-h', 'st-i', 'pt'], r: [['r-hv', 1, 'vol'], ['r-vi', 0, 'vol'], ['r-pv', 1, 'vol']], pose: 'sick', hs: 'Approved', hp: 36, clk: [38, 60, 'Approved', true] } ],
+    [ { on: ['pt', 'st-h'], r: [['r-walk', 1, 'mem']], pose: 'admit', hs: 'Admitted', hp: 45 },
+      { on: ['st-h', 'st-v'], r: [['r-hv', 0, 'hos']], pose: 'admit', hs: 'In treatment', hp: 58 },
+      { on: ['st-v', 'st-h'], r: [['r-hv', 1, 'vol']], pose: 'recover', hs: 'Recovering', hp: 72 } ],
+    [ { on: ['st-h', 'st-v'], r: [['r-hv', 0, 'hos']], pose: 'recover', hs: 'Ready to go home', hp: 88, clk: [45, 180, 'Bill received', false] },
+      { on: ['st-v', 'st-h', 'pt'], r: [['r-hv', 1, 'vol']], pose: 'recover', hs: 'Discharge approved', hp: 92, clk: [110, 180, 'Approved', true] } ],
+    [ { on: ['st-i', 'st-h', 'pt'], r: [['r-ih', 0, 'ins'], ['r-walk', 0, 'mem']], pose: 'walk', hs: 'Going home', hp: 96 },
+      { on: ['st-i', 'pt', 'st-home'], r: [['r-ih', 0, 'ins']], pose: 'well', hs: 'Home, happy', hp: 100 } ],
+  ];
+  const BEAT_MS = [1500, 1700, 1700, 1700, 1900];
+  let cur = -1, beat = -1, mode = '', shown = 0, clkRaf = 0, beatT = 0;
+  const fmtMin = m => { m = Math.round(m); return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h' + (m % 60 ? ' ' + (m % 60) + ' m' : ''); };
+  function drawClock(m, lim){ shown = m; clkV.textContent = fmtMin(m); clkArc.style.strokeDashoffset = (C * (1 - Math.min(m, lim) / lim)).toFixed(1); }
+  function runClock(c, fresh){
+    if (!c) return;
+    const [to, lim, cap, done] = c;
+    clkOf.textContent = 'of ' + (lim === 60 ? '1 hour' : lim / 60 + ' hours');
+    clkC.textContent = cap; clk.classList.toggle('done', done);
     cancelAnimationFrame(clkRaf);
-    const from = shown, to = c[0];
-    if (!motion) { drawClock(to); return; }
+    const from = fresh ? 0 : shown;
+    if (!motion) { drawClock(to, lim); return; }
     const t0 = performance.now();
-    (function f(now){ const t = Math.min((now - t0) / 1100, 1); drawClock(from + (to - from) * (1 - Math.pow(1 - t, 3))); if (t < 1) clkRaf = requestAnimationFrame(f); })(t0);
+    (function f(now){ const t = Math.min((now - t0) / 1100, 1); drawClock(from + (to - from) * (1 - Math.pow(1 - t, 3)), lim); if (t < 1) clkRaf = requestAnimationFrame(f); })(t0);
+  }
+  function setBeat(i, b){
+    const B = BEATS[i][b], fresh = beat < 0 || cur !== i || b === 0; beat = b;
+    scene.dataset.k = i + '-' + b;
+    $$('.st, .pt', scene).forEach(e => e.classList.toggle('on', B.on.includes(e.id)));
+    scene.classList.toggle('h-on', B.on.includes('st-h'));
+    $$('.routes line, .routes polyline', scene).forEach(l => { const r = B.r.find(x => x[0] === l.id); l.classList.toggle('on', !!r); l.classList.toggle('rev', !!(r && r[1])); l.style.setProperty('--lc', r ? 'var(--c-' + r[2] + ')' : ''); });
+    hp.style.setProperty('--hp', B.hp + '%'); pt.dataset.pose = B.pose; hs.textContent = B.hs;
+    runClock(B.clk, fresh && b === 0);
   }
   function measure(){ steps.forEach(li => li.style.setProperty('--h', ($('.in', li).scrollHeight + 26) + 'px')); }
   function setStep(i){
-    if (i === cur) return; cur = i;
+    if (i === cur) return;
+    clearTimeout(beatT);
     scene.dataset.step = i;
     steps.forEach((li, k) => { li.className = k < i ? 'done' : k === i ? 'on' : ''; if (k === i) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
     dots.forEach((d, k) => { d.classList.toggle('done', k < i); if (k === i) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current'); });
-    $$('.st, .pt', scene).forEach(e => e.classList.toggle('on', ACTIVE[i].includes(e.id)));
-    scene.classList.toggle('h-on', ACTIVE[i].includes('st-h'));
-    $$('.routes line, .routes polyline', scene).forEach(l => { const r = ROUTES[i].find(x => x[0] === l.id); l.classList.toggle('on', !!r); l.classList.toggle('rev', !!(r && r[1])); l.style.setProperty('--lc', r ? 'var(--c-' + r[2] + ')' : ''); });
-    const h = HEALTH[i]; hp.style.setProperty('--hp', h + '%');
-    pt.dataset.pose = ['sick', 'admit', 'admit', 'recover', 'well', 'walk'][i]; hs.textContent = ['Unwell', 'Admitted', 'In treatment', 'Recovering', 'Healthy', 'Healthy'][i];
-    runClock(i);
-    if (mode === 'live') list.style.transform = 'translateY(' + Math.round(Math.min(win.clientHeight * 0.3, win.clientHeight - parseFloat(getComputedStyle(steps[i]).getPropertyValue('--h')) - 24) - i * ROW) + 'px)';
+    const last = BEATS[i].length - 1;
+    if (!motion) { cur = i; setBeat(i, last); }
+    else {
+      beat = -1; setBeat(i, 0); cur = i;
+      // later beats play on a timer (Priya walking in takes ~2s, so step 3 waits a little longer)
+      const next = b => { if (b > last || cur !== i) return; beatT = setTimeout(() => { if (cur !== i) return; setBeat(i, b); next(b + 1); }, (b === 1 && i >= 2 ? 2000 : BEAT_MS[i])); };
+      next(1);
+    }
+    if (mode === 'live') list.style.transform = 'translateY(' + Math.round(Math.min(win.clientHeight * 0.26, win.clientHeight - parseFloat(getComputedStyle(steps[i]).getPropertyValue('--h')) - 24) - i * ROW) + 'px)';
   }
   const pinned = () => mode === 'live' || mode === 'livem';
-  const stepY = k => track.getBoundingClientRect().top + scrollY - head.offsetHeight + (k + .5) / steps.length * (track.offsetHeight - pin.offsetHeight);
+  const stepY = k => track.getBoundingClientRect().top + scrollY - head.offsetHeight + (k + .5) / N * (track.offsetHeight - pin.offsetHeight);
   function storyMode(){
     const wide = innerWidth > 1000;
     mode = motion && innerHeight >= (wide ? 600 : 520) ? (wide ? 'live' : 'livem') : (wide ? 'static' : 'manual');
@@ -1197,7 +1217,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     root.style.setProperty('--head', head.offsetHeight + 'px');
     measure();
     const keep = cur; cur = -1; list.style.transform = '';
-    if (mode === 'static') { setStep(5); steps.forEach(li => li.className = 'done'); }
+    if (mode === 'static') { setStep(N - 1); steps.forEach(li => li.className = 'done'); }
     else if (mode === 'manual') setStep(keep < 0 ? 0 : keep);
     else storyScroll();
   }
@@ -1205,27 +1225,25 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     if (!pinned()) return;
     const r = track.getBoundingClientRect(), total = track.offsetHeight - pin.offsetHeight;
     const p = Math.max(0, Math.min(1, (head.offsetHeight - r.top) / total));
-    const n = steps.length; setStep(Math.floor(Math.min(p * n, n - 0.0001)));
+    setStep(Math.floor(Math.min(p * N, N - 0.0001)));
   }
   // dots: jump to a step (scroll there when the story is scroll-driven)
   dots.forEach((d, k) => d.addEventListener('click', () => { if (pinned()) scrollTo({ top: Math.round(stepY(k)), behavior: motion ? 'smooth' : 'auto' }); else setStep(k); }));
   // phones without scroll-driving (reduced motion): swipe the scene
   let sx = null;
   scene.addEventListener('pointerdown', e => { sx = e.clientX; });
-  scene.addEventListener('pointerup', e => { if (mode !== 'manual' || sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40) setStep((cur + (dx < 0 ? 1 : -1) + steps.length) % steps.length); });
+  scene.addEventListener('pointerup', e => { if (mode !== 'manual' || sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40) setStep((cur + (dx < 0 ? 1 : -1) + N) % N); });
   // desktop: one wheel scroll or key press = one step; past the ends it glides out of the story (never traps the page)
   let lockUntil = 0;
   function stepBy(dir, e){
     if (mode !== 'live' || !dir) return;
     const r = track.getBoundingClientRect(), hd = head.offsetHeight;
-    if (r.top > hd + 4 || r.bottom < innerHeight + 4) return;      // only while the story is pinned
+    if (r.top > hd + 4 || r.bottom < innerHeight + 4) return;
     e.preventDefault();
     if (performance.now() < lockUntil) return;
     lockUntil = performance.now() + 700;
     const next = cur + dir;
-    const y = next >= steps.length ? r.bottom + scrollY - hd + 2     // fully past the story: next section under the header
-            : next < 0 ? r.top + scrollY - innerHeight * .6           // back up into the story intro
-            : stepY(next);
+    const y = next >= N ? r.bottom + scrollY - hd + 2 : next < 0 ? r.top + scrollY - innerHeight * .6 : stepY(next);
     scrollTo({ top: Math.round(y), behavior: 'smooth' });
   }
   addEventListener('wheel', e => stepBy(Math.sign(e.deltaY), e), { passive: false });

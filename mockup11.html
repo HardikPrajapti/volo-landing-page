@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
 <!--
-  mockup11: "One claim, two sides".
+  mockup11: "One claim, two sides". Story: a 5-step planned hospitalisation. Insights live on mockup11-insights.html.
   A cinematic re-imagining of the claim story told from the TPA's side. Plain HTML + GSAP/ScrollTrigger + Lenis (CDN).
   Palette: mockup10 tokens only. Colour = who is acting: Priya blush, Hospital amber, Volo magenta, Insurer mint.
   Without GSAP, with reduced motion, or on very short screens the film is shown as a static list (nothing hidden).
@@ -178,19 +178,42 @@ nav.bar .links .ind::after{content:"";position:absolute;left:14px;right:14px;bot
 .b-body .disc{grid-column:1/-1;border-top:1px solid #eedce6;padding-top:3%}
 .flip-btn{min-height:44px}
 
-/* ===== get help: four big rows, each one action ===== */
-.rows{margin-top:48px;border-top:1px solid var(--rule)}
-.row{position:relative;display:grid;grid-template-columns:72px minmax(0,1.1fr) minmax(0,1fr) auto;gap:28px;align-items:center;padding:28px 8px;border-bottom:1px solid var(--rule);isolation:isolate}
-.row::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--blush);transform:scaleX(0);transform-origin:0 50%;transition:transform .55s var(--ease)}
-.row:hover::before,.row:focus-within::before{transform:scaleX(1)}
-.row h3{font-size:clamp(24px,2.6vw,36px);font-weight:600;letter-spacing:-.03em;transition:transform .45s var(--ease)}
-.row:hover h3{transform:translateX(8px)}
-.row p{color:var(--ink-2)}
-.row .art{width:72px;height:72px;border-radius:20px;background:var(--night);color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .45s var(--spring),background .3s}
-.row .art svg.i{width:30px;height:30px}
-.row:hover .art{transform:rotate(-8deg) scale(1.06);background:var(--magenta)}
-.row .act{justify-self:end}
-.row .track{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;justify-self:end;width:min(360px,100%)}
+/* ===== get help: four cards, each one action ===== */
+.hcards{margin-top:48px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.hc{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--rule);border-radius:28px;padding:24px 24px 26px;transition:translate .45s var(--ease),box-shadow .45s var(--ease),border-color .3s}
+.hcards .hc.in{transition:opacity .7s var(--ease) var(--d,0s),transform .8s var(--ease) var(--d,0s),translate .45s var(--ease),box-shadow .45s var(--ease),border-color .3s}
+.hc:hover,.hc:focus-within{translate:0 -6px;box-shadow:0 30px 60px -34px rgba(194,31,110,.35);border-color:var(--blush-2)}
+.hc-art{height:150px;border-radius:20px;background:#f7e1ea;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hc-art svg{width:100%;height:118px;overflow:visible}
+.hc h3{margin-top:24px;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-.03em}
+.hc p{margin-top:12px;color:var(--ink-2);font-size:16.5px}
+.hc-act{margin-top:auto;padding-top:28px}
+.hc-act.track{display:grid;gap:8px;padding-top:24px}
+.hc-hint{font-size:15px!important;margin-top:8px!important;color:var(--ink-2)}
+.hc .track-form .btn{padding:12px 18px}
+.hc .t-err,.hc .t-help{padding-left:6px}
+.hc.dark{background:var(--night);border-color:var(--night);color:#fff}
+.hc.dark .hc-art{background:#2c1421}
+.hc.dark p{color:var(--soft)}
+.hc.dark:hover{box-shadow:0 30px 60px -30px rgba(26,9,18,.6)}
+/* the little drawings move a bit, more on hover */
+.hc-art svg *{transform-box:fill-box;transform-origin:center}
+.js-m .ia-pulse{animation:iapulse 2.4s ease-in-out infinite}
+.js-m .ia-card{animation:iafloat 3.2s ease-in-out infinite}
+.js-m .ia-coin{animation:iacoin 3s ease-in-out infinite}
+.js-m .ia-scan{animation:iascan 3.6s ease-in-out infinite}
+.js-m .ia-pin{transform-origin:50% 100%;animation:iapin 2.6s var(--d,0s) ease-in-out infinite}
+.js-m .ia-bar{transform-origin:0 50%;animation:iabar 3s ease-in-out infinite}
+.hc:hover .ia-pulse,.hc:hover .ia-card,.hc:hover .ia-coin,.hc:hover .ia-scan,.hc:hover .ia-pin,.hc:hover .ia-bar{animation-duration:1.1s}
+@keyframes iapulse{50%{transform:scale(1.14)}}
+@keyframes iafloat{50%{transform:translateY(-6px) rotate(-3deg)}}
+@keyframes iacoin{0%,100%{transform:translateY(0) rotateY(0)}50%{transform:translateY(-8px) rotateY(180deg)}}
+@keyframes iascan{0%,100%{transform:translate(0,0)}33%{transform:translate(-30px,10px)}66%{transform:translate(-18px,28px)}}
+@keyframes iapin{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-10px)}}
+@keyframes iabar{50%{transform:scaleX(.55)}}
+@media (max-width:1100px){.hcards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.hcards{grid-template-columns:1fr;gap:14px}.hc{padding:18px 18px 22px;border-radius:24px}.hc-art{height:128px}.hc-act .btn{width:100%}.hc .track-form .btn{width:auto}}
+
 .track-form{display:flex;gap:6px}
 .track-form input{flex:1;min-width:0;width:100%;height:48px;border:1.5px solid var(--rule);border-radius:999px;padding:0 18px;font:500 15px var(--sans);color:var(--ink);background:#fff}
 .track-form input:focus{border-color:var(--magenta);outline:none;box-shadow:0 0 0 3px var(--blush-2)}
@@ -278,6 +301,47 @@ nav.bar .links .ind::after{content:"";position:absolute;left:14px;right:14px;bot
 .packet{position:absolute;z-index:6;left:0;top:0;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border-radius:999px;padding:8px 14px 8px 10px;font-size:14px;font-weight:600;background:var(--c);color:var(--night);box-shadow:0 18px 40px -14px rgba(0,0,0,.6);opacity:0;pointer-events:none}
 .packet svg.i{width:16px;height:16px}
 .packet.vol{color:#fff}
+
+
+/* scene animations: they play each time a step comes on; with reduced motion, the end state shows */
+.vig svg.scene text{font-family:var(--sans)}
+.vig svg.scene *{transform-box:fill-box;transform-origin:center}
+.js-m .scene.on .a-drop{transform-origin:50% 100%;animation:sc-drop .7s var(--spring) var(--d,0s) both}
+.js-m .scene.on .a-pop{animation:sc-pop .5s var(--spring) var(--d,0s) both}
+.js-m .scene.on .a-draw{stroke-dasharray:100;animation:sc-draw 1.2s var(--ease) var(--d,0s) both}
+.js-m .scene.on .a-ring{animation:sc-ring 1.6s ease-out var(--d,0s) infinite both}
+.js-m .scene.on .a-buzz{animation:sc-buzz 1.4s ease-in-out infinite}
+.js-m .scene.on .a-bob{animation:sc-bob 2.4s ease-in-out infinite}
+.js-m .scene.on .a-slide{animation:sc-slide .6s var(--ease) var(--d,0s) both}
+.a-arc{stroke-dashoffset:0}
+.js-m .scene.on .a-arc{animation:sc-arc 1.4s var(--ease) var(--d,0s) both}
+.a-hand{transform-box:view-box!important;transform:rotate(var(--deg))}
+.js-m .scene.on .a-hand{animation:sc-hand 1.4s var(--ease) var(--d,0s) both}
+.js-m .scene.on .a-walk{animation:sc-walk 1.8s cubic-bezier(.3,.6,.3,1) both}
+.js-m .scene.on .a-step{animation:sc-step .3s ease-in-out 6 alternate}
+.js-m .scene.on .a-beat{stroke-dasharray:30 100;animation:sc-beat 1.6s linear infinite}
+.js-m .scene.on .a-rise{animation:sc-rise .8s var(--ease) var(--d,0s) both}
+.js-m .scene.on .a-unroll{transform-origin:50% 0;animation:sc-unroll .9s var(--ease) var(--d,0s) both}
+.js-m .scene.on .a-stamp{animation:sc-stamp .45s cubic-bezier(.5,0,.6,1.4) var(--d,0s) both}
+.js-m .scene.on .a-heart{animation:sc-heart 2.4s ease-out var(--d,0s) infinite both}
+.js-m .scene.on .a-coin{animation:sc-coin 1s var(--ease) var(--d,0s) both}
+@keyframes sc-drop{from{opacity:0;transform:translateY(-34px) scale(.6)}}
+@keyframes sc-pop{from{opacity:0;transform:scale(.4)}}
+@keyframes sc-draw{from{stroke-dashoffset:100}}
+@keyframes sc-ring{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(2.6)}}
+@keyframes sc-buzz{0%,70%,100%{transform:none}75%{transform:rotate(-12deg)}85%{transform:rotate(10deg)}95%{transform:rotate(-6deg)}}
+@keyframes sc-bob{50%{transform:translateY(-3px)}}
+@keyframes sc-slide{from{opacity:0;transform:translateY(-22px)}}
+@keyframes sc-arc{from{stroke-dasharray:0 var(--full)}}
+@keyframes sc-hand{from{transform:rotate(0)}}
+@keyframes sc-walk{from{transform:translateX(var(--fx))}}
+@keyframes sc-step{to{transform:translateY(-4px) rotate(2deg)}}
+@keyframes sc-beat{from{stroke-dashoffset:130}to{stroke-dashoffset:0}}
+@keyframes sc-rise{from{opacity:0;transform:translate(60px,40px) scale(.7)}}
+@keyframes sc-unroll{from{transform:scaleY(0)}}
+@keyframes sc-stamp{from{opacity:0;transform:scale(2.2) rotate(-25deg)}}
+@keyframes sc-heart{0%{opacity:0;transform:translateY(10px) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-46px) scale(1.1)}}
+@keyframes sc-coin{from{opacity:0;transform:translate(60px,20px) rotate(-180deg)}}
 
 /* static story (reduced motion, no script, short screens): every step visible */
 .film-list{list-style:none;margin:0;padding:0 0 96px;display:grid;gap:12px;counter-reset:s}
@@ -446,10 +510,6 @@ footer .base{border-top:1px solid var(--plum-line);padding:18px 28px;text-align:
   .figs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fig:nth-child(4n+1){padding-left:28px;border-left:1px solid var(--rule)}
   .fig:nth-child(2n+1){padding-left:0;border-left:0}
-  .row{grid-template-columns:56px minmax(0,1fr) auto;gap:16px 20px}
-  .row p{grid-column:2/-1;grid-row:2}
-  .row .art{width:56px;height:56px;border-radius:16px}
-  .row .track{grid-column:1/-1;justify-self:stretch;width:auto}
   .contact{position:static}
   footer .grid{grid-template-columns:1fr 1fr}
   .orbit{display:none}
@@ -517,12 +577,6 @@ footer .base{border-top:1px solid var(--plum-line);padding:18px 28px;text-align:
   .fig .v small{font-size:14px;margin-top:6px}
   .fig h3{font-size:16px}
   .fig p{font-size:13px}
-  .row{grid-template-columns:48px minmax(0,1fr);padding:22px 4px}
-  .row .art{width:48px;height:48px;border-radius:14px}
-  .row .art svg.i{width:24px;height:24px}
-  .row p{grid-column:1/-1}
-  .row .act{grid-column:1/-1;justify-self:stretch}
-  .row .act .btn{width:100%}
   .marq li{width:150px;height:80px}
   .phone{width:240px}
   .f-grid .opt{display:none}
@@ -541,90 +595,6 @@ footer .base{border-top:1px solid var(--plum-line);padding:18px 28px;text-align:
   .marq li[aria-hidden="true"]{display:none}
   .marq{mask-image:none;-webkit-mask-image:none}
   .band-line{white-space:normal;flex-wrap:wrap}
-}
-/* ===== Volo's Insights ===== */
-.vi{--s1:#c21f6e;--s2:#6d3fc0;--s3:#0f8a63;--cat1:#c21f6e;--cat2:#6d3fc0;--cat3:#0f8a63;background:linear-gradient(180deg,var(--paper),#fbf1f6);border-top:1px solid var(--rule)}
-.vi-top{display:grid;grid-template-columns:minmax(0,1.2fr) auto;gap:28px 40px;align-items:end}
-.vi-kicker{font-size:15px;font-weight:600;color:var(--magenta);margin-bottom:14px}
-.vi-top .lede{margin-top:16px}
-.vi-ctrl{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
-.vi-seg{display:inline-flex;padding:5px;gap:4px;border-radius:999px;background:#fff;border:1px solid var(--rule)}
-.vi-seg button{border:0;background:none;font:600 15px var(--sans);color:var(--ink-2);padding:0 20px;min-height:44px;border-radius:999px;cursor:pointer;transition:background .25s,color .25s}
-.vi-seg button[aria-checked="true"]{background:var(--ink);color:#fff}
-.vi-seg button:hover:not([aria-checked="true"]){color:var(--ink)}
-.vi-stamp{font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;gap:8px}
-.vi-sample{font-size:11.5px;font-weight:700;background:#fff3bf;color:#6b5000;border:1px dashed #d4a800;border-radius:999px;padding:1px 9px}
-.vi-how{margin-top:34px;padding:18px 22px;border-radius:18px;background:#fff;border:1px solid var(--rule);display:grid;grid-template-columns:auto 1fr;gap:4px 18px;align-items:baseline}
-.vi-how>b{font-family:var(--display);font-size:17px}
-.vi-how p{color:var(--ink-2);font-size:14.5px}
-.vi-how p b{color:var(--ink)}
-.vi-blk{margin-top:64px}
-.vi-bh{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;margin-bottom:22px}
-.vi-tag{width:44px;height:44px;border-radius:14px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font:800 19px var(--display)}
-.vi-bh h3{font-size:clamp(26px,2.8vw,38px);font-weight:800}
-.vi-bh p{color:var(--ink-2);margin-top:6px;max-width:46em}
-.vi-card{background:#fff;border:1px solid var(--rule);border-radius:24px;padding:24px;margin:0}
-.vi-a-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.4fr);gap:16px}
-.vi-tiles{display:grid;gap:12px;align-content:start}
-.vi-tiles.three{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:16px}
-.vi-tile{background:#fff;border:1px solid var(--rule);border-radius:22px;padding:20px 22px;border-top:4px solid var(--c)}
-.vi-tile .t-name{font-size:15px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:8px}
-.vi-tile .t-name i{width:10px;height:10px;border-radius:50%;background:var(--c)}
-.vi-tile .t-n{font-family:var(--display);font-size:clamp(36px,3.6vw,52px);font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-top:6px;font-variant-numeric:tabular-nums}
-.vi-tile .t-sub{font-size:13.5px;color:var(--ink-2)}
-.vi-steps{list-style:none;padding:0;margin:14px 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.vi-steps li{background:var(--paper);border-radius:12px;padding:9px 8px;text-align:center}
-.vi-steps b{display:block;font-family:var(--display);font-size:18px;font-variant-numeric:tabular-nums}
-.vi-steps span{font-size:11.5px;color:var(--ink-2);line-height:1.2;display:block}
-.vi-chart figcaption{display:flex;flex-direction:column;gap:4px}
-.vi-chart figcaption b{font-family:var(--display);font-size:19px}
-.vi-chart figcaption span{font-size:14.5px;color:var(--ink-2)}
-.vi-chart figcaption span strong{color:var(--ink)}
-.vi-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.vi-legend button{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule);background:#fff;border-radius:999px;padding:0 14px;min-height:36px;font:600 13.5px var(--sans);color:var(--ink);cursor:pointer;transition:opacity .2s,border-color .2s}
-.vi-legend button i{width:12px;height:12px;border-radius:3px;background:var(--c)}
-.vi-legend button[aria-pressed="false"]{opacity:.45}
-.vi-legend button[aria-pressed="false"] i{background:transparent;box-shadow:inset 0 0 0 2px var(--c)}
-.vi-plot{position:relative;margin-top:12px}
-.vi-plot svg{display:block;width:100%;height:auto;overflow:visible}
-.vi-plot .gl{stroke:#f1e4eb;stroke-width:1}
-.vi-plot .ax{fill:#8c7480;font:500 12px var(--sans)}
-.vi-plot .axb{fill:var(--ink);font:600 12.5px var(--sans)}
-.vi-plot .lbl{fill:var(--ink);font:700 12.5px var(--sans)}
-.vi-plot .hit{fill:transparent;cursor:crosshair}
-.vi-plot .xh{stroke:#b9a4af;stroke-width:1;stroke-dasharray:3 3}
-.vi-plot path,.vi-plot rect,.vi-plot circle{transition:opacity .25s}
-.vi-tbl{margin-top:12px;font-size:13.5px;color:var(--ink-2)}
-.vi-tbl summary{cursor:pointer;font-weight:600;color:var(--magenta);list-style:none}
-.vi-tbl summary::-webkit-details-marker{display:none}
-.vi-tbl table{width:100%;border-collapse:collapse;margin-top:8px}
-.vi-tbl th,.vi-tbl td{padding:6px 6px;border-bottom:1px solid var(--rule);text-align:right;font-variant-numeric:tabular-nums}
-.vi-tbl th:first-child,.vi-tbl td:first-child{text-align:left}
-.vi-b-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:40px;align-items:center}
-.vi-donut-wrap{max-width:380px;width:100%;margin:0 auto}
-.vi-cats{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.vi-cats li{display:grid;grid-template-columns:14px 1fr auto;gap:4px 14px;align-items:baseline;padding:14px 16px;border-radius:16px;border:1px solid var(--rule);cursor:default;transition:background .2s,border-color .2s}
-.vi-cats li.on{background:var(--paper);border-color:var(--c)}
-.vi-cats li i{width:14px;height:14px;border-radius:4px;background:var(--c);align-self:center}
-.vi-cats b{font-family:var(--display);font-size:18px}
-.vi-cats .n{font-family:var(--display);font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;text-align:right}
-.vi-cats .n small{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink-2);margin-left:6px}
-.vi-cats p{grid-column:2 / -1;font-size:13.5px;color:var(--ink-2)}
-.vi-tip{position:fixed;left:0;top:0;z-index:90;pointer-events:none;background:var(--ink);color:#fff;border-radius:12px;padding:9px 12px;font-size:13px;line-height:1.4;opacity:0;transform:translate(-50%,calc(-100% - 12px));transition:opacity .12s;max-width:calc(100vw - 24px)}
-.vi-tip b{font-size:14px}
-.vi-tip .r{display:flex;align-items:center;gap:8px;white-space:nowrap}
-.vi-tip .r i{width:10px;height:10px;border-radius:3px;background:var(--c)}
-@media (max-width:1000px){
-  .vi-top{grid-template-columns:1fr}.vi-ctrl{align-items:flex-start}
-  .vi-a-grid,.vi-b-grid{grid-template-columns:1fr}
-  .vi-tiles{grid-template-columns:1fr 1fr}
-}
-@media (max-width:640px){
-  .vi-seg{width:100%}.vi-seg button{flex:1;padding:0 8px}
-  .vi-how{grid-template-columns:1fr}
-  .vi-tiles,.vi-tiles.three{grid-template-columns:1fr}
-  .vi-card{padding:18px;border-radius:20px}
-  .vi-steps b{font-size:16px}
 }
 </style>
 <script>
@@ -654,6 +624,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
   <symbol id="doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></symbol>
   <symbol id="rupee" viewBox="0 0 24 24"><path d="M6 3h12M6 8h12M6 13h3a5 5 0 0 0 0-10M6 13l9 8"/></symbol>
   <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="priya" viewBox="-20 -72 40 72"><circle cx="0" cy="-58" r="12"/><path d="M-16 0v-28c0-14 7-22 16-22s16 8 16 22V0Z"/></symbol>
   <symbol id="megaphone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
 </svg>
 
@@ -674,7 +645,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
       <div class="links" id="navlinks"><span class="ind" aria-hidden="true"></span>
         <a href="#help">Get help</a>
         <a href="#story">How it works</a>
-        <a href="#insights">Insights</a>
+        <a href="mockup11-insights.html">Insights</a>
         <a href="#trust">Trusted by</a>
         <a href="#app">App</a>
         <a href="#hr">For HR</a>
@@ -703,7 +674,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     <nav class="mnav-sec" aria-label="Sections">
       <a href="#help">Get help</a>
       <a href="#story">How it works</a>
-      <a href="#insights">Insights</a>
+      <a href="mockup11-insights.html">Insights</a>
       <a href="#trust">Trusted by</a>
       <a href="#app">App</a>
       <a href="#hr">For HR</a>
@@ -788,45 +759,75 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
   </div>
 </section>
 
-<!-- ============ GET HELP: four rows, one action each ============ -->
+<!-- ============ GET HELP: four cards, one action each ============ -->
 <section class="sec" id="help" aria-labelledby="help-h">
   <div class="w">
     <div class="sec-h" data-rv>
       <h2 id="help-h">What do you need right now?</h2>
       <p class="lede">Pick what's happening and go straight to it.</p>
     </div>
-    <div class="rows">
-      <article class="row" data-rv>
-        <span class="art" aria-hidden="true"><svg class="i"><use href="#hosp"/></svg></span>
-        <h3>I'm at the hospital</h3>
+    <div class="hcards">
+      <article class="hc dark" data-rv>
+        <div class="hc-art" aria-hidden="true">
+          <svg viewBox="0 0 240 120">
+            <rect x="104" y="40" width="76" height="72" rx="5" fill="#3a1a2c"/>
+            <rect x="118" y="56" width="13" height="11" rx="2" fill="#8d7181"/><rect x="154" y="56" width="13" height="11" rx="2" fill="#8d7181"/>
+            <rect x="140" y="80" width="12" height="32" rx="2" fill="#d8c4cf"/>
+            <g class="ia-pulse"><rect x="110" y="18" width="24" height="24" rx="5" fill="#c21f6e"/><path d="M122 23v14M115 30h14" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g class="ia-card"><rect x="58" y="74" width="58" height="34" rx="5" fill="#fff"/><path d="M63 74h48a5 5 0 0 1 5 5v4H58v-4a5 5 0 0 1 5-5Z" fill="#c21f6e"/><rect x="64" y="90" width="36" height="4" rx="2" fill="#c21f6e"/><rect x="64" y="98" width="26" height="3" rx="1.5" fill="#e8c9d6"/></g>
+          </svg>
+        </div>
+        <h3>At the hospital now</h3>
         <p>Show your e-card at the insurance desk. You'll have a cashless decision within the hour.</p>
-        <div class="act"><a class="btn btn-m" href="https://wallet.volohealthtpa.com/">Get my e-card</a></div>
+        <div class="hc-act"><a class="btn btn-m" href="https://wallet.volohealthtpa.com/">Get my e-card</a></div>
       </article>
-      <article class="row" data-rv>
-        <span class="art" aria-hidden="true"><svg class="i"><use href="#rupee"/></svg></span>
-        <h3>I paid, I want it back</h3>
+      <article class="hc" data-rv style="--d:.08s">
+        <div class="hc-art" aria-hidden="true">
+          <svg viewBox="0 0 240 120">
+            <path d="M92 14h52v90l-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5Z" fill="#fff" stroke="#eed3df"/>
+            <rect x="102" y="30" width="26" height="4" rx="2" fill="#ecc9d8"/><rect x="102" y="42" width="20" height="4" rx="2" fill="#ecc9d8"/><rect x="102" y="54" width="24" height="4" rx="2" fill="#ecc9d8"/>
+            <rect class="ia-bar" x="102" y="70" width="32" height="5" rx="2.5" fill="#c21f6e"/>
+            <g class="ia-coin"><circle cx="152" cy="38" r="15" fill="#f2b33d"/><text x="152" y="44" text-anchor="middle" font-size="17" font-weight="800" fill="#24121c">₹</text></g>
+          </svg>
+        </div>
+        <h3>Get money back</h3>
         <p>Paid the hospital yourself? Claim it back within 7 days of discharge.</p>
-        <div class="act"><a class="btn btn-ink" href="https://wallet.volohealthtpa.com/">Submit a claim</a></div>
+        <div class="hc-act"><a class="btn btn-ink" href="https://wallet.volohealthtpa.com/">Submit a claim</a></div>
       </article>
-      <article class="row" data-rv id="track">
-        <span class="art" aria-hidden="true"><svg class="i"><use href="#search"/></svg></span>
-        <h3>Where's my claim?</h3>
-        <p>The number is on our SMS or email. Try CLM260001.</p>
-        <div class="track">
+      <article class="hc" data-rv style="--d:.16s" id="track">
+        <div class="hc-art" aria-hidden="true">
+          <svg viewBox="0 0 240 120">
+            <rect x="82" y="22" width="70" height="78" rx="9" fill="#fff" stroke="#eed3df"/>
+            <circle cx="98" cy="42" r="6" fill="#c21f6e"/><rect x="110" y="39" width="30" height="5" rx="2.5" fill="#ecc9d8"/>
+            <circle cx="98" cy="61" r="6" fill="#c21f6e"/><rect x="110" y="58" width="22" height="5" rx="2.5" fill="#ecc9d8"/>
+            <circle cx="98" cy="80" r="6" fill="#ecc9d8"/><rect x="110" y="77" width="26" height="5" rx="2.5" fill="#ecc9d8"/>
+            <g class="ia-scan"><circle cx="160" cy="50" r="15" fill="none" stroke="#1a0912" stroke-width="5"/><path d="m171 61 13 13" stroke="#1a0912" stroke-width="6" stroke-linecap="round"/></g>
+          </svg>
+        </div>
+        <h3>Track a claim</h3>
+        <div class="hc-act track">
           <form class="track-form" id="claim-form" novalidate>
             <label for="claim-id" class="sr">Claim number</label>
-            <input id="claim-id" name="claimId" autocomplete="off" placeholder="CLM260001" aria-describedby="claim-err" />
-            <button class="btn btn-m" type="submit" id="claim-go">Check status</button>
+            <input id="claim-id" name="claimId" autocomplete="off" placeholder="CLM260001" aria-describedby="claim-hint claim-err" />
+            <button class="btn btn-m" type="submit" id="claim-go">Check</button>
           </form>
           <p class="t-err" id="claim-err"></p>
           <div class="t-out" id="claim-out" aria-live="polite"></div>
+          <p class="hc-hint" id="claim-hint">It's on your SMS or email from us. Try CLM260001.</p>
         </div>
       </article>
-      <article class="row" data-rv>
-        <span class="art" aria-hidden="true"><svg class="i"><use href="#pin"/></svg></span>
-        <h3>Find a cashless hospital</h3>
-        <p><span class="demo">8,000+</span> network hospitals across India.</p>
-        <div class="act"><a class="btn btn-ink" href="https://wallet.volohealthtpa.com/public/hospital-network">Find near me</a></div>
+      <article class="hc" data-rv style="--d:.24s">
+        <div class="hc-art" aria-hidden="true">
+          <svg viewBox="0 0 240 120">
+            <path d="M74 28l34-10v80l-34 10Z" fill="#fff" stroke="#eed3df"/><path d="M108 18l40 10v80l-40-10Z" fill="#f8f1f4" stroke="#eed3df"/><path d="M148 28l34-10v80l-34 10Z" fill="#fff" stroke="#eed3df"/>
+            <g transform="translate(97 58)"><g class="ia-pin" style="--d:0s"><path d="M0 0c-8-9-12-14-12-21a12 12 0 0 1 24 0c0 7-4 12-12 21Z" fill="#c21f6e"/><circle cy="-21" r="4.5" fill="#fff"/></g></g>
+            <g transform="translate(130 80)"><g class="ia-pin" style="--d:.25s"><path d="M0 0c-8-9-12-14-12-21a12 12 0 0 1 24 0c0 7-4 12-12 21Z" fill="#c21f6e"/><circle cy="-21" r="4.5" fill="#fff"/></g></g>
+            <g transform="translate(166 50)"><g class="ia-pin" style="--d:.5s"><path d="M0 0c-8-9-12-14-12-21a12 12 0 0 1 24 0c0 7-4 12-12 21Z" fill="#3ecf8e"/><circle cy="-21" r="4.5" fill="#fff"/></g></g>
+          </svg>
+        </div>
+        <h3>Find a hospital</h3>
+        <p><span class="demo">8,000+</span> cashless hospitals across India.</p>
+        <div class="hc-act"><a class="btn btn-ink" href="https://wallet.volohealthtpa.com/public/hospital-network">Find near me</a></div>
       </article>
     </div>
   </div>
@@ -836,7 +837,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
 <section class="story" id="story" aria-labelledby="story-h">
   <div class="w story-intro">
     <h2 id="story-h" data-rv>One claim, two sides.</h2>
-    <p class="lede" data-rv style="--d:.08s">Priya is in hospital for one night. On the left is what her family sees. On the right is what we're doing at the same moment.</p>
+    <p class="lede" data-rv style="--d:.08s">Priya has a planned surgery. On the left is what she sees. On the right is what we're doing at the same moment.</p>
     <ul class="keys" data-rv style="--d:.16s" aria-label="Colour key: who is acting">
       <li><i style="--c:var(--c-mem)"></i>Priya</li><li><i style="--c:var(--c-hos)"></i>Hospital</li><li><i style="--c:var(--c-vol)"></i>Volo</li><li><i style="--c:var(--c-ins)"></i>Insurer</li>
     </ul>
@@ -844,37 +845,33 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
 
   <div class="film" id="film" data-step="-1">
     <div class="side fam" id="side-fam">
-      <p class="side-h" aria-hidden="true"><i style="--c:var(--c-mem)"></i>At the hospital <span>what her family sees</span></p>
+      <p class="side-h" aria-hidden="true"><i style="--c:var(--c-mem)"></i>Priya's side <span>what she sees</span></p>
       <div class="vig" id="vig" aria-hidden="true">
-        <!-- 1 desk: her husband hands over the e-card -->
-        <svg class="scene" viewBox="0 0 320 200"><rect x="40" y="118" width="240" height="14" rx="4" fill="#3a1a2c"/><rect x="58" y="132" width="204" height="56" rx="6" fill="#2a1220"/><rect x="196" y="62" width="62" height="40" rx="6" fill="#2a1220" stroke="#f2b33d" stroke-width="2"/><path d="M212 76h30M212 86h20" stroke="#f2b33d" stroke-width="3" stroke-linecap="round"/><circle cx="110" cy="62" r="13" fill="#f9e3ec"/><path d="M88 118c0-24 10-38 22-38s22 14 22 38" fill="#f9e3ec"/><g class="ani-card"><rect x="134" y="96" width="44" height="28" rx="4" fill="#fff"/><rect x="134" y="96" width="44" height="8" rx="3" fill="#8b2060"/><rect x="139" y="110" width="20" height="3" rx="1.5" fill="#c21f6e"/></g><circle cx="76" cy="70" r="11" fill="#f3cfde" opacity=".7"/><path d="M58 118c0-20 8-32 18-32s18 12 18 32" fill="#f3cfde" opacity=".7"/></svg>
-        <!-- 2 ward: admitted, drip, heartbeat -->
-        <svg class="scene" viewBox="0 0 320 200"><path d="M60 92v76M60 140h200v28M260 140v-16a14 14 0 0 0-14-14h-96v30" stroke="#f9e3ec" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="96" cy="122" r="13" fill="#f9e3ec"/><rect x="112" y="116" width="124" height="22" rx="10" fill="#f3cfde" opacity=".8"/><path d="M286 40v110M276 40h20" stroke="#f9e3ec" stroke-width="3" stroke-linecap="round"/><rect x="278" y="48" width="16" height="22" rx="4" fill="#f2b33d"/><rect x="186" y="26" width="76" height="46" rx="8" fill="#2a1220" stroke="#f2b33d" stroke-width="2"/><path class="ani-beat" d="M192 50h16l6-12 8 22 6-10h28" stroke="#f2b33d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/></svg>
-        <!-- 3 the family's phone gets our message -->
-        <svg class="scene" viewBox="0 0 320 200"><g class="ani-buzz"><rect x="118" y="18" width="84" height="164" rx="16" fill="#2a1220" stroke="#f9e3ec" stroke-width="3"/><rect x="146" y="26" width="28" height="5" rx="2.5" fill="#f9e3ec" opacity=".4"/><rect x="128" y="62" width="64" height="44" rx="10" fill="#e0468f"/><path d="M136 76h40M136 86h30M136 96h22" stroke="#fff" stroke-width="3" stroke-linecap="round"/><rect x="128" y="114" width="46" height="20" rx="8" fill="#f9e3ec" opacity=".25"/></g><path class="ani-wave" d="M220 70a26 26 0 0 1 0 40M232 58a42 42 0 0 1 0 64M100 70a26 26 0 0 0 0 40M88 58a42 42 0 0 0 0 64" stroke="#e0468f" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
-        <!-- 4 treatment carries on: sitting up, approval in place -->
-        <svg class="scene" viewBox="0 0 320 200"><path d="M60 92v76M60 140h200v28M260 140v-16a14 14 0 0 0-14-14h-96v30" stroke="#f9e3ec" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="112" cy="86" r="13" fill="#f9e3ec"/><path d="M98 140c0-26 6-40 16-40s16 10 18 22l40 0" stroke="#f9e3ec" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="140" y="116" width="98" height="22" rx="10" fill="#f3cfde" opacity=".8"/><g class="ani-pop"><circle cx="240" cy="62" r="28" fill="#e0468f"/><path d="m226 62 9 9 18-18" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
-        <!-- 5 discharge: standing at the door, final bill goes out -->
-        <svg class="scene" viewBox="0 0 320 200"><rect x="196" y="40" width="70" height="140" rx="6" fill="#2a1220" stroke="#f9e3ec" stroke-width="3"/><circle cx="252" cy="112" r="4" fill="#f9e3ec"/><circle cx="130" cy="64" r="14" fill="#f9e3ec"/><path d="M112 180v-46c0-26 8-46 18-46s18 20 18 46v46" fill="#f9e3ec"/><g class="ani-bill"><path d="M50 70h40v56l-6-4-7 4-7-4-7 4-6-4-7 4Z" fill="#f2b33d"/><path d="M58 84h24M58 94h18M58 104h22" stroke="#1a0912" stroke-width="3" stroke-linecap="round"/></g></svg>
-        <!-- 6 home: well again -->
-        <svg class="scene" viewBox="0 0 320 200"><path d="M70 102 160 34l90 68" stroke="#f9e3ec" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M88 92v86h144V92" fill="#2a1220" stroke="#f9e3ec" stroke-width="4"/><rect x="140" y="128" width="40" height="50" rx="4" fill="#3a1a2c"/><circle cx="118" cy="122" r="12" fill="#f9e3ec"/><path d="M104 178v-26c0-12 6-20 14-20s14 8 14 20v26" fill="#f9e3ec"/><g class="ani-pop"><circle cx="230" cy="58" r="24" fill="#3ecf8e"/><path d="m219 58 7 7 14-14" stroke="#1a0912" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+        <!-- 1 plan: with Volo, she finds a cashless hospital nearby and raises the request -->
+        <svg class="scene" viewBox="0 0 320 200"><path d="M22 100 72 62l50 38" stroke="#f9e3ec" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/><path d="M34 92v88h76V92" fill="#2a1220" stroke="#f9e3ec" stroke-width="3" opacity=".5"/><g class="a-bob"><use href="#priya" x="52" y="108" width="40" height="72" fill="#f9e3ec"/></g><rect class="a-buzz" x="84" y="130" width="12" height="20" rx="3" fill="#e0468f"/><rect x="146" y="14" width="160" height="172" rx="20" fill="#2a1220" stroke="#f9e3ec" stroke-width="3"/><rect x="156" y="28" width="140" height="112" rx="10" fill="#3a1a2c"/><path d="M156 72h140M196 28v112M252 28v112M156 116c40-10 84 8 140-4" stroke="#5a3048" stroke-width="5" fill="none"/><path class="a-draw" style="--d:.9s" d="M172 132C192 124 200 104 214 96s34-12 50-40" stroke="#e0468f" stroke-width="3" fill="none" stroke-linecap="round" pathLength="100"/><circle cx="172" cy="132" r="5" fill="#f9e3ec"/><g transform="translate(212 66)"><g class="a-drop" style="--d:0.2s"><path d="M0 0c-7-8-11-13-11-19a11 11 0 0 1 22 0c0 6-4 11-11 19Z" fill="#7d5a6c"/><circle cy="-19" r="4" fill="#2a1220"/></g></g><g transform="translate(276 112)"><g class="a-drop" style="--d:0.35s"><path d="M0 0c-7-8-11-13-11-19a11 11 0 0 1 22 0c0 6-4 11-11 19Z" fill="#7d5a6c"/><circle cy="-19" r="4" fill="#2a1220"/></g></g><circle class="a-ring" style="--d:1.6s" cx="264" cy="52" r="10" fill="none" stroke="#3ecf8e" stroke-width="2"/><g transform="translate(264 58)"><g class="a-drop" style="--d:0.5s"><path d="M0 0c-7-8-11-13-11-19a11 11 0 0 1 22 0c0 6-4 11-11 19Z" fill="#3ecf8e"/><circle cy="-19" r="4" fill="#2a1220"/></g></g><g class="a-pop" style="--d:1.5s"><rect x="160" y="150" width="132" height="24" rx="12" fill="#3ecf8e"/><text x="226.0" y="166" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1a0912">Cashless · 2.1 km</text></g><g class="a-pop" style="--d:2s"><path d="M14 14h118a10 10 0 0 1 10 10v16a10 10 0 0 1-10 10H40l-12 10v-10H14A10 10 0 0 1 4 40V24a10 10 0 0 1 10-10Z" fill="#c21f6e"/><text x="73" y="37" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">Volo: we'll guide you</text></g></svg>
+        <!-- 2 approved within the hour, before she arrives -->
+        <svg class="scene" viewBox="0 0 320 200"><path d="M22 100 72 62l50 38" stroke="#f9e3ec" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/><path d="M34 92v88h76V92" fill="#2a1220" stroke="#f9e3ec" stroke-width="3" opacity=".5"/><use href="#priya" x="52" y="108" width="40" height="72" fill="#f9e3ec"/><rect x="120" y="22" width="92" height="160" rx="16" fill="#2a1220" stroke="#f9e3ec" stroke-width="3"/><rect x="152" y="30" width="28" height="5" rx="2.5" fill="#f9e3ec" opacity=".4"/><g class="a-slide" style="--d:.3s"><rect x="128" y="52" width="76" height="62" rx="10" fill="#e0468f"/><text x="166" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Pre-approved</text><path d="M138 84h56M138 94h40" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/></g><g class="a-pop" style="--d:1.0s"><circle cx="166" cy="140" r="16" fill="#3ecf8e"/><path d="m159.3 140 4.8 4.8 9.6-9.6" stroke="#1a0912" stroke-width="3.0" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g class="clk"><circle cx="262" cy="78" r="38" fill="#2a1220" stroke="#5a3048" stroke-width="6"/><circle class="a-arc" cx="262" cy="78" r="38" fill="none" stroke="#3ecf8e" stroke-width="6" stroke-linecap="round" pathLength="60" style="--full:60;stroke-dasharray:38 60;--d:0.4s" transform="rotate(-90 262 78)"/><circle cx="262" cy="40" r="4" fill="#f9e3ec"/><line class="a-hand" x1="262" y1="78" x2="262" y2="52" stroke="#f9e3ec" stroke-width="4" stroke-linecap="round" style="--deg:228deg;--d:0.4s;transform-origin:262px 78px"/><circle cx="262" cy="78" r="5" fill="#f9e3ec"/><text class="a-pop" style="--d:1.7000000000000002s" x="262" y="140" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">38 min</text><text x="262" y="156" text-anchor="middle" font-size="11" fill="rgba(249,227,236,.75)">IRDAI limit: 1 hour</text></g></svg>
+        <!-- 3 admitted, treatment begins; the hospital asks for more and we approve it -->
+        <svg class="scene" viewBox="0 0 320 200"><path d="M0 180h320" stroke="#5a3048" stroke-width="3"/><rect x="188" y="52" width="112" height="128" rx="6" fill="#2a1220" stroke="#f2b33d" stroke-width="2.5"/><rect x="226" y="30" width="36" height="28" rx="6" fill="#f2b33d"/><path d="M244 36v16M236 44h16" stroke="#1a0912" stroke-width="4" stroke-linecap="round"/><rect x="230" y="140" width="28" height="40" rx="3" fill="#3a1a2c" stroke="#f2b33d" stroke-width="2"/><rect x="198" y="66" width="92" height="44" rx="6" fill="#1a0912"/><path d="M204 90h18l6-14 9 26 7-14h40" stroke="#f2b33d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".3"/><path class="a-beat" d="M204 90h18l6-14 9 26 7-14h40" stroke="#f2b33d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/><g class="a-walk" style="--fx:-170px"><g class="a-step"><use href="#priya" x="200" y="108" width="40" height="72" fill="#f9e3ec"/></g></g><g class="a-rise" style="--d:2.0s"><rect x="24" y="40" width="150" height="24" rx="12" fill="#f2b33d"/><text x="99.0" y="56" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1a0912">+ ₹ Enhancement</text></g><g class="a-pop" style="--d:2.9s"><rect x="24" y="74" width="150" height="24" rx="12" fill="#e0468f"/><path d="m38 86 4 4 8-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="106" y="90" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff">Approved by Volo</text></g></svg>
+        <!-- 4 the final bill goes in and discharge is approved -->
+        <svg class="scene" viewBox="0 0 320 200"><rect x="14" y="40" width="70" height="140" rx="6" fill="#2a1220" stroke="#f2b33d" stroke-width="2.5"/><circle cx="72" cy="112" r="4" fill="#f2b33d"/><use href="#priya" x="88" y="108" width="40" height="72" fill="#f9e3ec"/><g class="a-unroll" style="--d:.2s"><path d="M136 28h60v110l-7.5-6-7.5 6-7.5-6-7.5 6-7.5-6-7.5 6-7.5-6-7.5 6Z" fill="#f2b33d"/><text x="166" y="48" text-anchor="middle" font-size="10" font-weight="800" fill="#1a0912">FINAL BILL</text><path d="M146 64h40M146 76h28M146 88h36M146 100h22" stroke="#1a0912" stroke-width="3" stroke-linecap="round" opacity=".7"/></g><g class="a-stamp" style="--d:1.2s"><circle cx="184" cy="120" r="22" fill="#e0468f"/><path d="m174 120 7 7 14-14" stroke="#fff" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g class="clk"><circle cx="266" cy="78" r="38" fill="#2a1220" stroke="#5a3048" stroke-width="6"/><circle class="a-arc" cx="266" cy="78" r="38" fill="none" stroke="#3ecf8e" stroke-width="6" stroke-linecap="round" pathLength="180" style="--full:180;stroke-dasharray:130 180;--d:0.4s" transform="rotate(-90 266 78)"/><circle cx="266" cy="40" r="4" fill="#f9e3ec"/><line class="a-hand" x1="266" y1="78" x2="266" y2="52" stroke="#f9e3ec" stroke-width="4" stroke-linecap="round" style="--deg:260deg;--d:0.4s;transform-origin:266px 78px"/><circle cx="266" cy="78" r="5" fill="#f9e3ec"/><text class="a-pop" style="--d:1.7000000000000002s" x="266" y="140" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">2 hr 10 min</text><text x="266" y="156" text-anchor="middle" font-size="11" fill="rgba(249,227,236,.75)">IRDAI limit: 3 hours</text></g></svg>
+        <!-- 5 home, happy; the insurer pays the hospital -->
+        <svg class="scene" viewBox="0 0 320 200"><path d="M60 100 140 40l80 60" stroke="#f9e3ec" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M76 92v88h128V92" fill="#2a1220" stroke="#f9e3ec" stroke-width="4"/><rect x="150" y="128" width="36" height="52" rx="4" fill="#3a1a2c"/><g class="a-walk" style="--fx:150px"><g class="a-step"><use href="#priya" x="108" y="108" width="40" height="72" fill="#f9e3ec"/></g></g><path class="a-heart" style="--d:1.6s" d="M128 96c-6-6-12-2-10 4l10 10 10-10c2-6-4-10-10-4Z" fill="#e0468f"/><path class="a-heart" style="--d:2.2s" d="M106 86c-4-4-9-1-7 3l7 7 7-7c2-4-3-7-7-3Z" fill="#f3cfde"/><path class="a-heart" style="--d:2.8s" d="M146 80c-4-4-9-1-7 3l7 7 7-7c2-4-3-7-7-3Z" fill="#e0468f"/><g class="a-pop" style="--d:1.8s"><circle cx="266" cy="62" r="26" fill="#3ecf8e"/><path d="m255.1 62 7.8 7.8 15.6-15.6" stroke="#1a0912" stroke-width="4.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g class="a-pop" style="--d:2.2s"><rect x="216" y="98" width="100" height="24" rx="12" fill="#3ecf8e"/><text x="266.0" y="114" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1a0912">Claim settled</text></g><g class="a-coin" style="--d:2.6s"><circle cx="266" cy="148" r="14" fill="#f2b33d"/><text x="266" y="154" text-anchor="middle" font-size="15" font-weight="800" fill="#1a0912">₹</text></g></svg>
       </div>
       <div class="lines" id="lines" aria-hidden="true">
-        <p>Priya arrives unwell. Her husband hands her e-card to the insurance desk.</p>
-        <p>She's admitted and treatment starts. The hospital sends us the cashless request.</p>
-        <p>Her family's phone buzzes. We've got her claim.</p>
-        <p>Approved. Her care carries on, and nobody asks them to pay for it.</p>
-        <p>She's well again. The hospital sends us the final bill.</p>
-        <p>Priya goes home. She pays only for what her policy doesn't cover.</p>
+        <p>Her surgery is planned. With our help she picks a cashless hospital nearby and raises the request.</p>
+        <p>Approved within the hour, before she even packs her bag.</p>
+        <p>She's admitted and treatment begins. When it needs more, we approve the extra.</p>
+        <p>She's ready to go. The final bill goes in and her discharge is approved.</p>
+        <p>Priya goes home happy. Her claim is settled with the hospital.</p>
       </div>
       <div class="dots" id="dots" role="group" aria-label="Story steps">
-        <button type="button" style="--c:var(--c-mem)" aria-label="Step 1: At the insurance desk"><i></i></button>
-        <button type="button" style="--c:var(--c-hos)" aria-label="Step 2: Admitted, request sent"><i></i></button>
-        <button type="button" style="--c:var(--c-vol)" aria-label="Step 3: Acknowledged in 5 minutes"><i></i></button>
-        <button type="button" style="--c:var(--c-vol)" aria-label="Step 4: Approved within the hour"><i></i></button>
-        <button type="button" style="--c:var(--c-hos)" aria-label="Step 5: Discharge"><i></i></button>
-        <button type="button" style="--c:var(--c-ins)" aria-label="Step 6: Home"><i></i></button>
-        <span class="count" id="count">1 of 6</span>
+        <button type="button" style="--c:var(--c-mem)" aria-label="Step 1: Find a hospital, raise the request"><i></i></button>
+        <button type="button" style="--c:var(--c-vol)" aria-label="Step 2: Planned hospitalisation approved"><i></i></button>
+        <button type="button" style="--c:var(--c-hos)" aria-label="Step 3: Admitted, treatment and enhancement"><i></i></button>
+        <button type="button" style="--c:var(--c-vol)" aria-label="Step 4: Final bill and discharge approved"><i></i></button>
+        <button type="button" style="--c:var(--c-ins)" aria-label="Step 5: Home, claim settled"><i></i></button>
+        <span class="count" id="count">1 of 5</span>
       </div>
     </div>
 
@@ -882,17 +879,16 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
       <p class="side-h" aria-hidden="true"><i style="--c:var(--c-vol)"></i>At Volo <span>what we're doing</span></p>
       <div class="file" id="file" aria-hidden="true">
         <div class="file-top">
-          <div><b>Priya Sharma</b><span>Cashless claim, network hospital, Pune</span></div>
-          <span class="state" id="state"><i></i><span id="state-t">Policy on file</span></span>
+          <div><b>Priya Sharma</b><span>Planned cashless claim, network hospital, Pune</span></div>
+          <span class="state" id="state"><i></i><span id="state-t">Request in</span></span>
         </div>
         <ol class="log" id="log">
-          <li style="--c:var(--c-vol)"><i></i><div><b>Policy on file, cover active</b><span>Her e-card details match. Ready before she reaches the desk.</span></div><em>24x7</em></li>
-          <li style="--c:var(--c-hos)"><i></i><div><b>Cashless request received</b><span>From the hospital, with her diagnosis and estimate.</span></div><em>Request in</em></li>
-          <li style="--c:var(--c-vol)"><i></i><div><b>Claim acknowledged</b><span>SMS and WhatsApp sent to Priya's family.</span></div><em>Within 5 min, our promise</em></li>
-          <li style="--c:var(--c-vol)"><i></i><div><b>Approved by our doctors</b><span>Hospital told, insurer kept informed.</span>
+          <li style="--c:var(--c-hos)"><i></i><div><b>Planned hospitalisation request in</b><span>We guided her to a network hospital. It sent the request with her diagnosis and estimate. No deposit needed.</span></div><em>Guided by Volo</em></li>
+          <li style="--c:var(--c-vol)"><i></i><div><b>Pre-approved by our doctors</b><span>Hospital told, Priya told by SMS and WhatsApp, insurer kept informed.</span>
             <ul class="checks"><li><svg class="i"><use href="#check"/></svg>Treatment covered</li><li><svg class="i"><use href="#check"/></svg>Documents complete</li><li><svg class="i"><use href="#check"/></svg>Sum insured available</li></ul></div><em>Within 1 hour, IRDAI's limit</em></li>
-          <li style="--c:var(--c-hos)"><i></i><div><b>Final bill approved</b><span>Checked against the policy, so discharge isn't held up.</span></div><em>Within 3 hours, IRDAI's limit</em></li>
-          <li style="--c:var(--c-ins)"><i></i><div><b>Insurer paid the hospital</b><span>Claim closed. Priya never handled the bill.</span></div><em>Settled</em></li>
+          <li style="--c:var(--c-hos)"><i></i><div><b>Enhancement approved</b><span>Treatment needed more than estimated. The hospital asked, we approved, and care never paused.</span></div><em>Care never paused</em></li>
+          <li style="--c:var(--c-vol)"><i></i><div><b>Final bill in, discharge approved</b><span>Checked against her policy, so she isn't kept waiting at the desk.</span></div><em>Within 3 hours, IRDAI's limit</em></li>
+          <li style="--c:var(--c-ins)"><i></i><div><b>Insurer paid the hospital</b><span>Claim settled. Priya pays only for what her policy doesn't cover.</span></div><em>Settled</em></li>
         </ol>
       </div>
       <p class="ins" id="ins" aria-hidden="true"><i></i>Insurer <span>Priya's policy</span></p>
@@ -906,12 +902,11 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
   <!-- the same story as a list: read by screen readers, and shown when the film doesn't run -->
   <div class="w">
     <ol class="film-list" id="film-list">
-      <li style="--c:var(--c-mem)"><div><b>At the insurance desk</b><p>Priya arrives unwell. Her husband hands her e-card to the insurance desk.</p></div><div class="vol"><b>At Volo</b><p>Her policy is already on file and her cover is active.</p></div></li>
-      <li style="--c:var(--c-hos)"><div><b>Admitted, request sent</b><p>She's admitted and treatment starts. The hospital sends us the cashless request.</p></div><div class="vol"><b>At Volo</b><p>The request lands with her diagnosis and estimate.</p></div></li>
-      <li style="--c:var(--c-vol)"><div><b>Acknowledged in 5 minutes</b><p>Her family's phone buzzes. We've got her claim.</p></div><div class="vol"><b>At Volo</b><p>We acknowledge it by SMS and WhatsApp.</p><span class="t">Within 5 min, our promise</span></div></li>
-      <li style="--c:var(--c-vol)"><div><b>Approved within the hour</b><p>Approved. Her care carries on, and nobody asks them to pay for it.</p></div><div class="vol"><b>At Volo</b><p>Our doctors check the treatment against her policy, tell the hospital and keep the insurer informed.</p><span class="t">Within 1 hour, IRDAI's limit</span></div></li>
-      <li style="--c:var(--c-hos)"><div><b>Discharge</b><p>She's well again. The hospital sends us the final bill.</p></div><div class="vol"><b>At Volo</b><p>We approve the final bill, so discharge isn't held up.</p><span class="t">Within 3 hours, IRDAI's limit</span></div></li>
-      <li style="--c:var(--c-ins)"><div><b>Home</b><p>Priya goes home. She pays only for what her policy doesn't cover.</p></div><div class="vol"><b>At Volo</b><p>The insurer pays the hospital directly and we close the claim.</p><span class="t">Settled</span></div></li>
+      <li style="--c:var(--c-mem)"><div><b>Find a hospital, raise the request</b><p>Her surgery is planned. With our help she picks a cashless network hospital nearby and raises the planned hospitalisation request.</p></div><div class="vol"><b>At Volo</b><p>We guide her to the right hospital, and the request lands with her diagnosis and estimate. No deposit needed.</p><span class="t">Guided by Volo</span></div></li>
+      <li style="--c:var(--c-vol)"><div><b>Planned hospitalisation approved</b><p>Approved within the hour, before she even packs her bag.</p></div><div class="vol"><b>At Volo</b><p>Our doctors check the treatment against her policy, tell the hospital and Priya, and keep the insurer informed.</p><span class="t">Within 1 hour, IRDAI's limit</span></div></li>
+      <li style="--c:var(--c-hos)"><div><b>Admitted, treatment begins</b><p>She shows her e-card and ID at the desk and treatment starts. When it needs more, the hospital raises an enhancement.</p></div><div class="vol"><b>At Volo</b><p>We approve the enhancement while treatment carries on.</p><span class="t">Care never paused</span></div></li>
+      <li style="--c:var(--c-vol)"><div><b>Final bill and discharge approved</b><p>She's ready to go. The hospital submits the final bill.</p></div><div class="vol"><b>At Volo</b><p>We check the bill and approve her discharge.</p><span class="t">Within 3 hours, IRDAI's limit</span></div></li>
+      <li style="--c:var(--c-ins)"><div><b>Home, claim settled</b><p>Priya goes home happy. She pays only for what her policy doesn't cover.</p></div><div class="vol"><b>At Volo</b><p>The insurer pays the hospital directly and we close the claim.</p><span class="t">Settled</span></div></li>
     </ol>
   </div>
 
@@ -945,71 +940,8 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
       <div class="fig" data-rv style="--d:.10s"><span class="v" data-count="4" data-suf=" lakh+">4 lakh+</span><h3>Claims settled</h3><p>Cashless and reimbursement, <span class="demo">FY 2025-26</span>.</p></div>
       <div class="fig" data-rv style="--d:.15s"><span class="v" data-count="8000" data-suf="+">8,000+<small>hospitals</small></span><h3>Cashless network</h3><p>Hospitals across India where you pay nothing upfront.</p></div>
     </div>
-    <p class="figs-note">IRDAI requires a cashless decision within 60 minutes. The average above is ours.</p>
+    <p class="figs-note">IRDAI requires a cashless decision within 60 minutes. The average above is ours. <a class="link" href="mockup11-insights.html">See today's claim insights</a></p>
   </div>
-</section>
-
-<!-- ============ VOLO'S INSIGHTS ============ -->
-<section class="sec vi" id="insights" aria-labelledby="vi-h">
-  <div class="w">
-    <div class="vi-top">
-      <div>
-        <p class="vi-kicker">Volo's Insights</p>
-        <h2 id="vi-h" class="big">Our numbers speak for themselves.</h2>
-        <p class="lede">How many claims we handle, and how quickly we decide them. Choose a period and every chart below updates.</p>
-      </div>
-      <div class="vi-ctrl">
-        <div class="vi-seg" role="radiogroup" aria-label="Time period">
-          <button type="button" role="radio" aria-checked="true" data-p="today">Today</button>
-          <button type="button" role="radio" aria-checked="false" data-p="week">Weekly</button>
-          <button type="button" role="radio" aria-checked="false" data-p="month">Monthly</button>
-        </div>
-        <p class="vi-stamp"><span id="vi-stamp">Today, 12:00 am to now</span> <b class="vi-sample">Sample data</b></p>
-      </div>
-    </div>
-
-    <div class="vi-how">
-      <b>How to read the speed figures</b>
-      <p><b>TAT</b> (turnaround time) is the time from receiving a complete claim to our decision. “Under 30 mins: 87%” means 87 of every 100 claims were decided within 30 minutes. Each figure includes the faster ones before it, so the numbers only go up.</p>
-    </div>
-
-    <!-- A -->
-    <article class="vi-blk" aria-labelledby="vi-a">
-      <header class="vi-bh"><span class="vi-tag">A</span><div><h3 id="vi-a">Claims processed</h3><p>Claims we reviewed and decided, and how quickly.</p></div></header>
-      <div class="vi-a-grid">
-        <div class="vi-tiles" id="vi-a-tiles"></div>
-        <figure class="vi-card vi-chart">
-          <figcaption><b>How fast claims are decided</b><span id="vi-a-say"></span></figcaption>
-          <div class="vi-legend" id="vi-a-leg" role="group" aria-label="Show or hide a claim type"></div>
-          <div class="vi-plot" id="vi-a-plot"></div>
-          <details class="vi-tbl"><summary>View as table</summary><table id="vi-a-tbl"></table></details>
-        </figure>
-      </div>
-    </article>
-
-    <!-- B -->
-    <article class="vi-blk" aria-labelledby="vi-b">
-      <header class="vi-bh"><span class="vi-tag">B</span><div><h3 id="vi-b">Claims processed by category</h3><p>A cashless hospital stay can need up to three approvals. This is how the claims processed in this period divide between them.</p></div></header>
-      <div class="vi-b-grid vi-card">
-        <div class="vi-donut-wrap"><div class="vi-plot" id="vi-b-plot"></div></div>
-        <ul class="vi-cats" id="vi-b-list"></ul>
-      </div>
-    </article>
-
-    <!-- C -->
-    <article class="vi-blk" aria-labelledby="vi-c">
-      <header class="vi-bh"><span class="vi-tag">C</span><div><h3 id="vi-c">Claims settled</h3><p>Claims closed and paid in this period, in our network, outside it with Cashless Anywhere, and as reimbursement.</p></div></header>
-      <div class="vi-tiles three" id="vi-c-tiles"></div>
-      <figure class="vi-card vi-chart">
-        <figcaption><b>Share of settled claims within each time</b><span id="vi-c-say"></span></figcaption>
-        <div class="vi-legend" id="vi-c-leg" role="group" aria-label="Show or hide a settlement route"></div>
-        <div class="vi-plot" id="vi-c-plot"></div>
-        <details class="vi-tbl"><summary>View as table</summary><table id="vi-c-tbl"></table></details>
-      </figure>
-    </article>
-    <p class="figs-note">Sample figures for design only; the live section will read from Volo's claims system. Today runs from midnight, Weekly from Monday, Monthly from the 1st.</p>
-  </div>
-  <div class="vi-tip" id="vi-tip" role="tooltip"></div>
 </section>
 
 <!-- ============ TRUSTED BY: everything visible ============ -->
@@ -1158,7 +1090,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     </div>
     <div><h2>Members</h2><ul><li><a href="https://wallet.volohealthtpa.com/">Get e-card</a></li><li><a href="#track">Track a claim</a></li><li><a href="https://wallet.volohealthtpa.com/public/hospital-network">Find a hospital</a></li><li><a href="#faq">FAQ</a></li></ul></div>
     <div><h2>Sign in</h2><ul><li><a href="https://wallet.volohealthtpa.com/">Member login</a></li><li><a href="https://www.eastwestassist.com/home/volohealth">Retail member login</a></li><li><a href="https://pulsepoint.volohealthtpa.com">Corporate HR</a></li><li><a href="https://provider.volohealthtpa.com">Hospital</a></li></ul></div>
-    <div><h2>Company</h2><ul><li><a href="#trust">Trusted by</a></li><li><a href="#hr">For HR</a></li><li><a href="#safe">Licence and grievances</a></li><li><a href="https://hardikprajapti.github.io/volo-landing-page/assets/docs/East_west_RenewalCeritificate_Signed.pdf">Registration certificate</a></li></ul></div>
+    <div><h2>Company</h2><ul><li><a href="mockup11-insights.html">Insights</a></li><li><a href="#trust">Trusted by</a></li><li><a href="#hr">For HR</a></li><li><a href="#safe">Licence and grievances</a></li><li><a href="https://hardikprajapti.github.io/volo-landing-page/assets/docs/East_west_RenewalCeritificate_Signed.pdf">Registration certificate</a></li></ul></div>
   </div>
   <p class="base">&copy; 2026 Volo Health Insurance TPA Private Limited</p>
 </footer>
@@ -1248,7 +1180,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
 
   /* ---------- header: shrink, progress, scrollspy ---------- */
   const bar = $('.progress', head);
-  const links = $$('#navlinks a'), ind = $('#navlinks .ind');
+  const links = $$('#navlinks a[href^="#"]'), ind = $('#navlinks .ind');
   function spy(){
     const line = headH() + 40; let cur = null;
     links.forEach(a => { const r = document.querySelector(a.getAttribute('href')).getBoundingClientRect(); if (r.top <= line && r.bottom > line) cur = a; });
@@ -1330,7 +1262,7 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     if (m) { input.focus(); return; }
     go.setAttribute('aria-busy', 'true'); go.textContent = 'Checking…';
     setTimeout(() => {
-      go.removeAttribute('aria-busy'); go.textContent = 'Check status';
+      go.removeAttribute('aria-busy'); go.textContent = 'Check';
       const c = CLAIMS[v];
       out.innerHTML = c
         ? '<b>' + esc(c.status) + '</b>' + v + ', ' + esc(c.type) + ', ' + esc(c.hospital) + (c.note ? '<br />' + esc(c.note) : '')
@@ -1370,18 +1302,17 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
      Pinned split screen. One wheel scroll / key press = one step (desktop);
      on touch screens the scroll snaps to steps. Colour = who is acting.
      ===================================================================== */
-  const film = $('#film'), N = 6;
+  const film = $('#film'), N = 5;
   const scenes = $$('#vig .scene'), lines = $$('#lines p'), dots = $$('#dots button'), rows = $$('#log > li');
   const stateT = $('#state-t'), stateEl = $('#state'), ins = $('#ins'), count = $('#count'), seam = $('#seam'), curtain = $('#curtain');
   const packet = $('#packet'), pText = $('span', packet), pUse = $('use', packet);
-  const STATES = ['Policy on file', 'Request in', 'Acknowledged', 'Approved', 'Bill approved', 'Settled'];
-  // [from, to, colour, label, icon]; anchors: fam = family vignette, file = Volo's claim file, ins = insurer
+  const STATES = ['Request in', 'Pre-approved', 'Enhancement approved', 'Discharge approved', 'Settled'];
+  // [from, to, colour, label, icon]; anchors: fam = Priya's side, file = Volo's claim file, ins = insurer
   const FLIGHTS = [
-    [],
-    [['fam', 'file', 'hos', 'Cashless request', 'send']],
-    [['file', 'fam', 'vol', 'Claim received', 'chat']],
-    [['file', 'fam', 'vol', 'Approved', 'check'], ['file', 'ins', 'vol', 'Insurer informed', 'shield']],
-    [['fam', 'file', 'hos', 'Final bill', 'doc']],
+    [['fam', 'file', 'hos', 'Planned request', 'send']],
+    [['file', 'fam', 'vol', 'Pre-approved', 'check'], ['file', 'ins', 'vol', 'Insurer informed', 'shield']],
+    [['fam', 'file', 'hos', 'Enhancement request', 'rupee'], ['file', 'fam', 'vol', 'Enhancement approved', 'check']],
+    [['fam', 'file', 'hos', 'Final bill', 'doc'], ['file', 'fam', 'vol', 'Discharge approved', 'check']],
     [['ins', 'fam', 'ins', 'Paid to hospital', 'rupee']],
   ];
   let cur = -1, st = null, flightTl = null, live = false;
@@ -1414,12 +1345,12 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
     if (k === cur) return;
     cur = k;
     film.dataset.step = k;
-    scenes.forEach((s, i) => s.classList.toggle('on', i === k));
+    scenes.forEach((s, i) => { if (i === k) { s.classList.remove('on'); void s.getBoundingClientRect(); } s.classList.toggle('on', i === k); });
     lines.forEach((p, i) => { p.classList.toggle('on', i === k); p.classList.toggle('was', i < k); });
     dots.forEach((d, i) => { d.classList.toggle('done', i < k); i === k ? d.setAttribute('aria-current', 'step') : d.removeAttribute('aria-current'); });
     rows.forEach((li, i) => { li.classList.toggle('on', i <= k); li.classList.toggle('now', i === k); li.classList.toggle('past', i < k); li.classList.toggle('far', i < k - 1); });
     stateT.textContent = STATES[k]; stateEl.classList.toggle('ok', k === N - 1);
-    ins.classList.toggle('lit', k === 3 || k === 5);
+    ins.classList.toggle('lit', k === 1 || k === 4);
     count.textContent = (k + 1) + ' of ' + N;
     seam.style.setProperty('--sy', (k / (N - 1) * 78).toFixed(1) + '%');
     fly(k);
@@ -1487,169 +1418,6 @@ try{ if(!matchMedia('(prefers-reduced-motion: reduce)').matches && 'Intersection
   if (document.fonts && gsapOK) document.fonts.ready.then(() => ScrollTrigger.refresh());
 })();
 </script>
-<script>
-(function () {
-  const root = document.getElementById('insights'); if (!root) return;
-  const $ = (s) => root.querySelector(s), $$ = (s) => [...root.querySelectorAll(s)];
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fmt = (v) => Math.round(v).toLocaleString('en-IN');
-  const T = ['Under 10 mins', 'Under 20 mins', 'Under 30 mins', 'Under 1 hour'];
-  const TS = ['10 min', '20 min', '30 min', '1 hour'];
 
-  /* SAMPLE DATA. tat = cumulative % of claims decided within 10 / 20 / 30 / 60 minutes. */
-  const DATA = {
-    today: { stamp: 'Today, 12:00 am to now',
-      A: { cashless: { n: 1284, tat: [41, 70, 87, 97] }, reimb: { n: 412, tat: [18, 45, 71, 92] } },
-      B: { admission: 742, enhancement: 268, discharge: 686 },
-      C: { cashless: { n: 896, tat: [38, 68, 86, 97] }, anywhere: { n: 74, tat: [22, 53, 77, 94] }, reimb: { n: 305, tat: [16, 42, 70, 91] } } },
-    week: { stamp: 'This week, Monday to now',
-      A: { cashless: { n: 9418, tat: [39, 69, 87, 97] }, reimb: { n: 3106, tat: [17, 45, 71, 92] } },
-      B: { admission: 5520, enhancement: 1984, discharge: 5020 },
-      C: { cashless: { n: 6871, tat: [37, 68, 86, 97] }, anywhere: { n: 562, tat: [21, 51, 76, 94] }, reimb: { n: 2390, tat: [15, 42, 70, 91] } } },
-    month: { stamp: 'This month, 1st to now',
-      A: { cashless: { n: 31260, tat: [38, 69, 87, 97] }, reimb: { n: 10845, tat: [17, 44, 71, 92] } },
-      B: { admission: 18410, enhancement: 6730, discharge: 16965 },
-      C: { cashless: { n: 23480, tat: [36, 67, 86, 97] }, anywhere: { n: 1912, tat: [20, 51, 76, 94] }, reimb: { n: 8015, tat: [15, 41, 70, 91] } } },
-  };
-  const SA = [{ k: 'cashless', name: 'Cashless claims', sub: 'paid directly to the hospital', c: 'var(--s1)', hex: '#c21f6e' }, { k: 'reimb', name: 'Reimbursement claims', sub: 'paid back to the member', c: 'var(--s2)', hex: '#6d3fc0' }];
-  const SC = [{ k: 'cashless', name: 'Cashless', sub: 'at a network hospital', c: 'var(--s1)', hex: '#c21f6e' }, { k: 'anywhere', name: 'Cashless Anywhere', sub: 'at a hospital outside the network', c: 'var(--s2)', hex: '#6d3fc0' }, { k: 'reimb', name: 'Reimbursement', sub: 'paid back to the member', c: 'var(--s3)', hex: '#0f8a63' }];
-  const CATS = [{ k: 'admission', name: 'Admission', c: 'var(--cat1)', hex: '#c21f6e', note: 'First approval, when the patient is admitted.' }, { k: 'enhancement', name: 'Enhancement', c: 'var(--cat2)', hex: '#6d3fc0', note: 'Extra approval during the stay, when treatment costs more than first approved.' }, { k: 'discharge', name: 'Discharge', c: 'var(--cat3)', hex: '#0f8a63', note: 'Final bill approval, so the patient can go home.' }];
-  const showA = { cashless: true, reimb: true }, showC = { cashless: true, anywhere: true, reimb: true };
-
-  const NS = 'http://www.w3.org/2000/svg';
-  const E = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
-  const tip = $('#vi-tip');
-  function tipAt(x, y, html) { tip.innerHTML = html; tip.style.opacity = 1; const half = tip.offsetWidth / 2 + 12; tip.style.left = Math.min(innerWidth - half, Math.max(half, x)) + 'px'; tip.style.top = y + 'px'; }
-  const tipOff = () => { tip.style.opacity = 0; };
-  addEventListener('scroll', tipOff, { passive: true });
-
-  /* tween state: the drawn data eases toward the chosen period */
-  const clone = (o) => JSON.parse(JSON.stringify(o));
-  let shown = clone(DATA.today), target = DATA.today, from = shown, t0 = 0, period = 'today';
-  const mix = (a, b, k) => typeof a === 'number' ? a + (b - a) * k : Array.isArray(a) ? a.map((v, i) => mix(v, b[i], k)) : Object.fromEntries(Object.keys(a).map((key) => [key, key === 'stamp' ? b[key] : mix(a[key], b[key], k)]));
-
-  /* ---------- A: tiles + cumulative speed curve ---------- */
-  function tilesA(D) {
-    const total = D.A.cashless.n + D.A.reimb.n;
-    $('#vi-a-tiles').innerHTML = SA.map((s) => { const d = D.A[s.k]; return `<div class="vi-tile" style="--c:${s.c}"><p class="t-name"><i></i>${s.name}</p><p class="t-n">${fmt(d.n)}</p><p class="t-sub">${Math.round(d.n / total * 100)}% of ${fmt(total)} claims processed, ${s.sub}</p><ul class="vi-steps">${d.tat.map((v, i) => `<li><b>${Math.round(v)}%</b><span>${T[i]}</span></li>`).join('')}</ul></div>`; }).join('');
-    const c = D.A.cashless, r = D.A.reimb;
-    $('#vi-a-say').innerHTML = `<strong>${Math.round(c.tat[2])}%</strong> of cashless claims and <strong>${Math.round(r.tat[2])}%</strong> of reimbursement claims were decided in under 30 minutes.`;
-  }
-  function chartA(D) {
-    const plot = $('#vi-a-plot'); plot.innerHTML = '';
-    const W = Math.max(300, plot.clientWidth || 640), H = W < 500 ? 250 : 300, L = 42, R = W < 500 ? 44 : 70, Tp = 16, B = 40, iw = W - L - R, ih = H - Tp - B;
-    const svg = E('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Line chart: share of claims decided within 10, 20, 30 and 60 minutes, cashless and reimbursement' }, plot);
-    const x = (i) => L + iw * i / 3, y = (v) => Tp + ih - v / 100 * ih;
-    [0, 25, 50, 75, 100].forEach((v) => { E('line', { class: 'gl', x1: L, x2: W - R, y1: y(v), y2: y(v) }, svg); E('text', { class: 'ax', x: L - 8, y: y(v) + 4, 'text-anchor': 'end' }, svg).textContent = v + '%'; });
-    T.forEach((t, i) => { E('text', { class: 'axb', x: x(i), y: H - 14, 'text-anchor': i === 0 ? 'start' : i === 3 ? 'end' : 'middle', dx: i === 0 ? -8 : i === 3 ? 8 : 0 }, svg).textContent = W < 500 ? '< ' + TS[i] : t; });
-    const xh = E('line', { class: 'xh', y1: Tp, y2: Tp + ih, opacity: 0 }, svg);
-    SA.forEach((s) => {
-      if (!showA[s.k]) return;
-      const d = D.A[s.k].tat, pts = d.map((v, i) => [x(i), y(v)]);
-      const area = E('path', { d: `M${pts.map((p) => p.join(',')).join(' L')} L${x(3)},${y(0)} L${x(0)},${y(0)} Z`, fill: s.hex, opacity: .07 }, svg);
-      E('path', { d: 'M' + pts.map((p) => p.join(',')).join(' L'), fill: 'none', stroke: s.hex, 'stroke-width': 2.5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
-      pts.forEach((p) => E('circle', { cx: p[0], cy: p[1], r: 5, fill: s.hex, stroke: '#fff', 'stroke-width': 2 }, svg));
-      E('text', { class: 'lbl', x: x(3) + 10, y: y(d[3]) + (s.k === 'reimb' ? 12 : -2), fill: s.hex }, svg).textContent = Math.round(d[3]) + '%';
-    });
-    T.forEach((t, i) => {
-      const hit = E('rect', { class: 'hit', x: x(i) - iw / 6, y: Tp, width: iw / 3, height: ih }, svg);
-      hit.addEventListener('pointerenter', () => {
-        xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('opacity', 1);
-        const r = hit.getBoundingClientRect();
-        tipAt(r.left + r.width / 2, r.top + 10, `<b>${T[i]}</b>` + SA.filter((s) => showA[s.k]).map((s) => { const d = shown.A[s.k]; return `<div class="r"><i style="--c:${s.hex}"></i>${s.name}: <b>${Math.round(d.tat[i])}%</b> (${fmt(d.n * d.tat[i] / 100)} claims)</div>`; }).join(''));
-      });
-      hit.addEventListener('pointerleave', () => { xh.setAttribute('opacity', 0); tipOff(); });
-    });
-    $('#vi-a-tbl').innerHTML = `<thead><tr><th>Decided</th>${SA.map((s) => `<th>${s.name}</th>`).join('')}</tr></thead><tbody>` + T.map((t, i) => `<tr><td>${t}</td>${SA.map((s) => `<td>${Math.round(D.A[s.k].tat[i])}% (${fmt(D.A[s.k].n * D.A[s.k].tat[i] / 100)})</td>`).join('')}</tr>`).join('') + `<tr><td>Total claims</td>${SA.map((s) => `<td>${fmt(D.A[s.k].n)}</td>`).join('')}</tr></tbody>`;
-  }
-
-  /* ---------- B: donut + list ---------- */
-  let hiCat = null;
-  function chartB(D) {
-    const plot = $('#vi-b-plot'); plot.innerHTML = '';
-    const vals = CATS.map((c) => D.B[c.k]), total = vals.reduce((a, b) => a + b, 0);
-    const S = 300, cx = S / 2, cy = S / 2, R = 132, r = 88;
-    const svg = E('svg', { viewBox: `0 0 ${S} ${S}`, role: 'img', 'aria-label': 'Donut chart of claims processed by category: ' + CATS.map((c, i) => `${c.name} ${fmt(vals[i])}`).join(', ') }, plot);
-    let a0 = -Math.PI / 2;
-    CATS.forEach((c, i) => {
-      const a1 = a0 + vals[i] / total * Math.PI * 2, gap = .012, s = a0 + gap, e = a1 - gap, big = e - s > Math.PI ? 1 : 0;
-      const on = hiCat === c.k, RR = on ? R + 8 : R;
-      const d = `M${cx + RR * Math.cos(s)},${cy + RR * Math.sin(s)} A${RR},${RR} 0 ${big} 1 ${cx + RR * Math.cos(e)},${cy + RR * Math.sin(e)} L${cx + r * Math.cos(e)},${cy + r * Math.sin(e)} A${r},${r} 0 ${big} 0 ${cx + r * Math.cos(s)},${cy + r * Math.sin(s)} Z`;
-      const p = E('path', { d, fill: c.hex, opacity: hiCat && !on ? .35 : 1, tabindex: 0, 'aria-label': `${c.name}: ${fmt(vals[i])} claims, ${Math.round(vals[i] / total * 100)}%` }, svg);
-      p.style.cursor = 'pointer';
-      const enter = () => { hiCat = c.k; drawB(); const b = p.getBoundingClientRect(); tipAt(b.left + b.width / 2, b.top, `<b>${c.name}</b><br>${fmt(vals[i])} claims, ${Math.round(vals[i] / total * 100)}% of all`); };
-      p.addEventListener('pointerenter', enter); p.addEventListener('focus', enter);
-      p.addEventListener('pointerleave', () => { hiCat = null; drawB(); tipOff(); }); p.addEventListener('blur', () => { hiCat = null; drawB(); tipOff(); });
-      a0 = a1;
-    });
-    E('text', { x: cx, y: cy - 4, 'text-anchor': 'middle', style: 'font:800 34px var(--display);fill:var(--ink)' }, svg).textContent = fmt(total);
-    E('text', { x: cx, y: cy + 20, 'text-anchor': 'middle', class: 'ax' }, svg).textContent = 'claims processed';
-    $('#vi-b-list').innerHTML = CATS.map((c, i) => `<li data-k="${c.k}" class="${hiCat === c.k ? 'on' : ''}" style="--c:${c.hex}"><i></i><b>${c.name}</b><span class="n">${fmt(vals[i])}<small>${Math.round(vals[i] / total * 100)}%</small></span><p>${c.note}</p></li>`).join('');
-  }
-  const drawB = () => chartB(shown);
-  $('#vi-b-list').addEventListener('pointerover', (e) => { const li = e.target.closest('li'); if (li && hiCat !== li.dataset.k) { hiCat = li.dataset.k; drawB(); } });
-  $('#vi-b-list').addEventListener('pointerleave', () => { hiCat = null; drawB(); });
-
-  /* ---------- C: tiles + grouped bars ---------- */
-  function tilesC(D) {
-    const total = SC.reduce((a, s) => a + D.C[s.k].n, 0);
-    $('#vi-c-tiles').innerHTML = SC.map((s) => { const d = D.C[s.k]; return `<div class="vi-tile" style="--c:${s.c}"><p class="t-name"><i></i>${s.name}</p><p class="t-n">${fmt(d.n)}</p><p class="t-sub">claims settled ${s.sub}, ${Math.round(d.n / total * 100)}% of ${fmt(total)}</p><ul class="vi-steps">${d.tat.map((v, i) => `<li><b>${Math.round(v)}%</b><span>${T[i]}</span></li>`).join('')}</ul></div>`; }).join('');
-    $('#vi-c-say').innerHTML = `Network cashless settles fastest: <strong>${Math.round(D.C.cashless.tat[2])}%</strong> in under 30 minutes, against <strong>${Math.round(D.C.anywhere.tat[2])}%</strong> for Cashless Anywhere and <strong>${Math.round(D.C.reimb.tat[2])}%</strong> for reimbursement.`;
-  }
-  function chartC(D) {
-    const plot = $('#vi-c-plot'); plot.innerHTML = '';
-    const W = Math.max(300, plot.clientWidth || 900), H = W < 500 ? 270 : 320, L = 42, R = 10, Tp = 24, B = 40, iw = W - L - R, ih = H - Tp - B;
-    const svg = E('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Grouped bar chart: share of settled claims within 10, 20, 30 and 60 minutes, by route' }, plot);
-    const y = (v) => Tp + ih - v / 100 * ih, gw = iw / 4, act = SC.filter((s) => showC[s.k]);
-    const bw = Math.min(46, (gw * .72) / Math.max(1, act.length)), gap = 6;
-    [0, 25, 50, 75, 100].forEach((v) => { E('line', { class: 'gl', x1: L, x2: W - R, y1: y(v), y2: y(v) }, svg); E('text', { class: 'ax', x: L - 8, y: y(v) + 4, 'text-anchor': 'end' }, svg).textContent = v + '%'; });
-    T.forEach((t, i) => {
-      const gx = L + gw * i + gw / 2, totalW = act.length * bw + (act.length - 1) * gap;
-      E('text', { class: 'axb', x: gx, y: H - 14, 'text-anchor': 'middle' }, svg).textContent = W < 500 ? '< ' + TS[i] : t;
-      const bars = [];
-      act.forEach((s, j) => {
-        const v = D.C[s.k].tat[i], bx = gx - totalW / 2 + j * (bw + gap), by = y(v), h = Tp + ih - by, rr = Math.min(4, h);
-        const b = E('path', { d: `M${bx},${Tp + ih} V${by + rr} Q${bx},${by} ${bx + rr},${by} H${bx + bw - rr} Q${bx + bw},${by} ${bx + bw},${by + rr} V${Tp + ih} Z`, fill: s.hex }, svg);
-        bars.push(b);
-        if (bw >= 18) E('text', { class: 'lbl', x: bx + bw / 2, y: by - 6, 'text-anchor': 'middle', style: 'font-size:' + (bw < 26 ? 10 : 11.5) + 'px' }, svg).textContent = Math.round(v) + '%';
-      });
-      const hit = E('rect', { class: 'hit', x: L + gw * i, y: Tp, width: gw, height: ih }, svg);
-      hit.addEventListener('pointerenter', () => {
-        $$('#vi-c-plot path').forEach((p) => { p.style.opacity = bars.includes(p) ? 1 : .3; });
-        const r = hit.getBoundingClientRect();
-        tipAt(r.left + r.width / 2, r.top + 10, `<b>Settled ${T[i].toLowerCase()}</b>` + act.map((s) => { const d = shown.C[s.k]; return `<div class="r"><i style="--c:${s.hex}"></i>${s.name}: <b>${Math.round(d.tat[i])}%</b> (${fmt(d.n * d.tat[i] / 100)} claims)</div>`; }).join(''));
-      });
-      hit.addEventListener('pointerleave', () => { $$('#vi-c-plot path').forEach((p) => { p.style.opacity = 1; }); tipOff(); });
-    });
-    $('#vi-c-tbl').innerHTML = `<thead><tr><th>Settled</th>${SC.map((s) => `<th>${s.name}</th>`).join('')}</tr></thead><tbody>` + T.map((t, i) => `<tr><td>${t}</td>${SC.map((s) => `<td>${Math.round(D.C[s.k].tat[i])}% (${fmt(D.C[s.k].n * D.C[s.k].tat[i] / 100)})</td>`).join('')}</tr>`).join('') + `<tr><td>Total settled</td>${SC.map((s) => `<td>${fmt(D.C[s.k].n)}</td>`).join('')}</tr></tbody>`;
-  }
-
-  /* ---------- legends (toggle a series) ---------- */
-  function legend(el, list, state, redraw) {
-    el.innerHTML = list.map((s) => `<button type="button" aria-pressed="${state[s.k]}" data-k="${s.k}" style="--c:${s.hex}"><i></i>${s.name}</button>`).join('');
-    el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; const k = b.dataset.k; if (state[k] && Object.values(state).filter(Boolean).length === 1) return; state[k] = !state[k]; b.setAttribute('aria-pressed', state[k]); redraw(); });
-  }
-  legend($('#vi-a-leg'), SA, showA, () => chartA(shown));
-  legend($('#vi-c-leg'), SC, showC, () => chartC(shown));
-
-  let rw = 0; addEventListener('resize', () => { if (innerWidth !== rw) { rw = innerWidth; chartA(shown); chartC(shown); } });
-  function drawAll(D) { tilesA(D); chartA(D); chartB(D); tilesC(D); chartC(D); }
-  function step(now) {
-    const k = reduce ? 1 : Math.min((now - t0) / 650, 1), e = 1 - Math.pow(1 - k, 3);
-    shown = mix(from, target, e); drawAll(shown);
-    if (k < 1) requestAnimationFrame(step);
-  }
-  function go(p) { period = p; from = clone(shown); target = DATA[p]; $('#vi-stamp').textContent = target.stamp; t0 = performance.now(); requestAnimationFrame(step); }
-  $$('.vi-seg button').forEach((b, i, all) => {
-    b.addEventListener('click', () => { all.forEach((x) => { x.setAttribute('aria-checked', x === b); x.tabIndex = x === b ? 0 : -1; }); go(b.dataset.p); });
-    b.addEventListener('keydown', (e) => { if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return; const n = all[(i + (e.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length]; n.focus(); n.click(); });
-  });
-  // first draw: grow up from zero when the section comes into view
-  const zero = mix(DATA.today, DATA.today, 0); (function z(o) { for (const k in o) { if (typeof o[k] === 'number') o[k] = 0; else if (Array.isArray(o[k])) o[k] = o[k].map(() => 0); else if (typeof o[k] === 'object') z(o[k]); } })(zero);
-  shown = zero; drawAll(shown);
-  if ('IntersectionObserver' in window && !reduce) { const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io.disconnect(); go('today'); } }, { threshold: .1 }); io.observe(root); } else go('today');
-})();
-
-</script>
 </body>
 </html>
