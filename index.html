@@ -528,6 +528,125 @@ html[data-vs-theme="light"] .vs-note{box-shadow:0 18px 40px -18px rgba(36,18,28,
 @media (max-width:640px){.w.hero-grid{padding-left:18px;padding-right:18px}}
 
 .marq li .logo-txt{font-family:var(--display);font-weight:600;font-size:16px;color:var(--ink);white-space:nowrap;padding:0 6px}
+/* ===== Volo Assist: website chat (replaces the Quick help button). Prefix va-. ===== */
+.va{--va-night:#1a0912;--va-plum:#2a1220;--va-mag:#c21f6e;--va-mag2:#e0468f;--va-blush:#f9e3ec;--va-paper:#fffafc;--va-ink:#24121c;--va-ink2:#6d5562;--va-rule:#ecd6e1;--va-mint:#3ecf8e;
+  font:15px/1.5 'Geist',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--va-ink)}
+.va *{box-sizing:border-box}
+.va svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+/* launcher: sits exactly where the Quick help (dialer) button was - bottom right, same frame and size */
+.va-launch{position:fixed;right:20px;bottom:20px;z-index:70;display:flex;padding:6px;border:1px solid rgba(249,227,236,.16);border-radius:26px;background:rgba(31,12,23,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;
+  transition:opacity .3s,transform .35s cubic-bezier(.2,.7,.2,1)}
+.va-launch .va-btn{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:20px;background:var(--va-mag);color:#fff;font:600 14px/1 'Geist',system-ui,sans-serif;transition:background .2s}
+.va-launch:hover .va-btn{background:#a8185e}
+.va-launch svg{width:18px;height:18px}
+.va-launch .va-dot{position:absolute;right:6px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--va-mint);box-shadow:0 0 0 2px var(--va-mag)}
+.va-launch:focus-visible{outline:3px solid var(--va-mag2);outline-offset:3px}
+.va-launch.hide,.va.open .va-launch{opacity:0;pointer-events:none;transform:translateY(16px)}
+.va-nudge{position:fixed;right:20px;bottom:88px;z-index:70;max-width:260px;background:#fff;color:var(--va-ink);border:1px solid var(--va-rule);border-radius:18px 18px 6px 18px;padding:12px 34px 12px 14px;font-size:14px;box-shadow:0 18px 40px -18px rgba(36,18,28,.45);
+  opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .35s,transform .35s}
+.va-nudge.show{opacity:1;transform:none;pointer-events:auto}
+.va-nudge b{display:block;font-size:14.5px}
+.va-nudge button{position:absolute;right:6px;top:6px;width:28px;height:28px;border:0;background:none;color:var(--va-ink2);cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.va-nudge button svg{width:14px;height:14px}
+/* avatar: Volo mark on the night plum */
+.va-av{position:relative;flex-shrink:0;width:38px;height:38px;border-radius:30%;background:var(--va-night);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.va-av img{width:78%;height:auto;display:block}
+/* panel */
+.va-panel{position:fixed;right:20px;bottom:20px;z-index:71;width:400px;height:min(640px,calc(100svh - 40px));display:flex;flex-direction:column;background:var(--va-paper);border-radius:26px;overflow:hidden;
+  box-shadow:0 40px 90px -30px rgba(26,9,18,.65),0 0 0 1px rgba(36,18,28,.08);opacity:0;transform:translateY(18px) scale(.97);transform-origin:100% 100%;pointer-events:none;transition:opacity .3s,transform .4s cubic-bezier(.2,.7,.2,1)}
+.va.open .va-panel{opacity:1;transform:none;pointer-events:auto}
+.va-head{position:relative;display:flex;align-items:center;gap:12px;padding:16px 14px 16px 18px;background:var(--va-night);color:var(--va-blush);overflow:hidden}
+.va-head::before{content:"";position:absolute;width:320px;height:320px;right:-120px;top:-200px;border-radius:50%;background:radial-gradient(circle,rgba(194,31,110,.45),transparent 65%);pointer-events:none}
+.va-head .va-t{position:relative;flex:1;min-width:0}
+.va-head b{display:block;font:800 18px/1.1 'Bricolage Grotesque',system-ui,sans-serif;color:#fff;letter-spacing:-.01em}
+.va-head small{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(249,227,236,.75);margin-top:3px}
+.va-head small i{width:7px;height:7px;border-radius:50%;background:var(--va-mint)}
+.va-hb{position:relative;width:40px;height:40px;border-radius:50%;border:1px solid rgba(249,227,236,.16);background:none;color:var(--va-blush);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.va-hb:hover{background:rgba(255,255,255,.08)}
+.va-hb svg{width:18px;height:18px}
+.va-body{flex:1;overflow-y:auto;padding:18px 16px 8px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;overscroll-behavior:contain;background:linear-gradient(180deg,#fbf1f6,var(--va-paper) 140px)}
+.va-sys{align-self:center;font-size:12px;color:var(--va-ink2);background:#fff;border:1px solid var(--va-rule);border-radius:999px;padding:3px 12px}
+.va-row{display:flex;gap:8px;align-items:flex-end;max-width:100%}
+.va-row.bot .va-av{width:28px;height:28px;border-radius:9px}
+.va-row.bot.cont .va-av{visibility:hidden}
+.va-row.me{justify-content:flex-end}
+.va-b{max-width:84%;padding:10px 13px;border-radius:18px;font-size:14.5px;line-height:1.5;animation:va-in .3s cubic-bezier(.2,.7,.2,1)}
+.va-row.bot .va-b{background:#fff;border:1px solid var(--va-rule);border-bottom-left-radius:6px}
+.va-row.me .va-b{background:var(--va-mag);color:#fff;border-bottom-right-radius:6px}
+.va-b a{color:var(--va-mag);font-weight:600;text-underline-offset:3px}
+.va-b p+p,.va-b p+ol,.va-b p+ul,.va-b ol+p,.va-b ul+p{margin-top:6px}
+.va-b p{margin:0}
+.va-b ol,.va-b ul{margin:0;padding-left:20px}
+.va-b li+li{margin-top:3px}
+.va-b small{display:block;color:var(--va-ink2);font-size:12px;margin-top:6px}
+.va-b .va-tag{display:inline-block;font-size:11px;font-weight:700;background:#fff3bf;color:#6b5000;border-radius:999px;padding:1px 8px;margin-left:4px;vertical-align:1px}
+@keyframes va-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.va-typing{display:inline-flex;gap:4px;padding:14px 14px}
+.va-typing i{width:7px;height:7px;border-radius:50%;background:#c9aebb;animation:va-dot 1s infinite}
+.va-typing i:nth-child(2){animation-delay:.15s}.va-typing i:nth-child(3){animation-delay:.3s}
+@keyframes va-dot{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+/* replies: chips and link buttons */
+.va-chips{display:flex;flex-wrap:wrap;gap:6px;padding-left:36px;animation:va-in .3s cubic-bezier(.2,.7,.2,1)}
+.va-chip{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 14px;border-radius:999px;border:1.5px solid var(--va-mag);background:#fff;color:var(--va-mag);font:600 13.5px/1 'Geist',system-ui,sans-serif;cursor:pointer;text-decoration:none;transition:background .2s,color .2s,transform .2s}
+.va-chip:hover{background:var(--va-mag);color:#fff}
+.va-chip:active{transform:scale(.96)}
+.va-chip svg{width:16px;height:16px}
+.va-chip.list{background:var(--va-mag);color:#fff}
+.va-chip.list:hover{background:#a8185e}
+.va-chip.ghost{border-color:var(--va-rule);color:var(--va-ink)}
+.va-chip.ghost:hover{background:var(--va-blush);color:var(--va-mag);border-color:var(--va-blush)}
+.va-chips.used .va-chip{opacity:.45;pointer-events:none}
+.va-chips.used .va-chip.picked{opacity:1;background:var(--va-mag);color:#fff}
+/* status card */
+.va-card{margin-top:8px;border:1px solid var(--va-rule);border-radius:14px;padding:10px 12px;background:var(--va-paper)}
+.va-card .va-k{font-size:12px;color:var(--va-ink2)}
+.va-card .va-v{font-weight:700}
+.va-track{list-style:none;padding:0!important;margin:8px 0 0!important;display:grid;gap:6px}
+.va-track li{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--va-ink2)}
+.va-track li i{width:14px;height:14px;border-radius:50%;border:2px solid var(--va-rule);flex-shrink:0}
+.va-track li.ok{color:var(--va-ink)}
+.va-track li.ok i{background:var(--va-mint);border-color:var(--va-mint)}
+.va-track li.now{color:var(--va-ink);font-weight:700}
+.va-track li.now i{border-color:var(--va-mag);box-shadow:0 0 0 3px rgba(194,31,110,.2)}
+/* composer */
+.va-foot{border-top:1px solid var(--va-rule);background:#fff;padding:10px 12px 8px}
+.va-form{display:flex;align-items:center;gap:8px}
+.va-in{flex:1;min-width:0;height:46px;border:1.5px solid var(--va-rule);border-radius:999px;padding:0 16px;font:15px 'Geist',system-ui,sans-serif;color:var(--va-ink);background:var(--va-paper);outline:none;transition:border-color .2s}
+.va-in:focus{border-color:var(--va-mag)}
+.va-send{width:46px;height:46px;border-radius:50%;border:0;background:var(--va-mag);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s,transform .2s}
+.va-send:hover{background:#a8185e}.va-send:active{transform:scale(.94)}
+.va-send svg{width:18px;height:18px}
+.va-legal{text-align:center;font-size:11.5px;color:var(--va-ink2);margin-top:6px}
+.va-legal a{color:var(--va-ink2)}
+/* list picker: a sheet that slides up inside the chat */
+.va-sheet{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:flex-end;background:rgba(26,9,18,.4);opacity:0;pointer-events:none;transition:opacity .25s}
+.va-sheet.on{opacity:1;pointer-events:auto}
+.va-sheet-in{background:#fff;border-radius:22px 22px 0 0;max-height:78%;display:flex;flex-direction:column;transform:translateY(30px);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.va-sheet.on .va-sheet-in{transform:none}
+.va-sheet-h{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px}
+.va-sheet-h b{font:800 17px 'Bricolage Grotesque',system-ui,sans-serif}
+.va-sheet-h button{width:36px;height:36px;border-radius:50%;border:0;background:var(--va-blush);color:var(--va-ink);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.va-sheet-h button svg{width:16px;height:16px}
+.va-find{margin:0 16px 8px;height:42px;border:1.5px solid var(--va-rule);border-radius:12px;padding:0 12px;font:14.5px 'Geist',system-ui,sans-serif;outline:none}
+.va-find:focus{border-color:var(--va-mag)}
+.va-opts{list-style:none;margin:0;padding:0 8px 12px;overflow-y:auto}
+.va-opts button{width:100%;display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 10px;border:0;background:none;border-radius:12px;text-align:left;font:500 15px 'Geist',system-ui,sans-serif;color:var(--va-ink);cursor:pointer}
+.va-opts button:hover,.va-opts button:focus-visible{background:var(--va-blush);outline:none}
+.va-opts .va-oi{width:34px;height:34px;border-radius:10px;background:var(--va-blush);color:var(--va-mag);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.va-opts .va-oi svg{width:17px;height:17px}
+.va-opts small{display:block;font-size:12.5px;color:var(--va-ink2)}
+.va-opts .va-none{padding:16px;color:var(--va-ink2);font-size:14px}
+@media (max-width:520px){
+  .va-panel{right:0;bottom:0;width:100vw;height:100svh;border-radius:0}
+  .va-launch{right:14px;bottom:14px}
+  .va-launch .va-btn{width:52px;height:52px;padding:0}
+  .va-launch .va-lbl{display:none}
+  .va-nudge{right:14px;bottom:84px}
+}
+@media (prefers-reduced-motion:reduce){.va *,.va-launch,.va-panel{animation:none!important;transition:none!important}}
+
+/* the dialer is replaced by Volo Assist in the same spot; the film's story bar (parts mode) is unchanged */
+.vs-qa[data-mode="fab"]{display:none!important}
 </style>
 <script>
 document.documentElement.classList.add('js');
@@ -4988,6 +5107,245 @@ three/build/three.module.js:
    * SPDX-License-Identifier: MIT
    *)
 */
+</script>
+
+<!-- ============ VOLO ASSIST: website chat ============ -->
+<div class="va" id="va">
+  <div class="va-nudge" id="va-nudge" role="status"><b>Need help with a claim?</b>Ask me about your e-card, claim status or a cashless hospital.<button type="button" id="va-nudge-x" aria-label="Dismiss"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <button type="button" class="va-launch" id="va-launch" aria-controls="va-panel" aria-expanded="false" aria-label="Chat with Volo Assist"><span class="va-btn"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2-5.4A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg><span class="va-lbl">Ask Volo</span><i class="va-dot" aria-hidden="true"></i></span></button>
+  <section class="va-panel" id="va-panel" role="dialog" aria-modal="false" aria-labelledby="va-title" aria-hidden="true">
+    <header class="va-head">
+      <span class="va-av"><img class="va-logo" alt="" /></span>
+      <div class="va-t"><b id="va-title">Volo Assist</b><small><i aria-hidden="true"></i>Online · replies instantly</small></div>
+      <button type="button" class="va-hb" id="va-restart" aria-label="Start a new chat" title="New chat"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg></button>
+      <button type="button" class="va-hb" id="va-close" aria-label="Close chat"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+    </header>
+    <div class="va-body" id="va-body" role="log" aria-live="polite" aria-relevant="additions"></div>
+    <div class="va-foot">
+      <form class="va-form" id="va-form" autocomplete="off">
+        <label class="sr" for="va-in" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Type your question</label>
+        <input class="va-in" id="va-in" type="text" placeholder="Type your question…" maxlength="300" />
+        <button class="va-send" type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13"/></svg></button>
+      </form>
+      <p class="va-legal">Prefer a person? <a href="tel:04065126801">040-65126801</a>, 24x7</p>
+    </div>
+    <div class="va-sheet" id="va-sheet" aria-hidden="true">
+      <div class="va-sheet-in" role="listbox" aria-labelledby="va-sheet-t">
+        <div class="va-sheet-h"><b id="va-sheet-t">Choose</b><button type="button" id="va-sheet-x" aria-label="Close list"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+        <input class="va-find" id="va-find" type="search" placeholder="Search" aria-label="Search the list" />
+        <ul class="va-opts" id="va-opts"></ul>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+/* ---------- Volo Assist: website chat ----------
+   The chat window talks to ONE function: VoloAssist.send(payload, text).
+   Today it is a local mock that replays Volo Assist's flows with the same payload IDs
+   (mf:menu:claim_form, cf:type:hospitalisation, cf:ins:38 ...).
+   To go live, replace VoloAssist.send with a call to the Volo Assist web-session API that
+   returns the same message shape:
+     { id, text (html), buttons:[{t,p}], list:{label,title,items:[{t,p,sub,icon}]}, links:[{t,href,icon}], expect:'claim'|'city', card }
+*/
+(function(){
+  const va = document.getElementById('va'); if (!va) return;
+  const $ = s => va.querySelector(s);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const logo = document.querySelector('.site-head img.logo, header img.logo');
+  va.querySelectorAll('.va-logo').forEach(i => { if (logo) i.src = logo.src; });
+
+  /* ---------- icons ---------- */
+  const IC = {
+    card: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>',
+    list: '<path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
+    doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/>',
+    pin: '<path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/>',
+    hosp: '<path d="M3 21h18M5 21V7l7-4 7 4v14M10 9h4M12 7v4M9 21v-5h6v5"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    users: '<circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M16 3.5a4 4 0 0 1 0 8M22 21a7 7 0 0 0-4-6.3"/>',
+    shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/>',
+    phone: '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/>',
+    chat: '<path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2-5.4A8.4 8.4 0 1 1 21 11.5Z"/>',
+    mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+    alert: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>',
+    rupee: '<path d="M6 3h12M6 8h12M6 13h3a5 5 0 0 0 0-10M6 13l9 8"/>',
+    out: '<path d="M14 3h7v7M21 3l-9 9M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/>',
+    menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+    down: '<path d="m6 9 6 6 6-6"/>'
+  };
+  const svg = k => '<svg viewBox="0 0 24 24">' + (IC[k] || '') + '</svg>';
+
+  /* ---------- content (draft, from the website; replace with Volo Assist's own copy) ---------- */
+  const L = { portal: 'https://wallet.volohealthtpa.com/', hosp: 'https://wallet.volohealthtpa.com/public/hospital-network', wa: 'https://wa.me/919560684484?text=Hi', tel: 'tel:04065126801', telOut: 'tel:9773770810', mail: 'mailto:cs@volohealthtpa.com', play: 'https://play.google.com/store/apps/details?id=com.ewa.tpa', ios: 'https://apps.apple.com/in/app/volo-wallet/id1660906209' };
+  const TOPICS = [
+    { t: 'E-card', p: 'mf:menu:ecard', sub: 'Download or share your health card', icon: 'card' },
+    { t: 'Claim status', p: 'mf:menu:claim_status', sub: 'Where your claim is right now', icon: 'list' },
+    { t: 'Claim form', p: 'mf:menu:claim_form', sub: 'How to file a claim, step by step', icon: 'doc' },
+    { t: 'Find a hospital', p: 'mf:menu:hospital', sub: 'Cashless network hospitals near you', icon: 'pin' },
+    { t: 'Cashless treatment', p: 'mf:menu:cashless', sub: 'Planned or emergency, how it works', icon: 'hosp' },
+    { t: 'Reimbursement documents', p: 'mf:menu:docs', sub: 'What to send and by when', icon: 'doc' },
+    { t: 'How long will it take?', p: 'mf:menu:tat', sub: 'Approval and payment timelines', icon: 'clock' },
+    { t: 'Policy and sum insured', p: 'mf:menu:policy', sub: 'Your cover, used and left', icon: 'shield' },
+    { t: 'Add a family member', p: 'mf:menu:family', sub: 'Spouse, newborn and dependants', icon: 'users' },
+    { t: 'Complaint or grievance', p: 'mf:menu:grievance', sub: 'Raise an issue with us', icon: 'alert' },
+    { t: 'Talk to a person', p: 'mf:menu:human', sub: 'Call, WhatsApp or email', icon: 'phone' }
+  ];
+  // insurer IDs: Oriental = 38 as in the Volo Assist console; the rest are placeholders
+  const INSURERS = [['The Oriental Insurance', 38], ['The New India Assurance', 41], ['National Insurance', 36], ['United India Insurance', 52], ['ICICI Lombard', 24], ['HDFC ERGO', 22], ['Tata AIG', 49], ['Bajaj General Insurance', 7], ['SBI General Insurance', 45], ['IndusInd General Insurance', 27], ['Aditya Birla Health Insurance', 2], ['Future Generali', 18], ['Universal Sompo', 53], ['Cholamandalam MS', 12], ['Liberty General', 31], ['Royal Sundaram', 43], ['Zurich Kotak General', 58], ['Other or not sure', 0]];
+  const AFTER = { id: 'mf_more', text: 'Anything else I can help with?', buttons: [{ t: 'Main menu', p: 'mf:menu' }, { t: 'Talk to a person', p: 'mf:menu:human', ghost: 1 }] };
+  const MENU = () => ({ id: 'mf_menu', text: 'How can I help you today?', list: { label: 'Choose a topic', title: 'Choose a topic', items: TOPICS },
+    buttons: [{ t: 'Get my e-card', p: 'mf:menu:ecard', icon: 'card' }, { t: 'Check claim status', p: 'mf:menu:claim_status', icon: 'list' }, { t: 'Find a hospital', p: 'mf:menu:hospital', icon: 'pin' }],
+    links: [{ t: 'Member portal', href: L.portal, icon: 'out' }] });
+  const ctx = {};
+
+  function reply(p, text){
+    const [ns, k, v] = p.split(':');
+    if (p === 'start') return [{ id: 'mf_hello', text: "<p>Hi! I'm Volo Health TPA's assistant.</p><small>By continuing in this chat, you agree to Volo Health TPA's <a href=\"#\">Terms &amp; Conditions</a> and <a href=\"#\">Privacy Policy</a>.</small>" }, MENU()];
+    if (p === 'mf:menu') return [MENU()];
+    if (ns === 'mf' && k === 'menu') switch (v) {
+      case 'ecard': return [{ id: 'ec_ways', text: '<p>You can get your e-card in three ways:</p><ol><li>Sign in to the <b>member portal</b> and download it.</li><li>Open the <b>VOLO-Wallet app</b> on Android or iPhone.</li><li>Send <b>"Hi"</b> to our WhatsApp, +91 95606 84484.</li></ol><p>Show it with a photo ID at the hospital\'s insurance desk.</p>', links: [{ t: 'Member portal', href: L.portal, icon: 'out' }, { t: 'WhatsApp', href: L.wa, icon: 'chat' }] }, AFTER];
+      case 'claim_status': ctx.expect = 'claim'; return [{ id: 'cs_ask', text: '<p>Sure. Please type your <b>claim number</b>.</p><small>You\'ll find it in the SMS or email we sent when the claim was registered.</small>', expect: 'claim' }];
+      case 'claim_form': return [{ id: 'cf_ask_type', text: 'Is this for a hospitalisation claim or an OPD claim (consultation, tests, dental, etc.)?', buttons: [{ t: 'Hospitalisation', p: 'cf:type:hospitalisation' }, { t: 'OPD', p: 'cf:type:opd' }] }];
+      case 'hospital': ctx.expect = 'city'; return [{ id: 'nh_ask', text: '<p>Which <b>city or PIN code</b> should I search?</p>', expect: 'city', links: [{ t: 'Open hospital finder', href: L.hosp, icon: 'out' }] }];
+      case 'cashless': return [{ id: 'cl_how', text: '<p>A <b>planned</b> cashless stay works in five steps:</p><ol><li>Find a network hospital and raise a pre-approval request. We guide you.</li><li>We approve it, within 1 hour.</li><li>You\'re admitted with your e-card and photo ID. If treatment costs more, the hospital asks us and we approve the extra amount.</li><li>The hospital sends the final bill and we approve discharge, within 3 hours.</li><li>You go home. The insurer pays the hospital directly.</li></ol><p>Planned treatment: ask at least <b>48 hours</b> before admission. Emergency: within <b>6 hours</b> of admission.</p>', buttons: [{ t: 'Find a hospital', p: 'mf:menu:hospital', icon: 'pin' }] }, AFTER];
+      case 'docs': return [{ id: 'rb_docs', text: '<p>For a reimbursement claim, send these within <b>7 days of discharge</b>:</p><ul><li>Signed claim form</li><li>Final bill and payment receipts</li><li>Discharge summary</li><li>Reports and prescriptions</li><li>Cancelled cheque or bank details</li></ul>', buttons: [{ t: 'Claim form', p: 'mf:menu:claim_form', icon: 'doc' }] }, AFTER];
+      case 'tat': return [{ id: 'tat', text: '<ul><li><b>Claim acknowledged:</b> within 5 minutes</li><li><b>Cashless approval:</b> within 1 hour</li><li><b>Discharge approval:</b> within 3 hours</li><li><b>Reimbursement:</b> processed within 10 working days of all documents, paid within 5 working days of approval</li></ul>' }, AFTER];
+      case 'policy': return [{ id: 'pl', text: '<p>See your policy, sum insured and how much is left in the <b>member portal</b> or the <b>VOLO-Wallet app</b>.</p>', links: [{ t: 'Member portal', href: L.portal, icon: 'out' }, { t: 'Android app', href: L.play, icon: 'out' }, { t: 'iPhone app', href: L.ios, icon: 'out' }] }, AFTER];
+      case 'family': return [{ id: 'fm', text: '<p>You can add a spouse, newborn or dependant from the <b>member portal</b>, if your policy allows it. Your HR team may need to approve the change.</p>', links: [{ t: 'Member portal', href: L.portal, icon: 'out' }] }, AFTER];
+      case 'grievance': return [{ id: 'gr', text: '<p>Sorry something went wrong. Write to us at <a href="' + L.mail + '">cs@volohealthtpa.com</a> with your claim or policy number and we\'ll reply within 1 working day.</p><p>If you\'re not satisfied with our reply, you can escalate to our Grievance Officer. Details are under <b>Licence and grievances</b> on our website.</p>', links: [{ t: 'Email us', href: L.mail, icon: 'mail' }] }, AFTER];
+      case 'human': return [{ id: 'hu', text: '<p>Our team is here 24x7:</p>', links: [{ t: 'Call 040-65126801', href: L.tel, icon: 'phone' }, { t: 'WhatsApp', href: L.wa, icon: 'chat' }, { t: 'Email', href: L.mail, icon: 'mail' }, { t: 'Outside network: 97737 70810', href: L.telOut, icon: 'hosp' }] }];
+    }
+    if (ns === 'cf' && k === 'type') { ctx.cfType = v; return [{ id: 'cf_ask_insurer', text: 'Which insurance company is your policy with?', list: { label: 'Choose insurer', title: 'Choose your insurer', search: 1, items: INSURERS.map(([n, id]) => ({ t: n, p: 'cf:ins:' + id, icon: 'shield' })) } }]; }
+    if (ns === 'cf' && k === 'ins') {
+      const opd = ctx.cfType === 'opd';
+      return [{ id: 'cf_steps', text: '<p>Here\'s how to file your claim in 3 steps.</p><ol><li><b>Download the ' + (opd ? 'OPD' : 'hospitalisation') + ' claim form</b> for your insurer and fill it in.</li><li><b>Attach</b> ' + (opd ? 'the bills, prescriptions and test reports.' : 'the final bill, receipts, discharge summary, reports and prescriptions.') + '</li><li><b>Submit</b> it on the member portal' + (opd ? '' : ' within 7 days of discharge') + '. We\'ll confirm by SMS.</li></ol>', links: [{ t: 'Download claim form', href: L.portal, icon: 'doc' }, { t: 'Submit on portal', href: L.portal, icon: 'out' }] }, AFTER];
+    }
+    if (p === 'in:claim') {
+      const id = text.trim().toUpperCase();
+      if (!/^[A-Z0-9-]{6,}$/.test(id)) { ctx.expect = 'claim'; return [{ id: 'cs_bad', text: 'That doesn\'t look like a claim number. It\'s usually 6 or more letters and numbers, for example <b>CLM2611240012</b>. Please try again.', expect: 'claim' }]; }
+      const steps = ['Request received', 'Approved', 'Under treatment', 'Discharge approved', 'Settled'];
+      const at = [...id].reduce((a, c) => a + c.charCodeAt(0), 0) % steps.length;
+      return [{ id: 'cs_result', text: '<p>Here\'s the latest on your claim <span class="va-tag">Sample</span></p><div class="va-card"><div class="va-k">Claim number</div><div class="va-v">' + esc(id) + '</div><ul class="va-track">' + steps.map((s, i) => '<li class="' + (i < at ? 'ok' : i === at ? 'now' : '') + '"><i></i>' + s + '</li>').join('') + '</ul></div><small>Live status will come from Volo\'s claims system.</small>', links: [{ t: 'Full details on portal', href: L.portal, icon: 'out' }] }, AFTER];
+    }
+    if (p === 'in:city') {
+      const q = text.trim();
+      return [{ id: 'nh_result', text: '<p>Here are cashless network hospitals for <b>' + esc(q) + '</b>.</p><small>Not in the network? Our Cashless Everywhere desk may still arrange cashless care: 97737 70810.</small>', links: [{ t: 'See hospitals in ' + q, href: L.hosp + '?q=' + encodeURIComponent(q), icon: 'pin' }, { t: 'Call 97737 70810', href: L.telOut, icon: 'phone' }] }, AFTER];
+    }
+    return null;
+  }
+  // free text: match to a topic, else say so and offer the menu
+  const INTENTS = [
+    [/e-?card|health card|card/i, 'mf:menu:ecard'], [/status|track|where.*claim|claim.*(no|number)/i, 'mf:menu:claim_status'],
+    [/form|file a claim|how to claim|submit/i, 'mf:menu:claim_form'], [/hospital|network|near me/i, 'mf:menu:hospital'],
+    [/cashless|pre-?auth|admission|planned|emergency/i, 'mf:menu:cashless'], [/document|papers|reimburse/i, 'mf:menu:docs'],
+    [/how long|time|tat|days|when will/i, 'mf:menu:tat'], [/sum insured|policy|balance|cover/i, 'mf:menu:policy'],
+    [/family|spouse|baby|newborn|dependant|add member/i, 'mf:menu:family'], [/complain|grievance|issue|problem|unhappy/i, 'mf:menu:grievance'],
+    [/person|agent|human|call|talk|help ?line|whatsapp/i, 'mf:menu:human'], [/^(hi|hello|hey|namaste|menu|start)\b/i, 'mf:menu']
+  ];
+
+  /* ---------- the adapter: swap this for the live Volo Assist API ---------- */
+  window.VoloAssist = window.VoloAssist || {
+    async send(payload, text){
+      if (payload === 'text') {
+        if (ctx.expect) { const e = ctx.expect; ctx.expect = null; return reply('in:' + e, text); }
+        const hit = INTENTS.find(([re]) => re.test(text));
+        if (hit) return reply(hit[1]);
+        return [{ id: 'mf_fallback', text: 'Sorry, I didn\'t catch that. Pick a topic, or talk to a person.', list: { label: 'Choose a topic', title: 'Choose a topic', items: TOPICS }, buttons: [{ t: 'Talk to a person', p: 'mf:menu:human', ghost: 1 }] }];
+      }
+      return reply(payload, text) || [{ id: 'mf_fallback', text: 'Something went wrong. Let\'s start again.', buttons: [{ t: 'Main menu', p: 'mf:menu' }] }];
+    }
+  };
+
+  /* ---------- chat window ---------- */
+  const body = $('#va-body'), form = $('#va-form'), input = $('#va-in'), launch = $('#va-launch'), panel = $('#va-panel');
+  const sheet = $('#va-sheet'), opts = $('#va-opts'), find = $('#va-find'), nudge = $('#va-nudge');
+  let started = false, busy = false, lastWho = '';
+  const down = () => { body.scrollTop = body.scrollHeight; };
+  function row(who, html){
+    const r = document.createElement('div'); r.className = 'va-row ' + who + (who === 'bot' && lastWho === 'bot' ? ' cont' : ''); lastWho = who;
+    r.innerHTML = (who === 'bot' ? '<span class="va-av"><img alt="" src="' + (logo ? logo.src : '') + '"/></span>' : '') + '<div class="va-b">' + html + '</div>';
+    body.appendChild(r); down(); return r;
+  }
+  function chips(m){
+    const items = [];
+    if (m.list) items.push('<button type="button" class="va-chip list" data-list="1">' + svg('menu') + esc(m.list.label) + '</button>');
+    (m.buttons || []).forEach(b => items.push('<button type="button" class="va-chip' + (b.ghost ? ' ghost' : '') + '" data-p="' + esc(b.p) + '">' + (b.icon ? svg(b.icon) : '') + esc(b.t) + '</button>'));
+    (m.links || []).forEach(l => items.push('<a class="va-chip ghost" href="' + esc(l.href) + '" target="_blank" rel="noopener">' + (l.icon ? svg(l.icon) : '') + esc(l.t) + '</a>'));
+    if (!items.length) return;
+    const c = document.createElement('div'); c.className = 'va-chips'; c.innerHTML = items.join('');
+    c.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b || c.classList.contains('used')) return;
+      if (b.dataset.list) return openSheet(m.list, c);
+      b.classList.add('picked'); c.classList.add('used'); pick(b.dataset.p, b.textContent);
+    });
+    body.appendChild(c); down();
+  }
+  const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+  async function show(msgs){
+    for (const m of msgs) {
+      const t = row('bot', '<span class="va-typing"><i></i><i></i><i></i></span>');
+      await wait(450 + Math.min(700, (m.text || '').length * 3));
+      t.querySelector('.va-b').innerHTML = m.text; down();
+      chips(m);
+      if (m.expect) { input.placeholder = m.expect === 'claim' ? 'Type your claim number…' : 'Type a city or PIN code…'; input.focus({ preventScroll: true }); }
+    }
+  }
+  async function pick(p, label){
+    if (busy) return; busy = true;
+    row('me', esc(label.trim()));
+    input.placeholder = 'Type your question…';
+    try { await show(await VoloAssist.send(p)); } finally { busy = false; }
+  }
+  form.addEventListener('submit', async e => {
+    e.preventDefault(); const t = input.value.trim(); if (!t || busy) return;
+    input.value = ''; busy = true; row('me', esc(t)); input.placeholder = 'Type your question…';
+    body.querySelectorAll('.va-chips:not(.used)').forEach(c => c.classList.add('used'));
+    try { await show(await VoloAssist.send('text', t)); } finally { busy = false; }
+  });
+
+  /* list picker sheet */
+  let sheetList = null, sheetChips = null, sheetBack = null;
+  function drawOpts(q){
+    const items = sheetList.items.filter(i => !q || i.t.toLowerCase().includes(q.toLowerCase()));
+    opts.innerHTML = items.length ? items.map(i => '<li><button type="button" role="option" data-p="' + esc(i.p) + '"><span class="va-oi">' + svg(i.icon || 'list') + '</span><span>' + esc(i.t) + (i.sub ? '<small>' + esc(i.sub) + '</small>' : '') + '</span></button></li>').join('') : '<li class="va-none">No match. Try another word.</li>';
+  }
+  function openSheet(list, c){
+    sheetList = list; sheetChips = c; sheetBack = document.activeElement;
+    $('#va-sheet-t').textContent = list.title; find.value = ''; find.hidden = !list.search && list.items.length < 12;
+    drawOpts(''); sheet.classList.add('on'); sheet.setAttribute('aria-hidden', 'false');
+    (find.hidden ? opts.querySelector('button') : find).focus();
+  }
+  function closeSheet(){ sheet.classList.remove('on'); sheet.setAttribute('aria-hidden', 'true'); if (sheetBack) sheetBack.focus({ preventScroll: true }); }
+  find.addEventListener('input', () => drawOpts(find.value));
+  opts.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; closeSheet(); if (sheetChips) sheetChips.classList.add('used'); pick(b.dataset.p, b.querySelector('span:last-child').firstChild.textContent); });
+  $('#va-sheet-x').addEventListener('click', closeSheet);
+  sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); });
+
+  /* open / close */
+  function setOpen(o){
+    va.classList.toggle('open', o); launch.setAttribute('aria-expanded', o); panel.setAttribute('aria-hidden', !o);
+    nudge.classList.remove('show');
+    if (o) { if (!started) { started = true; body.innerHTML = '<p class="va-sys">Today</p>'; lastWho = ''; show(reply('start')); } setTimeout(() => input.focus({ preventScroll: true }), 300); }
+    else launch.focus({ preventScroll: true });
+  }
+  launch.addEventListener('click', () => setOpen(true));
+  $('#va-close').addEventListener('click', () => setOpen(false));
+  $('#va-restart').addEventListener('click', () => { body.innerHTML = '<p class="va-sys">New chat</p>'; lastWho = ''; ctx.expect = null; input.placeholder = 'Type your question…'; show(reply('start')); });
+  document.addEventListener('keydown', e => { if (e.key !== 'Escape' || !va.classList.contains('open')) return; if (sheet.classList.contains('on')) closeSheet(); else setOpen(false); });
+  $('#va-nudge-x').addEventListener('click', () => nudge.classList.remove('show'));
+
+  /* where it shows: exactly where the Quick help (dialer) button was.
+     On index.html the film's story bar uses that corner while the film plays, so the chat button waits for the
+     same moment the dialer used to appear (Quick help switching to its floating mode). */
+  const qa = document.getElementById('vs-qa');
+  function sync(){ const on = !qa || qa.dataset.mode === 'fab'; launch.classList.toggle('hide', !on); if (!on) nudge.classList.remove('show'); }
+  if (qa) new MutationObserver(sync).observe(qa, { attributes: true, attributeFilter: ['data-mode'] });
+  sync();
+  // a one-time hint after a while, only if the button is visible and the chat hasn't been opened
+  setTimeout(() => { if (!started && !launch.classList.contains('hide')) nudge.classList.add('show'); }, 9000);
+})();
+
 </script>
 </body>
 </html>
